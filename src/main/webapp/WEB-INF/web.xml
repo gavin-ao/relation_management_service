@@ -40,7 +40,7 @@
     <!-- 默认请求过滤器，过滤非法请求 -->
     <filter>
         <filter-name>session-filter</filter-name>
-        <filter-class>data.driven.business.component.SessionFilter</filter-class>
+        <filter-class>data.driven.erm.component.SessionFilter</filter-class>
     </filter>
 
     <filter-mapping>
@@ -54,7 +54,7 @@
     <!-- 微信请求过滤器 -->
     <filter>
         <filter-name>wechat-api-filter</filter-name>
-        <filter-class>data.driven.business.component.WechatApiFilter</filter-class>
+        <filter-class>data.driven.erm.component.WechatApiFilter</filter-class>
     </filter>
 
     <filter-mapping>
@@ -82,7 +82,7 @@
     <!-- sitemesh servlet配置 -->
     <servlet>
         <servlet-name>site-mesh-velocity</servlet-name>
-        <servlet-class>data.driven.business.component.MyVelocityDecoratorServlet</servlet-class>
+        <servlet-class>data.driven.erm.component.MyVelocityDecoratorServlet</servlet-class>
         <load-on-startup>1</load-on-startup>
     </servlet>
 

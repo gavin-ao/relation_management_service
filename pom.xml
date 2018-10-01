@@ -307,7 +307,7 @@
                     <!--<configuration>-->
                         <!--&lt;!&ndash; spring-boot:run 中文乱码解决 &ndash;&gt;-->
                         <!--<jvmArguments>-Dfile.encoding=UTF-8</jvmArguments>-->
-                        <!--<mainClass>data.driven.business.Application</mainClass>-->
+                        <!--<mainClass>data.driven.ermication</mainClass>-->
                     <!--</configuration>-->
                     <!--<executions>-->
                         <!--<execution>-->

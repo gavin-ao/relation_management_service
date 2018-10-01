@@ -17,7 +17,7 @@
     <!-- 使Spring关注Annotation -->
     <context:annotation-config />
     <!-- 使用annotation 自动注册bean,并检查@Required,@Autowired的属性已被注入 -->
-    <context:component-scan base-package="data.driven.business"/>
+    <context:component-scan base-package="data.driven.erm"/>
     <mvc:annotation-driven/>
 
     <import resource="config/velocity.xml"/>
@@ -25,7 +25,7 @@
 
     <!-- 文件上传路径设置 -->
     <context:property-placeholder location="classpath:application.properties" />
-    <bean id="constant" class="data.driven.business.common.Constant">
+    <bean id="constant" class="data.driven.erm.common.Constant">
         <property name="fileUploadPath" value="${file.upload.path}"/>
     </bean>
 
