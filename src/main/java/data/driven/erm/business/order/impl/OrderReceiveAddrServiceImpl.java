@@ -24,14 +24,14 @@ public class OrderReceiveAddrServiceImpl implements OrderReceiveAddrService {
 
     @Override
     public List<OrderReceiveAddrEntity> findAddrList(String wechatUserId) {
-        String sql = "select addr_id,alias,country,province,city,region,detail_addr,last_choose,default_addr from order_receive_addr where wechat_user_id = ? order by create_at desc,addr_id";
+        String sql = "select addr_id,alias,country,province,city,region,detail_addr,addressee,phone_number,telephone,last_choose,default_addr from order_receive_addr where wechat_user_id = ? order by create_at desc,addr_id";
         List<OrderReceiveAddrEntity> addrList = jdbcBaseDao.queryList(OrderReceiveAddrEntity.class, sql, wechatUserId);
         return addrList;
     }
 
     @Override
     public OrderReceiveAddrEntity getAddr(String addrId) {
-        String sql = "select addr_id,alias,country,province,city,region,detail_addr,last_choose,default_addr from order_receive_addr where addr_id = ? ";
+        String sql = "select addr_id,alias,country,province,city,region,detail_addr,addressee,phone_number,telephone,last_choose,default_addr from order_receive_addr where addr_id = ? ";
         List<OrderReceiveAddrEntity> addrList = jdbcBaseDao.queryList(OrderReceiveAddrEntity.class, sql, addrId);
         if(addrList != null && addrList.size() > 0){
             return addrList.get(0);

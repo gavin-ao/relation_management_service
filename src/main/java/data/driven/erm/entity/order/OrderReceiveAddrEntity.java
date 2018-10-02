@@ -24,6 +24,12 @@ public class OrderReceiveAddrEntity {
     private String region;
     /** 补充详情地址 **/
     private String detailAddr;
+    /** 收件人 **/
+    private String addressee;
+    /** 手机号码 **/
+    private String phoneNumber;
+    /** 固定电话 **/
+    private String telephone;
     /** 最新一次下单地址 0 - 否， 1 - 是 **/
     private Integer lastChoose;
     /** 默认地址 0 - 否， 1 - 是 **/
@@ -93,6 +99,30 @@ public class OrderReceiveAddrEntity {
 
     public void setDetailAddr(String detailAddr) {
         this.detailAddr = detailAddr;
+    }
+
+    public String getAddressee() {
+        return addressee;
+    }
+
+    public void setAddressee(String addressee) {
+        this.addressee = addressee;
+    }
+
+    public String getPhoneNumber() {
+        return phoneNumber;
+    }
+
+    public void setPhoneNumber(String phoneNumber) {
+        this.phoneNumber = phoneNumber;
+    }
+
+    public String getTelephone() {
+        return telephone;
+    }
+
+    public void setTelephone(String telephone) {
+        this.telephone = telephone;
     }
 
     public Integer getLastChoose() {
