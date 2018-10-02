@@ -10,7 +10,7 @@ import java.util.List;
  * @date 2018/10/1
  */
 public class CommodityVO extends CommodityEntity {
-    /** 图片id **/
+    /** 图片 **/
     public String filePath;
     /** 图文详情 **/
     public List<String> commodityImageTextList;

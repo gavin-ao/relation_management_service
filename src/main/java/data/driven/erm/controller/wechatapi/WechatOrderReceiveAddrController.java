@@ -23,9 +23,9 @@ import static data.driven.erm.util.JSONUtil.replaceNull;
  */
 @Controller
 @RequestMapping(path = "/wechatapi/order/addr")
-public class OrderReceiveAddrController {
+public class WechatOrderReceiveAddrController {
 
-    private static final Logger logger = LoggerFactory.getLogger(OrderReceiveAddrController.class);
+    private static final Logger logger = LoggerFactory.getLogger(WechatOrderReceiveAddrController.class);
 
     @Autowired
     private OrderReceiveAddrService orderReceiveAddrService;

@@ -3,6 +3,7 @@ package data.driven.erm.controller.wechatapi;
 import com.alibaba.fastjson.JSONObject;
 import data.driven.erm.business.commodity.CommodityCatgService;
 import data.driven.erm.business.commodity.CommodityService;
+import data.driven.erm.business.order.OrderService;
 import data.driven.erm.business.wechat.WechatAppInfoService;
 import data.driven.erm.common.Constant;
 import data.driven.erm.entity.commodity.CommodityCatgEntity;
@@ -35,6 +36,8 @@ public class WechatCommodityController {
     private CommodityCatgService commodityCatgService;
     @Autowired
     private WechatAppInfoService wechatAppInfoService;
+    @Autowired
+    private OrderService orderService;
 
     @ResponseBody
     @RequestMapping("/findCommodityCatgList")
@@ -79,14 +82,16 @@ public class WechatCommodityController {
     @RequestMapping("/getCommodityById")
     public JSONObject getCommodityById(String commodityId){
         CommodityVO commodityVO = commodityService.getCommodityById(commodityId);
+        JSONObject result = JSONUtil.putMsg(true, "200", "调用成功");
         if(commodityVO != null && commodityVO.getCommodityImageTextList() != null && commodityVO.getCommodityImageTextList().size() > 0){
             List<String> changePathList = new ArrayList<String>();
             for (String filePath : commodityVO.getCommodityImageTextList()){
                 changePathList.add(Constant.STATIC_FILE_PATH + filePath);
             }
             commodityVO.setCommodityImageTextList(changePathList);
+            Integer salesVolume = orderService.totalSalesVolume(commodityVO.getCommodityId());
+            result.put("salesVolume", salesVolume);
         }
-        JSONObject result = JSONUtil.putMsg(true, "200", "调用成功");
         result.put("commodityVO", JSONUtil.replaceNull(commodityVO));
         return result;
     }
