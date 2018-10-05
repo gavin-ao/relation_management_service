@@ -58,11 +58,27 @@ public interface WechatUserService {
     public JSONObject updateInviter(String appInfoId, String userInfoId, String openId, String inviter);
 
     /**
-     * 根据小程序和用户查询用户详情
-     * @param userInfoId
+     * 查询邀请人ID
      * @param appInfoId
+     * @param userInfoId
      * @return
      */
-    public WechatUserInfoVO getUserInfoByUserIdAndAppInfoId(String userInfoId, String appInfoId);
+    public String getInviter(String appInfoId, String userInfoId);
+
+    /**
+     * 统计邀请人数
+     * @param appInfoId
+     * @param userInfoId
+     * @return
+     */
+    public Integer totalInviterNum(String appInfoId, String userInfoId);
+
+    /**
+     * 根据小程序和用户查询用户详情
+     * @param appInfoId
+     * @param userInfoId
+     * @return
+     */
+    public WechatUserInfoVO getUserInfoByUserIdAndAppInfoId(String appInfoId, String userInfoId);
 
 }

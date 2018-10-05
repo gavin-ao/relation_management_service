@@ -40,6 +40,16 @@ public class OrderReceiveAddrServiceImpl implements OrderReceiveAddrService {
     }
 
     @Override
+    public OrderReceiveAddrEntity getDefaultAddr(String wechatUserId) {
+        String sql = "select addr_id,alias,country,province,city,region,detail_addr,addressee,phone_number,telephone from order_receive_addr where wechat_user_id = ? order by default_addr desc,create_at desc limit 1";
+        List<OrderReceiveAddrEntity> addrList = jdbcBaseDao.queryList(OrderReceiveAddrEntity.class, sql, wechatUserId);
+        if(addrList != null && addrList.size() > 0){
+            return addrList.get(0);
+        }
+        return null;
+    }
+
+    @Override
     public void updateAddr(OrderReceiveAddrEntity addr) {
         if(addr.getAddrId() == null){
             addr.setAddrId(UUIDUtil.getUUID());

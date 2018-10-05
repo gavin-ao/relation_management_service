@@ -109,7 +109,27 @@ public class WechatUserServiceImpl implements WechatUserService {
     }
 
     @Override
-    public WechatUserInfoVO getUserInfoByUserIdAndAppInfoId(String userInfoId, String appInfoId) {
+    public String getInviter(String appInfoId, String userInfoId) {
+        String sql = "select wechat_map_id,inviter from wechat_app_user_mapping where app_info_id = ? and wechat_user_id = ? limit 1";
+        List<Map<String, Object>> list = jdbcBaseDao.queryMapList(sql, appInfoId, userInfoId);
+        if(list != null && list.size() > 0) {
+            Map<String, Object> map = list.get(0);
+            Object inviterObj = map.get("inviter");
+            if (inviterObj != null && inviterObj.toString().length() > 0) {
+                return inviterObj.toString();
+            }
+        }
+        return null;
+    }
+
+    @Override
+    public Integer totalInviterNum(String appInfoId, String userInfoId) {
+        String sql = "select count(wechat_map_id) from wechat_app_user_mapping where app_info_id = ? and inviter = ?";
+        return jdbcBaseDao.getCount(sql, appInfoId, userInfoId);
+    }
+
+    @Override
+    public WechatUserInfoVO getUserInfoByUserIdAndAppInfoId(String appInfoId, String userInfoId) {
         String sql = "select u.wechat_user_id,u.nick_name,u.gender,u.language,u.city,u.province,u.country,u.avatar_url,u.union_id,u.create_at,aum.open_id,aum.app_info_id,aum.wechat_map_id,aum.inviter from wechat_user_info u" +
                 " left join wechat_app_user_mapping aum on aum.wechat_user_id = u.wechat_user_id" +
                 " where u.wechat_user_id = ? and aum.app_info_id = ?";

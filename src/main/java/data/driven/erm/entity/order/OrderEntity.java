@@ -23,6 +23,8 @@ public class OrderEntity {
     public BigDecimal realPayment;
     /** 订单状态 0 - 未支付， 1 - 已支付，2 - 已完成， -1 - 已取消。 **/
     public Integer state;
+    /** 返利订单 0 - 否， 1 - 是返利订单 **/
+    public Integer rebate;
     /** 创建日期 **/
     public Date createAt;
 
@@ -80,6 +82,14 @@ public class OrderEntity {
 
     public void setState(Integer state) {
         this.state = state;
+    }
+
+    public Integer getRebate() {
+        return rebate;
+    }
+
+    public void setRebate(Integer rebate) {
+        this.rebate = rebate;
     }
 
     public Date getCreateAt() {

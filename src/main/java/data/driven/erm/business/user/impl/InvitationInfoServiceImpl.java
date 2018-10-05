@@ -19,7 +19,7 @@ public class InvitationInfoServiceImpl implements InvitationInfoService{
     private JDBCBaseDao jdbcBaseDao;
 
     @Override
-    public String getInvitationInfoByUserId(String wechatUserId) {
+    public String getInvitationIdByUserId(String wechatUserId) {
         String sql = "select invitation_id from sys_user_invitation_info where wechat_user_id = ? order by create_at desc,invitation_id limit 1";
         Object invitationIdObj = jdbcBaseDao.getColumn(sql, wechatUserId);
         if(invitationIdObj != null){

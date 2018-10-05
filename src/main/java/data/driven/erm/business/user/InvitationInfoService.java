@@ -12,7 +12,7 @@ public interface InvitationInfoService {
      * @param wechatUserId
      * @return
      */
-    public String getInvitationInfoByUserId(String wechatUserId);
+    public String getInvitationIdByUserId(String wechatUserId);
 
     /**
      * 根据邀请码获取用户信息

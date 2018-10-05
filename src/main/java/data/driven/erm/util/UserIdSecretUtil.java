@@ -1,7 +1,8 @@
 package data.driven.erm.util;
 
-import org.apache.catalina.util.URLEncoder;
 import org.apache.commons.codec.binary.Base64;
+
+import java.net.URLEncoder;
 
 /**
  * 用于处理UserID作为分享的参数编码加密处理
@@ -49,10 +50,7 @@ public class UserIdSecretUtil {
         System.out.println("userId="+userId);
         String encodeStr = UserIdSecretUtil.encode(userId);
         System.out.println("encodeStr="+encodeStr);
-
-        URLEncoder urlEncoder = new URLEncoder();
-
-        System.out.println(urlEncoder.encode(encodeStr, "UTF-8"));
+        System.out.println(URLEncoder.encode(encodeStr, "UTF-8"));
 
         String decodeStr = UserIdSecretUtil.decode(encodeStr);
         System.out.println("decodeStr="+decodeStr);

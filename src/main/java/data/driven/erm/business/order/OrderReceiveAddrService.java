@@ -25,6 +25,12 @@ public interface OrderReceiveAddrService {
     public OrderReceiveAddrEntity getAddr(String addrId);
 
     /**
+     * 获取默认地址
+     * @param wechatUserId
+     */
+    public OrderReceiveAddrEntity getDefaultAddr(String wechatUserId);
+
+    /**
      * 新增/更新地址
      * @param addr
      */
