@@ -4,12 +4,14 @@ import data.driven.erm.business.order.OrderRebateService;
 import data.driven.erm.dao.JDBCBaseDao;
 import data.driven.erm.entity.order.OrderRebateEntity;
 import data.driven.erm.util.UUIDUtil;
+import data.driven.erm.vo.order.OrderRebateVO;
 import data.driven.erm.vo.order.OrderVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.List;
 
 /**
  * @author hejinkai
@@ -56,5 +58,14 @@ public class OrderRebateServiceImpl implements OrderRebateService {
     public Integer getRebateMoney(String appInfoId, String wechatUserId) {
         String sql = "select sum(rebate_money) from order_rebate_info where wechat_user_id = ? and app_info_id = ?";
         return jdbcBaseDao.getCount(sql, wechatUserId, appInfoId);
+    }
+
+    @Override
+    public List<OrderRebateVO> findTopRebateList(String appInfoId, String wechatUserId) {
+        String sql = "select u.avatar_url,u.nick_name,u.province,ori.rebate_money from order_rebate_info ori" +
+                " left join wechat_user_info u on u.wechat_user_id = ori.wechat_user_id" +
+                " where ori.wechat_user_id = ? and ori.app_info_id = ? order by ori.rebate_at desc limit 20";
+        List<OrderRebateVO> list = jdbcBaseDao.queryList(OrderRebateVO.class, sql, wechatUserId, appInfoId);
+        return list;
     }
 }

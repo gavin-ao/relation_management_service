@@ -54,7 +54,7 @@ public interface OrderService {
     public List<OrderVO> findOrderList(String appInfoId, String wechatUserId);
 
     /**
-     * 统计某个商品的销量
+     * 统计某个商品的当月销量
      * @param commodityId
      * @return
      */

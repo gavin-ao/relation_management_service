@@ -6,10 +6,12 @@ import data.driven.erm.business.order.OrderRebateService;
 import data.driven.erm.business.order.OrderReceiveAddrService;
 import data.driven.erm.business.order.OrderService;
 import data.driven.erm.business.wechat.WechatUserService;
+import data.driven.erm.common.Constant;
 import data.driven.erm.common.WechatApiSession;
 import data.driven.erm.entity.order.OrderReceiveAddrEntity;
 import data.driven.erm.util.JSONUtil;
 import data.driven.erm.vo.commodity.CommodityVO;
+import data.driven.erm.vo.order.OrderDetailVO;
 import data.driven.erm.vo.order.OrderVO;
 import data.driven.erm.vo.wechat.WechatUserInfoVO;
 import org.slf4j.Logger;
@@ -58,6 +60,14 @@ public class WechatOrderController {
         JSONObject result = putMsg(true, "200", "调用成功");
         CommodityVO commodityVO = commodityService.getCommodityById(commodityId);
         result.put("commodityVO", commodityVO);
+        commodityVO.setFilePath(Constant.STATIC_FILE_PATH + commodityVO.getFilePath());
+//        if(commodityVO.getCommodityImageTextList() != null){
+//            List<String> changePathList = new ArrayList<String>();
+//            for (String filePath : commodityVO.getCommodityImageTextList()){
+//                changePathList.add(Constant.STATIC_FILE_PATH + filePath);
+//            }
+//            commodityVO.setCommodityImageTextList(changePathList);
+//        }
         //TODO 满赠
         result.put("fullOfGifts", null);
         //TODO 优惠
@@ -100,7 +110,7 @@ public class WechatOrderController {
         String userId = wechatUserService.getInviter(wechatUserInfoVO.getAppInfoId(), wechatUserInfoVO.getWechatUserId());
         if(userId != null){
             OrderVO order = orderService.getOrderById(orderId, wechatUserInfoVO.getAppInfoId(), wechatUserInfoVO.getWechatUserId());
-            if(order.getRebate().intValue() == 1){
+            if(order != null && order.getRebate().intValue() == 1){
                 orderRebateService.insertOrderRebate(order, wechatUserInfoVO.getAppInfoId(), userId);
             }
         }
@@ -131,6 +141,17 @@ public class WechatOrderController {
     public JSONObject findOrderList(String sessionID){
         WechatUserInfoVO wechatUserInfoVO = WechatApiSession.getSessionBean(sessionID).getUserInfo();
         List<OrderVO> orderList = orderService.findOrderList(wechatUserInfoVO.getAppInfoId(), wechatUserInfoVO.getWechatUserId());
+        if(orderList != null && orderList.size() > 0){
+            for (OrderVO orderVO : orderList){
+                List<OrderDetailVO> detailList = orderVO.getDetailList();
+                if(detailList != null && detailList.size() > 0){
+                    for (OrderDetailVO orderDetailVO : detailList){
+                        orderDetailVO.setFilePath(Constant.STATIC_FILE_PATH + orderDetailVO.getFilePath());
+                    }
+                }
+            }
+        }
+
         JSONObject result = putMsg(true, "200", "调用成功");
         result.put("data", JSONUtil.replaceNull(orderList));
         return result;

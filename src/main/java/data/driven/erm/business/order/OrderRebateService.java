@@ -1,6 +1,9 @@
 package data.driven.erm.business.order;
 
+import data.driven.erm.vo.order.OrderRebateVO;
 import data.driven.erm.vo.order.OrderVO;
+
+import java.util.List;
 
 /**
  * 订单返利
@@ -25,5 +28,13 @@ public interface OrderRebateService {
      * @return
      */
     public Integer getRebateMoney(String appInfoId, String wechatUserId);
+
+    /**
+     * 获取最新二十条返利信息
+     * @param appInfoId
+     * @param wechatUserId
+     * @return
+     */
+    public List<OrderRebateVO> findTopRebateList(String appInfoId, String wechatUserId);
 
 }

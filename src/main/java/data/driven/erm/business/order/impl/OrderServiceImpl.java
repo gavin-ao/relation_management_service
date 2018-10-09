@@ -92,7 +92,9 @@ public class OrderServiceImpl implements OrderService{
         }catch (Exception e){
             return putMsg(false, "103", "订单生成失败");
         }
-        return putMsg(true, "200", "订单生成成功");
+        JSONObject result = putMsg(true, "200", "订单生成成功");
+        result.put("orderId", order.getOrderId());
+        return result;
     }
 
     /**
@@ -180,7 +182,7 @@ public class OrderServiceImpl implements OrderService{
 
     @Override
     public List<OrderVO> findOrderList(String appInfoId, String wechatUserId) {
-        String sql = "select order_id,addr_id,order_num,real_payment,state from order_info where wechat_user_id = ? and app_info_id = ? order by create_at desc";
+        String sql = "select order_id,addr_id,order_num,real_payment,state,create_at from order_info where wechat_user_id = ? and app_info_id = ? order by create_at desc";
         List<OrderVO> orderVOList = jdbcBaseDao.queryList(OrderVO.class, sql, wechatUserId, appInfoId);
         if(orderVOList != null && orderVOList.size() > 0){
             List<String> orderIdList = orderVOList.stream().collect(Collectors.mapping(o -> o.getOrderId(), Collectors.toList()));
@@ -225,7 +227,7 @@ public class OrderServiceImpl implements OrderService{
     public OrderVO getOrderById(String orderId, String appInfoId, String wechatUserId) {
         String sql = "select order_id,wechat_user_id,app_info_id,addr_id,order_num,real_payment,rebate from order_info where order_id = ? and wechat_user_id = ? and app_info_id = ?";
         List<OrderVO> list = jdbcBaseDao.queryList(OrderVO.class, sql, orderId, wechatUserId, appInfoId);
-        if(list != null){
+        if(list != null && list.size() > 0){
             return list.get(0);
         }
         return null;
