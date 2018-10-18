@@ -1,9 +1,8 @@
 /**
  * Created by 12045 on 2018/7/4.
  */
-var wholeAppInfoId,wholeStartTime,wholeEndTime;
+var wholeAppInfoId, wholeStartTime, wholeEndTime;
 (function () {
-
 
 
     dateSelecteTime()
@@ -29,7 +28,7 @@ function laydateTime() {
         , done: function (value, date) {
             $(".contain_main_title .time1").html(value)
             wholeStartTime = value;
-            if(!wholeEndTime){
+            if (!wholeEndTime) {
                 wholeEndTime = value;
             }
             changeTimeAfterDataChange()
@@ -43,7 +42,7 @@ function laydateTime() {
         , value: time
         , done: function (value, date) {
             $(".contain_main_title .time2").html(value)
-            if(!wholeStartTime){
+            if (!wholeStartTime) {
                 wholeStartTime = value;
             }
             wholeEndTime = value
@@ -51,35 +50,62 @@ function laydateTime() {
         }
     });
 }
-// 折线图展示
-function chartLineShow(data) {
-    var  xAxisData = [],datas=[];
-    for(var i =0;i<data.length;i++){
-        xAxisData.push(data[i].groupTime)
-        datas.push(data[i].countNum)
-    }
 
-// 基于准备好的dom，初始化echarts实例
-    var myChartLine = echarts.init(document.getElementById('main_line'));
+//平均客单价(元) 柱状图
+function chartVerBarShow() {
+    var myChartLine = echarts.init(document.getElementById('main_bar'));
     var option = {
+        color: ['#3398DB'],
         tooltip: {
-            trigger: 'item'
-            // formatter: "{a} <br/>{b} : {c}%"
+            trigger: 'axis',
+            axisPointer: {            // 坐标轴指示器，坐标轴触发有效
+                type: 'shadow'        // 默认为直线，可选为：'line' | 'shadow'
+            }
         },
-        xAxis: {
-            type: 'category',
-            data: xAxisData
+        grid: {
+            left: '35',
+            right: '4%',
+            bottom: '3%',
+            top: '15',
+            containLabel: true
         },
-        yAxis: {
-            type: 'value'
-        },
-        series: [{
-            data: datas,
-            type: 'line'
-        }]
+        xAxis: [
+            {
+                type: 'category',
+                data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+                axisTick: {
+                    alignWithLabel: true
+                }
+            }
+        ],
+        yAxis: [
+            {
+                type: 'value',
+                name: '平均客单价(元)',
+                nameLocation: 'center',
+                nameGap: 47,
+                nameTextStyle: {
+                    color: "#8CA0B3",
+                    fontSize: 10
+                }
+            }
+        ],
+        series: [
+            {
+                name: '直接访问',
+                type: 'bar',
+                barWidth: '60%',
+                data: [100, 520, 2000, 3340, 3900, 3300, 2200],
+                label: {
+                    normal: {
+                        show: true,
+                        position: 'top'
+                    }
+                },
+            }
+        ]
     };
-
-// 使用刚指定的配置项和数据显示图表。
+    // 使用刚指定的配置项和数据显示图表。
     myChartLine.setOption(option);
 
     window.onresize = function () {
@@ -87,102 +113,410 @@ function chartLineShow(data) {
     }
 }
 
-// 饼图展示
+
+// 饼图展示  畅销系列
 function chartPieShow(data) {
-    if((data.newUserNum+data.oldUserNum)==0){
-        var ratio = "0.00%";
-        // $("#main_pie").html("无用户信息")
-    }else {
-        var ratio = (data.newUserNum / (data.newUserNum + data.oldUserNum) * 100).toFixed(2) + "%";
-
-
-        var myChartPie = echarts.init(document.getElementById('main_pie'));
-        var options = {
-            title: {
-                text: ratio,
-                x: 'center',
-                y: 'center',
-                textStyle: {
-                    fontWeight: 'normal',
-                    color: '#0580f2',
-                    fontSize: '40'
+    var color = ['#A4CF77', '#3C72DD', '#F2C132', '#F37D30', '#3BA072'];
+    var myChartPie = echarts.init(document.getElementById('main_pie'));
+    var data = [
+        {
+            value: 335,
+            name: '直达',
+            children: [
+                {
+                    value: 335,
+                    name: '直达'
                 }
-            },
-            color: ['rgba(176, 212, 251, 1)'],
-            legend: {
-                show: true,
-                itemGap: 12,
-                data: ['新用户', '老用户'],
-                bottom: 20
-            },
+            ]
+        },
+        {
+            value: 679,
+            name: '营销广告',
+            children: [
+                {
+                    value: 310,
+                    name: '邮件营销'
+                },
+                {
+                    value: 234,
+                    name: '联盟广告'
+                },
+                {
+                    value: 135,
+                    name: '视频广告'
+                }
+            ]
+        },
+        {
+            value: 1548,
+            name: '搜索引擎',
+            children: [
+                {value: 1048, name: '百度'},
+                {value: 251, name: '谷歌'},
+                {value: 147, name: '必应'},
+                {value: 102, name: '其他'}
+            ]
+        }
+    ]
+    var firstData = [];
+    var lastData = [];
 
-            series: [{
-                name: 'Line 1',
+    for(var i=0;i<data.length;i++){
+        firstData.push({value:data[i].value,name:data[i].name,itemStyle:{color:color[i]}});
+        if(data[i].children&&data[i].children.length>0){
+            for(var j=0;j<data[i].children.length;j++){
+                data[i].children[j].itemStyle = {color:color[i]};
+                lastData.push(data[i].children[j])
+            }
+        }
+    }
+    var options = {
+        tooltip: {
+            trigger: 'item',
+            formatter: "{a} <br/>{b}: {c} ({d}%)"
+        },
+        series: [
+            {
+                name: '访问来源',
                 type: 'pie',
-                clockWise: true,
-                radius: ['50%', '66%'],
-                itemStyle: {
+                radius: ["20%", '50%'],
+                hoverAnimation: false,
+                label: {
                     normal: {
-                        label: {
-                            show: false
-                        },
-                        labelLine: {
-                            show: false
-                        }
+                        position: 'inner'
                     }
                 },
-                hoverAnimation: false,
-                data: [{
-                    value: data.newUserNum,
-                    name: '新用户',
-                    itemStyle: {
-                        normal: {
-                            color: { // 完成的圆环的颜色
-                                colorStops: [{
-                                    offset: 0,
-                                    color: '#00cefc' // 0% 处的颜色
-                                }, {
-                                    offset: 1,
-                                    color: '#367bec' // 100% 处的颜色
-                                }]
-                            },
-                            label: {
-                                show: false
-                            },
-                            labelLine: {
-                                show: false
-                            }
-                        }
+                labelLine: {
+                    normal: {
+                        show: false
                     }
-                }, {
-                    name: '老用户',
-                    value: data.oldUserNum
-                }]
-            }]
-        }
-        myChartPie.setOption(options);
-        window.onresize = function () {
-            myChartPie.resize();
-        }
+                },
+                data: firstData
+            },
+            {
+                name: '访问来源',
+                type: 'pie',
+                radius: ['50%%', '90%'],
+                hoverAnimation: false,
+                label: {
+                    normal: {
+                        position: 'inner'
+                    }
+                },
+                labelLine: {
+                    normal: {
+                        show: false
+                    }
+                },
+                data:lastData
+            }
+        ]
+    };
+    myChartPie.setOption(options);
+    window.onresize = function () {
+        myChartPie.resize();
     }
 
 }
 
-// 关系图展示
-function chartGraphShow(list,id) {
+// 地图展示  订单分布
+function chartMapShow()  {
+    var myChartPie = echarts.init(document.getElementById('main_map'));
+    var options = {
+        tooltip: {
+            show: true,
+            formatter: function(params) {
+                return params.name + '：' + params.data['value'] + '%'
+            },
+        },
+        visualMap: {
+            type: 'continuous',
+            text: ['高', '低'],
+            showLabel: true,
+            seriesIndex: [0],
+            orient:'horizontal',
+            min: 0,
+            max: 10,
+            inRange: {
+                color: ['#edfbfb', '#b7d6f3', '#40a9ed', '#3598c1', '#215096']
+            },
+            textStyle: {
+                color: '#000'
+            },
+            bottom: "bottom",
+            left: 'left',
+        },
+        geo: {
+            roam: true,
+            map: 'china',
+            label: {
+                normal:{
+                    show: true,
+                    fontSize: 8,
+                    position: "inside"
+                }
+            },
+            itemStyle: {
+                emphasis: {
+                    areaColor: '#fff464'
+                }
+            },
+            regions: [{
+                name: '南海诸岛',
+                value: 0,
+                itemStyle: {
+                    normal: {
+                        opacity: 0,
+                        label: {
+                            show: true
+                        }
+                    }
+                }
+            }],
+        },
+        series: [{
+            name: 'mapSer',
+            type: 'map',
+            roam: false,
+            geoIndex: 0,
+            data:  [{
+                name: '北京',
+                value: 5.3
+            },
+                {
+                    name: '天津',
+                    value: 3.8
+                },
+                {
+                    name: '上海',
+                    value: 4.6
+                },
+                {
+                    name: '重庆',
+                    value: 3.6
+                },
+                {
+                    name: '河北',
+                    value: 3.4
+                },
+                {
+                    name: '河南',
+                    value: 3.2
+                },
+                {
+                    name: '云南',
+                    value: 1.6
+                },
+                {
+                    name: '辽宁',
+                    value: 4.3
+                },
+                {
+                    name: '黑龙江',
+                    value: 4.1
+                },
+                {
+                    name: '湖南',
+                    value: 2.4
+                },
+                {
+                    name: '安徽',
+                    value: 3.3
+                },
+                {
+                    name: '山东',
+                    value: 3.0
+                },
+                {
+                    name: '新疆',
+                    value: 1
+                },
+                {
+                    name: '江苏',
+                    value: 3.9
+                },
+                {
+                    name: '浙江',
+                    value: 3.5
+                },
+                {
+                    name: '江西',
+                    value: 2.0
+                },
+                {
+                    name: '湖北',
+                    value: 2.1
+                },
+                {
+                    name: '广西',
+                    value: 3.0
+                },
+                {
+                    name: '甘肃',
+                    value: 1.2
+                },
+                {
+                    name: '山西',
+                    value: 3.2
+                },
+                {
+                    name: '内蒙古',
+                    value: 3.5
+                },
+                {
+                    name: '陕西',
+                    value: 2.5
+                },
+                {
+                    name: '吉林',
+                    value: 4.5
+                },
+                {
+                    name: '福建',
+                    value: 2.8
+                },
+                {
+                    name: '贵州',
+                    value: 1.8
+                },
+                {
+                    name: '广东',
+                    value: 3.7
+                },
+                {
+                    name: '青海',
+                    value: 0.6
+                },
+                {
+                    name: '西藏',
+                    value: 0.4
+                },
+                {
+                    name: '四川',
+                    value: 3.3
+                },
+                {
+                    name: '宁夏',
+                    value: 0.8
+                },
+                {
+                    name: '海南',
+                    value: 1.9
+                },
+                {
+                    name: '台湾',
+                    value: 0.1
+                },
+                {
+                    name: '香港',
+                    value: 0.1
+                },
+                {
+                    name: '澳门',
+                    value: 0.1
+                }
+            ]
+        }]
+    };
+    myChartPie.setOption(options);
+    window.onresize = function () {
+        myChartPie.resize();
+    }
+}
 
+// 条形图展示  返利排行 TOP10
+function chartLineBarShow() {
+    var myChartPie = echarts.init(document.getElementById('main_Lbar'));
+    var options = option = {
+        color: ['#9BCC66'],
+        tooltip: {
+            trigger: 'axis',
+            axisPointer: {
+                type: 'shadow'
+            },
+            formatter: "{b} <br> 合格率: {c}%"
+        },
+        /*legend: {
+         data: [date]
+         },*/
+        grid: {
+            // left: '4%',
+            // right: '40',
+            bottom: '2%',
+            top:'5',
+            containLabel: true
+        },
+        xAxis: {
+            type: 'value',
+            boundaryGap: [0, 0.01],
+            min: 0,
+            max: 100,
+            interval: 20,
+            axisLabel: {
+                formatter: '{value}%',
+                textStyle: {
+                    //color: '#fff',
+                    fontWeight: '80'
+                }
+            }
+        },
+        yAxis: {
+            type: 'category',
+            data: ['云南省', '湖北省', '湖南省', '河南省', '河北省', '安徽省', '浙江省', '山东省', '广东省', '北京市'],
+            axisLabel: {
+                show: true,
+                interval: 0,
+                rotate: 0,
+                margin: 10,
+                inside: false,
+                textStyle: {
+                    //color: '#fff',
+                    fontWeight: '50'
+                }
+            },
+            axisTick: {
+                show: false
+            }
+        },
+        series: [{
+            type: 'bar',
+            label: {
+                normal: {
+                    show: true,
+                    position: "right",
+                    // formatter: '{c,}',
+                    formatter: function (v) {
+                        var val = v.data;
+                        if (val == 0) {
+                            return '';
+                        }
+                        return val;
+                    },
+                    color: "#000"
+                }
+            },
+            data: [10, 22, 33, 44, 50, 55, 66, 77, 88, 100]
+        }]
+    };
+    myChartPie.setOption(options);
+    window.onresize = function () {
+        myChartPie.resize();
+    }
+}
+// 关系图  传播轨迹
+function chartGraphShow(list,id) {
+    console.log("2222--------       "+ Date.parse( new Date()))
 //    传播轨迹图
     var links = [];
     var nodes = [];
     const ORDNUME = "order"
     var childArr = [];
     var num = 0;
+    // console.log(JSON.stringify( list))
+    // console.log(list)
     function xunhuans(list) {
         for (var i = 0; i < list.length; i++) {
-            var strId = list[i].totalId + list[i].toUserId+list[i].fromUserId;
-            console.log(list[i].fromUserId+ "-----" + list[i].fromUser)
-            console.log(list[i].toUserId + "-----" + list[i].toUser)
-            console.log(strId)
+            var strId = list[i].totalId + list[i].toUserId;
             var indexArr = $.inArray(strId,childArr)
             if(indexArr>=0){
                 list[i]["id"] = indexArr;
@@ -624,95 +958,8 @@ function chartGraphShow(list,id) {
         }
         return lines;
     }
-
+    console.log("3333--------       "+ Date.parse( new Date()))
 }
-
-//漏斗图展示
-function chartFunnelShow(data,id) {
-    var myChartFunnel = echarts.init(document.getElementById(id));
-    var option = {
-        // title: {
-        //     text: '漏斗图',
-        //     subtext: '纯属虚构'
-        // },
-        tooltip: {
-            trigger: 'item',
-            formatter: "{b} : {c}人"
-        },
-        // toolbox: {
-        //     feature: {
-        //         dataView: {readOnly: false},
-        //         restore: {},
-        //         saveAsImage: {}
-        //     }
-        // },
-        // legend: {
-        //     data: ['展现','点击','访问','咨询','订单']
-        // },
-        calculable: true,
-        series: [
-            {
-                name:'漏斗图',
-                type:'funnel',
-                left: '10%',
-                top: 60,
-                //x2: 80,
-                bottom: 60,
-                width: '80%',
-                // height: {totalHeight} - y - y2,
-                min: 0,
-                max: 100,
-                minSize: '0%',
-                maxSize: '100%',
-                sort: 'descending',
-                gap: 2,
-                label: {
-                    normal: {
-                        show: true,
-                        position: 'inside'
-                    },
-                    emphasis: {
-                        textStyle: {
-                            fontSize: 20
-                        }
-                    }
-                },
-                labelLine: {
-                    normal: {
-                        length: 10,
-                        lineStyle: {
-                            width: 1,
-                            type: 'solid'
-                        }
-                    }
-                },
-                itemStyle: {
-                    normal: {
-                        borderColor: '#fff',
-                        borderWidth: 1
-                    }
-                },
-                data: data
-            }
-        ]
-    };
-    myChartFunnel.setOption(option);
-    window.onresize = function () {
-        myChartFunnel.resize();
-    }
-}
-
-
-
-// 改变时间，数据及图表相继改变
-function changeTimeAfterDataChange() {
-    // coreDataShow(wholeAppInfoId);
-    newAndOldUsers(wholeAppInfoId)
-    graphData(wholeAppInfoId)
-    graphsData(wholeAppInfoId)
-    funnelData(wholeAppInfoId)
-}
-
 // 时间选择
 function dateSelecteTime() {
     var startTime, endTime;
@@ -758,7 +1005,7 @@ function dateSelecteTime() {
         $(".contain_main_title .time2").html(endTime)
         wholeStartTime = startTime;
         wholeEndTime = endTime
-        // changeTimeAfterDataChange()
+        changeTimeAfterDataChange()
 
     })
 }
@@ -771,125 +1018,111 @@ function currentTime(myDate) {
     return year + "-" + mounth + "-" + date;
 }
 
-// 核心数据选择
-function coreDataSel() {
-
-    $("#contain_main_data").off('click', "div");
-    $("#contain_main_data").on('click', "div", function () {
-
-        $(this).siblings().attr("class", "")
-        $(this).attr("class", "selectData")
-        var urlName = $(this).attr("data-iden");
-        dataTrendDiagram(urlName);
-
-    })
-
+// 改变时间，数据及图表相继改变
+function changeTimeAfterDataChange() {
+    //平均客单价(元)
+    averageUnitPrice()
+    // 畅销系列 饼图展示
+    salabilitySeries();
+    // 地图展示  订单分布
+    orderDistribution();
+    // 条形图展示  返利排行 TOP10
+    rankings();
+    // 关系图  传播轨迹
+    propagationTrajectory();
 }
 
-
-// 核心数据展示
-function coreDataShow(appInfoId) {
-
-    $.ajax({
-        url: "/wechat/total/coreData",
-        type: "post",
-        data: {appInfoId: wholeAppInfoId, startDate: wholeStartTime, endDate: wholeEndTime},
-        dataType: "html",
-        success: function (data) {
-            $("#contain_main_data").html(data);
-            $($("#contain_main_data div")[0]).trigger("click");
-        }
-    })
+//平均客单价(元)
+function averageUnitPrice(urlName) {
+    chartVerBarShow()
+    // $.ajax({
+    //     url: "/wechat/total/"+urlName,
+    //     dataType: "json",
+    //     type:"post",
+    //     data: {appInfoId: wholeAppInfoId, startDate: wholeStartTime, endDate: wholeEndTime},
+    //     success: function (data) {
+    //
+    //         if(data.success){
+    //             chartLineShow(data.data)
+    //
+    //         }
+    //     }
+    // })
+}
+// 畅销系列 饼图展示
+function salabilitySeries() {
+    chartPieShow()
+    // $.ajax({
+    //     url: "/wechat/total/"+urlName,
+    //     dataType: "json",
+    //     type:"post",
+    //     data: {appInfoId: wholeAppInfoId, startDate: wholeStartTime, endDate: wholeEndTime},
+    //     success: function (data) {
+    //
+    //         if(data.success){
+    //             chartLineShow(data.data)
+    //
+    //         }
+    //     }
+    // })
+}
+// 地图展示  订单分布
+function orderDistribution() {
+    chartMapShow()
+    // $.ajax({
+    //     url: "/wechat/total/"+urlName,
+    //     dataType: "json",
+    //     type:"post",
+    //     data: {appInfoId: wholeAppInfoId, startDate: wholeStartTime, endDate: wholeEndTime},
+    //     success: function (data) {
+    //
+    //         if(data.success){
+    //             chartLineShow(data.data)
+    //
+    //         }
+    //     }
+    // })
 }
 
-// 数据走势图 数据请求
-function dataTrendDiagram(urlName) {
-    $.ajax({
-        url: "/wechat/total/"+urlName,
-        dataType: "json",
-        type:"post",
-        data: {appInfoId: wholeAppInfoId, startDate: wholeStartTime, endDate: wholeEndTime},
-        success: function (data) {
-
-            if(data.success){
-                chartLineShow(data.data)
-
-            }
-        }
-    })
+// 条形图展示  返利排行 TOP10
+function rankings() {
+    chartLineBarShow()
+    // $.ajax({
+    //     url: "/wechat/total/"+urlName,
+    //     dataType: "json",
+    //     type:"post",
+    //     data: {appInfoId: wholeAppInfoId, startDate: wholeStartTime, endDate: wholeEndTime},
+    //     success: function (data) {
+    //
+    //         if(data.success){
+    //             chartLineShow(data.data)
+    //
+    //         }
+    //     }
+    // })
 }
 
-// 根据时间范围统计新老用户占比
-function newAndOldUsers(appInfoId) {
-    $.ajax({
-        url: "/wechat/total/totalOldAndNewUser",
-        dataType: "json",
-        type:"post",
-        data: {appInfoId: wholeAppInfoId, startDate: wholeStartTime, endDate: wholeEndTime},
-        success: function (data) {
+// 关系图  传播轨迹
+function propagationTrajectory() {
+    var data = [{"totalId":"5bbfff1be6022c7d8cea6b1b","fromUserId":null,"fromUser":"0","toUserId":"5ba461f73903b84a1bf5fd82","toUser":"144","totalDate":1539309384000,"frequency":null,"childList":[{"totalId":"5bbfff1be6022c7d8cea6b1b","fromUserId":"5ba461f73903b84a1bf5fd82","fromUser":"144","toUserId":"5ba456cbe6022c493497d4d8","toUser":"病态者&lt;","totalDate":1539309384000,"frequency":null,"childList":[]},{"totalId":"5bbfff1be6022c7d8cea6b1b","fromUserId":"5ba461f73903b84a1bf5fd82","fromUser":"144","toUserId":"5bb81fa7e6022c7d8cea4f32","toUser":"Ll。","totalDate":1539309414000,"frequency":null,"childList":[{"totalId":"5bbfff6ae6022c7d8cea6b5c","fromUserId":"5bb81fa7e6022c7d8cea4f32","fromUser":"Ll。","toUserId":"5bc002743903b87d572a794e","toUser":"百合花开piapia","totalDate":1539310197000,"frequency":null,"childList":[]},{"totalId":"5bbfff6ae6022c7d8cea6b5c","fromUserId":"5bb81fa7e6022c7d8cea4f32","fromUser":"Ll。","toUserId":"5ba4721f3903b84a1bf627b5","toUser":"蜡笔小鑫?","totalDate":1539312956000,"frequency":null,"childList":[{"totalId":"5bc00d4e3903b87d572a8644","fromUserId":"5ba4721f3903b84a1bf627b5","fromUser":"蜡笔小鑫?","toUserId":"5ba45b073903b84a1bf5d6c4","toUser":"@?✨?杨静??@","totalDate":1539314922000,"frequency":null,"childList":[{"totalId":"5bc010c73903b87d572a8d6d","fromUserId":"5ba45b073903b84a1bf5d6c4","fromUser":"@?✨?杨静??@","toUserId":"5bc011de3903b87d572a8f24","toUser":"李鹏","totalDate":1539314235000,"frequency":null,"childList":[{"totalId":"5bc011de3903b87d572a8f27","fromUserId":"5bc011de3903b87d572a8f24","fromUser":"李鹏","toUserId":"5ba476ea3903b84a1bf62c5b","toUser":"洛倩","totalDate":1539314312000,"frequency":null,"childList":[{"totalId":"5bc026c4e6022c7d8cea9e3e","fromUserId":"5ba476ea3903b84a1bf62c5b","fromUser":"洛倩","toUserId":"5ba4811f3903b84a1bf634fc","toUser":"彦孑","totalDate":1539319626000,"frequency":null,"childList":[]},{"totalId":"5bc026c4e6022c7d8cea9e3e","fromUserId":"5ba476ea3903b84a1bf62c5b","fromUser":"洛倩","toUserId":"5bc0288ce6022c7d8cea9f4f","toUser":"?Yellow?","totalDate":1539319949000,"frequency":null,"childList":[]},{"totalId":"5bc026c4e6022c7d8cea9e3e","fromUserId":"5ba476ea3903b84a1bf62c5b","fromUser":"洛倩","toUserId":"5ba47c393903b84a1bf63152","toUser":"?Wendy?","totalDate":1539320529000,"frequency":null,"childList":[]}]},{"totalId":"5bc011de3903b87d572a8f27","fromUserId":"5bc011de3903b87d572a8f24","fromUser":"李鹏","toUserId":"5bc012cb3903b87d572a9093","toUser":"小?。","totalDate":1539314380000,"frequency":null,"childList":[]},{"totalId":"5bc011de3903b87d572a8f27","fromUserId":"5bc011de3903b87d572a8f24","fromUser":"李鹏","toUserId":"5bc021343903b87d572aa631","toUser":"艳子?","totalDate":1539318068000,"frequency":null,"childList":[]}]}]}]}]},{"totalId":"5bbfff1be6022c7d8cea6b1b","fromUserId":"5ba461f73903b84a1bf5fd82","fromUser":"144","toUserId":"5bbfff953903b87d572a764b","toUser":"Ice .C","totalDate":1539309462000,"frequency":null,"childList":[]}]},{"totalId":"5bbfff18e6022c7d8cea6b1a","fromUserId":null,"fromUser":"0","toUserId":"5bbfff17e6022c7d8cea6b17","toUser":"Parvus","totalDate":1539309402000,"frequency":null,"childList":[{"totalId":"5bbfff18e6022c7d8cea6b1a","fromUserId":"5bbfff17e6022c7d8cea6b17","fromUser":"Parvus","toUserId":"5bbfff593903b87d572a7616","toUser":"?","totalDate":1539309402000,"frequency":null,"childList":[]},{"totalId":"5bbfff18e6022c7d8cea6b1a","fromUserId":"5bbfff17e6022c7d8cea6b17","fromUser":"Parvus","toUserId":"5bc002903903b87d572a7960","toUser":"Liar","totalDate":1539310225000,"frequency":null,"childList":[]},{"totalId":"5bbfff18e6022c7d8cea6b1a","fromUserId":"5bbfff17e6022c7d8cea6b17","fromUser":"Parvus","toUserId":"5bc003c33903b87d572a7a23","toUser":"After Journey","totalDate":1539310531000,"frequency":null,"childList":[]}]}];
 
-            if(data.success){
-                chartPieShow(data)
-            }
-        }
-    })
+    chartGraphShow(data,"#main_graphs")
+    // $.ajax({
+    //     url: "/wechat/total/"+urlName,
+    //     dataType: "json",
+    //     type:"post",
+    //     data: {appInfoId: wholeAppInfoId, startDate: wholeStartTime, endDate: wholeEndTime},
+    //     success: function (data) {
+    //
+    //         if(data.success){
+    //             chartLineShow(data.data)
+    //
+    //         }
+    //     }
+    // })
 }
-
-// 助力轨迹 统计
-function graphData() {
-    $.ajax({
-        url: "/wechat/total/totalSpreadTrajectory",
-        type: "post",
-        data: {appInfoId: wholeAppInfoId, startDate: wholeStartTime, endDate: wholeEndTime},
-        dataType: "json",
-        success: function (data) {
-
-            $("#main_graph").html("")
-            if(data.data&&data.data.length){
-                chartGraphShow(data.data,"#main_graph")
-            }
-
-        }
-    })
-
-}
-// 传播轨迹 统计
-function graphsData() {
-    $.ajax({
-        url: "/wechat/total/totalSpreadTrajectory",
-        type: "post",
-        data: {appInfoId: wholeAppInfoId, startDate: wholeStartTime, endDate: wholeEndTime,type:1},
-        dataType: "json",
-        success: function (data) {
-            $("#main_graphs").html("")
-            if(data.data&&data.data.length){
-                chartGraphShow(data.data,"#main_graphs")
-            }
-
-        }
-    })
-}
-
-// 漏斗图 统计
-function funnelData() {
-    $.ajax({
-        url: "/wechat/total/totalFunnelView",
-        type: "post",
-        data: {appInfoId: wholeAppInfoId, startDate: wholeStartTime, endDate: wholeEndTime,type:0},
-        dataType: "json",
-        success: function (data) {
-            $("#main_funnel").html("")
-            if(data.data&&data.data.length){
-                console.log(data)
-                chartFunnelShow(data.data,"main_funnel")
-            }
-        }
-    })
-    // chartFunnelShow()
-}
-
 
 //刷新数据
-$("#refreshData").on("click",function () {
+$("#refreshData").on("click", function () {
     changeTimeAfterDataChange();
 })

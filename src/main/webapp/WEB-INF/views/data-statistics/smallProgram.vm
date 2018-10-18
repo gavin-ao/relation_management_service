@@ -1,3 +1,7 @@
+<style>
+    table{width: calc(100% - 10px)!important;margin0 auto;border: 1px solid #555555; margin: 1px; border-collapse: collapse; }
+    table td,table th{border: 1px solid #555555;text-align: center;}
+</style>
 <div class="contain_main_head" style="" id="contain_main_head">
     <div class="dateSelect">
         <input type="radio" name="chose" class="Nearly7days"> 近7日
@@ -50,7 +54,7 @@
             <span>日活趋势</span>
             <img src="/static/service/images/login/download.png" alt="">
         </div>
-        <div class="graphs" id="main_graphs"></div>
+        <div class="graphs" id="main_Lines"></div>
     </div>
     <div class="contain_main_chart">
         <div>
@@ -58,7 +62,7 @@
                 <span>用户转化漏斗</span>
                 <img src="/static/service/images/login/download.png" alt="">
             </div>
-            <div class="graphs" id="main_bar"></div>
+            <div class="graphs" id="main_funnel"></div>
         </div>
         <div>
             <div class="titles">
@@ -72,14 +76,14 @@
                 <span>用户邀请排行</span>
                 <img src="/static/service/images/login/download.png" alt="">
             </div>
-            <div class="graphs" id="main_map"></div>
+            <div class="graphs" id="main_Lbar"></div>
         </div>
         <div>
             <div class="titles">
                 <span>用户留存率</span>
                 <img src="/static/service/images/login/download.png" alt="">
             </div>
-            <div class="graphs" id="main_Lbar"></div>
+            <div class="graphs" id="main_Table"></div>
         </div>
     </div>
 
