@@ -72,10 +72,16 @@ public class WechatOrderController {
         result.put("fullOfGifts", null);
         //TODO 优惠
         List<String> discountList = new ArrayList<String>();
-        discountList.add("95折");
-        if(orderService.haveInvitationDiscountOrder(wechatUserInfoVO.getAppInfoId(), wechatUserInfoVO.getWechatUserId())){
-            discountList.add("受邀优惠立减5%");
+
+        if(orderService.haveOrder(wechatUserInfoVO.getAppInfoId(), wechatUserInfoVO.getWechatUserId())){
+            discountList.add("95折");
+        }else{
+            String inviter = wechatUserService.getInviter(wechatUserInfoVO.getAppInfoId(), wechatUserInfoVO.getWechatUserId());
+            if(inviter != null && inviter.trim().length() > 0){
+                discountList.add("受邀优惠立减5%");
+            }
         }
+
         result.put("discount", discountList);
         OrderReceiveAddrEntity addr = orderReceiveAddrService.getDefaultAddr(wechatUserInfoVO.getWechatUserId());
         result.put("addr", addr);

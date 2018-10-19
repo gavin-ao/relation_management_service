@@ -1,9 +1,11 @@
 package data.driven.erm.business.order.impl;
 
 import data.driven.erm.business.order.OrderRebateService;
+import data.driven.erm.business.order.OrderService;
 import data.driven.erm.dao.JDBCBaseDao;
 import data.driven.erm.entity.order.OrderRebateEntity;
 import data.driven.erm.util.UUIDUtil;
+import data.driven.erm.vo.order.OrderDetailVO;
 import data.driven.erm.vo.order.OrderRebateVO;
 import data.driven.erm.vo.order.OrderVO;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,11 +24,25 @@ public class OrderRebateServiceImpl implements OrderRebateService {
 
     @Autowired
     private JDBCBaseDao jdbcBaseDao;
+    @Autowired
+    private OrderService orderService;
+
 
     @Override
     public boolean insertOrderRebate(OrderVO order, String appInfoId, String wechatUserId) {
         if(order.getRealPayment()!=null&&order.getRealPayment().doubleValue()>0){
             if(!exists(order.getWechatUserId(), appInfoId, wechatUserId)){
+                List<OrderDetailVO> detailVOList = orderService.findOrderDetailByOrderId(order.getOrderId());
+                BigDecimal price = new BigDecimal(0);
+                BigDecimal multiplyP = new BigDecimal(0.05);
+                if(detailVOList != null && detailVOList.size() > 0){
+                    for (OrderDetailVO orderDetailVO : detailVOList){
+                        price = price.add(orderDetailVO.getTotalPrice().multiply(multiplyP));
+                    }
+                }else{
+                    return false;
+                }
+
                 OrderRebateEntity orderRebateEntity = new OrderRebateEntity();
                 orderRebateEntity.setRebateId(UUIDUtil.getUUID());
                 orderRebateEntity.setWechatUserId(wechatUserId);
@@ -34,7 +50,7 @@ public class OrderRebateServiceImpl implements OrderRebateService {
                 orderRebateEntity.setOrderId(order.getOrderId());
                 orderRebateEntity.setFromUserId(order.getWechatUserId());
                 orderRebateEntity.setRebateAt(new Date());
-                orderRebateEntity.setRebateMoney(order.getRealPayment().multiply(new BigDecimal(0.05)));
+                orderRebateEntity.setRebateMoney(price);
                 jdbcBaseDao.insert(orderRebateEntity, "order_rebate_info");
             }
         }

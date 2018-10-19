@@ -47,15 +47,6 @@ public class OrderServiceImpl implements OrderService{
     }
 
     @Override
-    public boolean haveInvitationDiscountOrder(String appInfoId, String wechatUserId) {
-        String inviter = wechatUserService.getInviter(appInfoId, wechatUserId);
-        if(inviter != null && inviter.trim().length() > 0){
-            return !haveOrder(appInfoId, wechatUserId);
-        }
-        return false;
-    }
-
-    @Override
     public JSONObject updateOrder(String orderJson, WechatUserInfoVO wechatUserInfoVO) {
         if(orderJson == null){
             return putMsg(false, "101", "参数为空");
@@ -71,7 +62,16 @@ public class OrderServiceImpl implements OrderService{
         order.setAppInfoId(wechatUserInfoVO.getAppInfoId());
 
         //判断是否享有受邀优惠
-        boolean haveInvitation = haveInvitationDiscountOrder(order.getAppInfoId(), order.getWechatUserId());
+        boolean haveInvitation = false;
+        if(haveOrder(wechatUserInfoVO.getAppInfoId(), wechatUserInfoVO.getWechatUserId())){
+            haveInvitation = true;
+        }else{
+            String inviter = wechatUserService.getInviter(wechatUserInfoVO.getAppInfoId(), wechatUserInfoVO.getWechatUserId());
+            if(inviter != null && inviter.trim().length() > 0){
+                haveInvitation = true;
+            }
+        }
+
         if(haveInvitation){
             order.setRebate(1);
         }
@@ -126,13 +126,11 @@ public class OrderServiceImpl implements OrderService{
             detail.setPictureId(commodityEntity.getPictureId());
             detail.setUnitPrice(commodityEntity.getPrices());
             detail.setTotalPrice(commodityEntity.getPrices().multiply(new BigDecimal(detail.getAmount())));
-            //9.5折
-            BigDecimal price = detail.getTotalPrice().multiply(new BigDecimal(0.95));
+            BigDecimal price = detail.getTotalPrice();
+            //判断是否有优惠
             if(haveInvitation){
-                //邀请优惠价格，折上折 立减百分之五
                 price = price.multiply(new BigDecimal(0.95));
             }
-            //TODO 实付金额
             detail.setRealPayment(price);
             detail.setOrderId(order.getOrderId());
 
@@ -231,5 +229,12 @@ public class OrderServiceImpl implements OrderService{
             return list.get(0);
         }
         return null;
+    }
+
+    @Override
+    public List<OrderDetailVO> findOrderDetailByOrderId(String orderId) {
+        String sql = "select detail_id,order_id,commodity_id,commodity_name,amount,unit_price,total_price,real_payment from order_detail_info where order_id = ?";
+        List<OrderDetailVO> orderDetailVOList = jdbcBaseDao.queryList(OrderDetailVO.class, sql, orderId);
+        return orderDetailVOList;
     }
 }

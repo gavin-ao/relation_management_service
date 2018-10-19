@@ -97,7 +97,7 @@ public class WechatCommodityController {
             result.put("salesVolume", salesVolume);
         }
         WechatUserInfoVO wechatUserInfoVO = WechatApiSession.getSessionBean(sessionID).getUserInfo();
-        result.put("share", !orderService.haveInvitationDiscountOrder(wechatUserInfoVO.getAppInfoId(), wechatUserInfoVO.getWechatUserId()));
+        result.put("share", orderService.haveOrder(wechatUserInfoVO.getAppInfoId(), wechatUserInfoVO.getWechatUserId()));
         result.put("commodityVO", JSONUtil.replaceNull(commodityVO));
         return result;
     }
