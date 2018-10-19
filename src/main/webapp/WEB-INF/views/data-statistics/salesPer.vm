@@ -1,0 +1,90 @@
+<div class="contain_main_head" style="" id="contain_main_head">
+    <div class="dateSelect">
+        <input type="radio" name="chose" class="Nearly7days"> 近7日
+    </div>
+    <div class="dateSelect">
+        <input type="radio" name="chose" class="todayTime"> 今日
+    </div>
+    <div class="dateSelect">
+        <input type="radio" name="chose" class="yesterdayTime"> 昨日
+    </div>
+    <div class="dateSelect">
+        <input type="radio" name="chose" class="userdefined"> 自定义
+    </div>
+    <div class="refreshData" id="refreshData">
+        刷新数据
+    </div>
+    <div class="contain_main_title">
+        <span class="title"></span><span><span class="time1">2018-07-02</span>至<span
+            class="time2">2017-07-02</span>数据</span>
+    </div>
+</div>
+
+<div class="datePicker">
+    <input type="text" class="demo-input" placeholder="开始时间" id="startTime"> 至 <input type="text"
+                                                                                      class="demo-input"
+                                                                                      placeholder="结束时间"
+                                                                                      id="endTime">
+</div>
+<div class="contain_main_content" style="overflow-y: scroll;height: calc(100% - 80px)">
+    <div class="contain_main_data" id="contain_main_data">
+        <div data-iden="totalShareNumView">
+            <p class="activitytitle">成交额(元)</p>
+            <p class="activitySum">30000</p>
+        </div>
+        <div data-iden="totalActivityNumView">
+            <p class="activitytitle">ARPU(每用户平均收入)</p>
+            <p class="activitySum">6705</p>
+        </div>
+        <div data-iden="totalSpreadRangeNumView">
+            <p class="activitytitle">CAC(获客成本)</p>
+            <p class="activitySum">42</p>
+        </div>
+        <div data-iden="totalFissionEffectNewPeopleNumView">
+            <p class="activitytitle">ROI</p>
+            <p class="activitySum">56%</p>
+        </div>
+
+    </div>
+    <div class="contain_main_chart">
+        <div>
+            <div class="titles">
+                <span>平均客单价(元)</span>
+                <img src="/static/service/images/login/download.png" alt="">
+            </div>
+            <div class="graphs" id="main_bar"></div>
+        </div>
+        <div>
+            <div class="titles">
+                <span>畅销产品</span>
+                <img src="/static/service/images/login/download.png" alt="">
+            </div>
+            <div class="graphs" id="main_pie"></div>
+        </div>
+        <div>
+            <div class="titles">
+                <span>订单分布</span>
+                <img src="/static/service/images/login/download.png" alt="">
+            </div>
+            <div class="graphs" id="main_map"></div>
+        </div>
+        <div>
+            <div class="titles">
+                <span>返利排行 TOP10</span>
+                <img src="/static/service/images/login/download.png" alt="">
+            </div>
+            <div class="graphs" id="main_Lbar"></div>
+        </div>
+    </div>
+
+    <div class="contain_main_graph">
+        <div class="titles">
+            <span>传播轨迹</span>
+            <img src="/static/service/images/login/download.png" alt="">
+        </div>
+        <div class="graphs" id="main_graphs"></div>
+    </div>
+</div>
+
+
+<script src="/static/plugins/common/salesPer.js"></script>

@@ -1,9 +1,8 @@
 
-#page-wrapper{
+#page-wrapper {
     max-width: 1366px;
     margin: 0 auto;
 }
-
 
 .header-left {
     width: 100%;
@@ -11,7 +10,7 @@
     height: 80px;
     line-height: 80px;
     padding: 0 10px;
-    /*height: 100%;*/
+    text-align: center;
 }
 
 .header-left > div {
@@ -20,13 +19,33 @@
 
 .header-left .logo img {
     cursor: pointer;
-    width: 40px;
+    width: 30px;
+    margin-top: -5px;
 }
 
 .header-left .logo_title {
     font-size: 18px;
     color: #fff;
-    margin-left: 10px;
+}
+
+#main-menu {
+    width: 100%;
+}
+
+#main-menu li {
+    text-align: center;
+    line-height: 80px;
+    cursor: pointer;
+    color: #fff;
+    font-family: 'PingFangSC-Regular', 'PingFang SC';
+    font-weight: 400;
+    font-style: normal;
+}
+
+#main-menu li.sel {
+    background-color: rgba(231, 236, 241, 1);;
+    color: #219DEF;
+    border-left: 5px solid rgba(33, 157, 239, 1);
 }
 
 #user_manage {
@@ -74,8 +93,9 @@
 }
 
 .contain_main_head {
-    padding: 0 30px;
+    /*padding: 0 30px;*/
     padding-bottom: 20px;
+    padding-right: 30px;
 }
 
 .contain_main_head > div {
@@ -83,12 +103,22 @@
     margin-right: 25px;
     cursor: pointer;
 }
+.contain_main_head > div.contain_main_title {
+    /*float: right;*/
+    color: #666;
+    font-size: 14px;
+    margin-left: 330px;
+    font-family: 'PingFangSC-Thin', 'PingFang SC Thin', 'PingFang SC';
+    font-weight: 200;
+    font-style: normal;
+}
 .contain_main_head > div.refreshData {
     float: right;
-    color:#219DEF;
-    font-size: 20px;
+    color: #219DEF;
+    font-size: 18px;
     margin-right: -15px;
 }
+
 .contain_main_head > div input {
     margin-right: 5px;
 }
@@ -97,113 +127,139 @@
     /*margin: 10px 20px;*/
     width: 100%;
     min-height: 300px;
-    background-color: #fff;
-    padding: 20px;
+    background-color: #EEF4F9;
+    /*padding: 20px;*/
 }
 
-.contain_main_title .title {
-    font-size: 16px;
-    color: #666;
-    font-weight: 600;
-    padding-right: 10px;
-}
-
-.contain_main_title .time {
-    font-size: 14px;
-    color: #666;
-    font-weight: 200;
-}
 
 .contain_main_data {
-    padding: 20px 0;
     display: flex;
     justify-content: space-between;
 }
 
 .contain_main_data > div {
-    width: 19%;
-    height: 120px;
-    border: 1px solid #ccc;
+    width: 24.5%;
+    height: 140px;
     display: inline-block;
     text-align: center;
     vertical-align: middle;
-    padding-top: 30px;
-    color: #999;
+    color: #8CA0B3;
     font-size: 16px;
     cursor: pointer;
+    background-color: #fff;
+    position: relative;
+    font-family: 'PingFangSC-Regular', 'PingFang SC';
+    font-weight: 400;
+    font-style: normal;
 }
 
 .contain_main_data > div .activitySum {
-    color: #333;
+    font-size: 28px;
+    color: #6C6C6C;
+    margin-top: 65px;
 }
 
-.contain_main_data > div.selectData {
-    background-color: rgba(33, 157, 239, 1);
-    color: #fff;
-    border: 0;
-}
-
-.contain_main_data > div.selectData .activitySum {
-    color: #fff;
+.contain_main_data > div >p.activitytitle{
+    font-size: 16px;
+    color: #8CA0B3;
+    position: absolute;
+    top: 15px;
+    left: 20px;
 }
 
 .contain_main_chart {
-    /*height: 350px;*/
-    margin-bottom: 20px;
+    float: left;
+    width: 100%;
 }
 
 .contain_main_chart > div {
-    /*float: left;*/
+    float: left;
     display: inline-block;
     height: 100%;
     font-size: 16px;
-    /*width: 100%;*/
+    width: 49.5%;
+    background-color: #fff;
+    height: 325px;
+    margin-top: 10px;
 }
-
-.contain_main_chart > div > div {
-    height:300px;
-    width: 100%;
-    border: 1px solid #ccc;
-}
-
-.contain_main_chart .contain_main_line {
-    width: 64%;
-}
-
-.contain_main_chart .contain_main_pie {
-    width: 35%;
+.contain_main_chart > div:nth-child(2n) {
     float: right;
 }
+.contain_main_chart > div > div.titles {
+    height: 40px;
+    width: 100%;
+    line-height: 40px;
+}
+.contain_main_chart > div > div.titles span {
+    display: inline-block;
+    float: left;
+    margin-left: 10px;
+    color: #8CA0B3;
+}
+.contain_main_chart > div > div.titles img {
+    width: 20px;
+    height: 20px;
+    float: right;
+    margin-right: 10px;
+    margin-top: 10px;
+}
+.contain_main_chart > div > div.graphs {
+    height: 285px;
+    width: 100%;
+}
+
 
 .datePicker {
-    margin-top: -50px;
-    margin-left: 360px;
+    margin-top: -44px;
+    margin-left: 330px;
     padding-bottom: 15px;
-    display: none;
 }
 
 .demo-input {
     padding-left: 10px;
-    height: 38px;
-    min-width: 262px;
-    line-height: 38px;
+    height: 27px;
+    min-width: 150px;
+    width: 150px;
+    line-height: 27px;
     border: 1px solid #e6e6e6;
     background-color: #fff;
     border-radius: 2px;
+    font-size: 12px;
 }
 
 .contain_main_graph {
     width: 100%;
-    height: 600px;
+    height: 580px;
     font-size: 16px;
+    float: left;
+    background-color: #fff;
+    margin-top: 10px;
 }
-.contain_main_graph > div{
+.contain_main_graph > div.titles {
+    height: 40px;
+    width: 100%;
+    line-height: 40px;
+}
+.contain_main_graph> div.titles span {
+    display: inline-block;
+    float: left;
+    margin-left: 10px;
+    color: #8CA0B3;
+}
+.contain_main_graph > div.titles img {
+    width: 20px;
+    height: 20px;
+    float: right;
+    margin-right: 10px;
+    margin-top: 10px;
+}
+.contain_main_graph > div.graphs {
     height: calc(100% - 40px);
-    border: 1px solid #ccc;
 }
+
 /*}*/
 /*#main_graph{*/
-    /*height: calc(100% - 40px);*/
-    /*border: 1px solid #ccc;*/
+/*height: calc(100% - 40px);*/
+/*border: 1px solid #ccc;*/
 /*}*/
 
