@@ -140,7 +140,7 @@ public class WXUtil {
         }
         JSONObject result = parseObject(resultStr);
         if(result.getString("access_token") != null && result.getString("access_token").trim().length() > 1){
-            RedisFactory.setString(key, result.getString("access_token"), 3600 * 1000);
+            RedisFactory.setString(key, result.getString("access_token"), 2500 * 1000);
         }
         return result;
     }
