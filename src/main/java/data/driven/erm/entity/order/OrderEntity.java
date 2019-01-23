@@ -27,6 +27,18 @@ public class OrderEntity {
     public Integer rebate;
     /** 创建日期 **/
     public Date createAt;
+    /**
+     * 预支付交易会话标识
+     */
+    public String prepayId;
+
+    public String getPrepayId() {
+        return prepayId;
+    }
+
+    public void setPrepayId(String prepayId) {
+        this.prepayId = prepayId;
+    }
 
     public String getOrderId() {
         return orderId;
