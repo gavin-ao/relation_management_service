@@ -1,6 +1,7 @@
 package data.driven.erm.controller.wechatapi;
 
 import com.alibaba.fastjson.JSONObject;
+import data.driven.erm.api.PayAPI;
 import data.driven.erm.business.commodity.CommodityService;
 import data.driven.erm.business.order.OrderRebateService;
 import data.driven.erm.business.order.OrderReceiveAddrService;
@@ -13,14 +14,18 @@ import data.driven.erm.util.JSONUtil;
 import data.driven.erm.vo.commodity.CommodityVO;
 import data.driven.erm.vo.order.OrderDetailVO;
 import data.driven.erm.vo.order.OrderVO;
+import data.driven.erm.vo.pay.PayPrepayVO;
 import data.driven.erm.vo.wechat.WechatUserInfoVO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import javax.validation.Valid;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -46,7 +51,8 @@ public class WechatOrderController {
     private OrderRebateService orderRebateService;
     @Autowired
     private WechatUserService wechatUserService;
-
+    @Autowired
+    private PayAPI payAPI;
     /**
      * 立即购买，查询产品和地址
      * @param sessionID
@@ -163,6 +169,31 @@ public class WechatOrderController {
         return result;
     }
 
+    @RequestMapping(path = "/prepay")
+    @ResponseBody
+    public JSONObject getPrepayInfo(@RequestBody @Valid PayPrepayVO payPrepayVO, BindingResult results) {
+        JSONObject result = new JSONObject();
+        boolean success = false;
+        String msg = "";
+        if (results.hasErrors()) {
+            result.put("success",false);
+            msg = results.getFieldError().getDefaultMessage();
+            result.put("msg",msg);
+            logger.error(msg);
+            return result;
+        }else{
+            String appId = payPrepayVO.getAppId();
+            String storeId = payPrepayVO.getStoreId();
+            String outTradeNo = payPrepayVO.getOutTradeNo();
+            result = payAPI.getPrepay(appId,storeId,outTradeNo);
+            if(result.getBoolean("success")){
+                logger.info("成功获取统一订单信息");
+            }else{
+                logger.error(result.getString("msg"));
+            }
+            return result;
+        }
+    }
 
 
 
