@@ -20,7 +20,7 @@ public class OrderEntity {
     /** 订单流水号 **/
     public String orderNum;
     /** 实付金额 **/
-    public BigDecimal realPayment;
+    public Integer realPayment;
     /** 订单状态 0 - 未支付， 1 - 已支付，2 - 已完成， -1 - 已取消。 **/
     public Integer state;
     /** 返利订单 0 - 否， 1 - 是返利订单 **/
@@ -68,11 +68,11 @@ public class OrderEntity {
         this.orderNum = orderNum;
     }
 
-    public BigDecimal getRealPayment() {
+    public Integer getRealPayment() {
         return realPayment;
     }
 
-    public void setRealPayment(BigDecimal realPayment) {
+    public void setRealPayment(Integer realPayment) {
         this.realPayment = realPayment;
     }
 
