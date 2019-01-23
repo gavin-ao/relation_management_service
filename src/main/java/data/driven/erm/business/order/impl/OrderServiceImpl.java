@@ -180,7 +180,7 @@ public class OrderServiceImpl implements OrderService{
 
     @Override
     public List<OrderVO> findOrderList(String appInfoId, String wechatUserId) {
-        String sql = "select order_id,addr_id,order_num,real_payment,state,create_at,prepay_id from order_info where wechat_user_id = ? and app_info_id = ? order by create_at desc";
+        String sql = "select order_id,addr_id,order_num,real_payment,state,create_at from order_info where wechat_user_id = ? and app_info_id = ? order by create_at desc";
         List<OrderVO> orderVOList = jdbcBaseDao.queryList(OrderVO.class, sql, wechatUserId, appInfoId);
         if(orderVOList != null && orderVOList.size() > 0){
             List<String> orderIdList = orderVOList.stream().collect(Collectors.mapping(o -> o.getOrderId(), Collectors.toList()));
@@ -223,7 +223,7 @@ public class OrderServiceImpl implements OrderService{
 
     @Override
     public OrderVO getOrderById(String orderId, String appInfoId, String wechatUserId) {
-        String sql = "select order_id,wechat_user_id,app_info_id,addr_id,order_num,real_payment,rebate,prepay_id from order_info where order_id = ? and wechat_user_id = ? and app_info_id = ?";
+        String sql = "select order_id,wechat_user_id,app_info_id,addr_id,order_num,real_payment,rebate from order_info where order_id = ? and wechat_user_id = ? and app_info_id = ?";
         List<OrderVO> list = jdbcBaseDao.queryList(OrderVO.class, sql, orderId, wechatUserId, appInfoId);
         if(list != null && list.size() > 0){
             return list.get(0);

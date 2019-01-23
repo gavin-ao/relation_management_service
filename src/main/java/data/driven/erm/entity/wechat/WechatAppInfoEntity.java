@@ -21,32 +21,6 @@ public class WechatAppInfoEntity {
     /** 创建人 **/
     private String creator;
 
-    /**
-     * 商户id
-     */
-    private String mchId;
-
-    /**
-     * 商户秘钥
-     */
-    private String securityId;
-
-    public String getMchId() {
-        return mchId;
-    }
-
-    public void setMchId(String mchId) {
-        this.mchId = mchId;
-    }
-
-    public String getSecurityId() {
-        return securityId;
-    }
-
-    public void setSecurityId(String securityId) {
-        this.securityId = securityId;
-    }
-
     public String getAppInfoId() {
         return appInfoId;
     }
