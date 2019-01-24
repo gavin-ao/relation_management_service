@@ -1,6 +1,7 @@
 package data.driven.erm.business.order;
 
 import com.alibaba.fastjson.JSONObject;
+import data.driven.erm.entity.order.OrderEntity;
 import data.driven.erm.vo.order.OrderDetailVO;
 import data.driven.erm.vo.order.OrderVO;
 import data.driven.erm.vo.wechat.WechatUserInfoVO;
@@ -69,4 +70,15 @@ public interface OrderService {
      * @return
      */
     public List<OrderDetailVO> findOrderDetailByOrderId(String orderId);
+
+    /**
+     * @description 查找订单信息
+     * @author lxl
+     * @date 2019-01-24 10:46
+     * @param orderId 订单id
+     * @return
+     */
+    OrderEntity findOrderByOrderId(String orderId);
+
+
 }

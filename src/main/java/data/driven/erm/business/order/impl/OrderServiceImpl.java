@@ -237,4 +237,22 @@ public class OrderServiceImpl implements OrderService{
         List<OrderDetailVO> orderDetailVOList = jdbcBaseDao.queryList(OrderDetailVO.class, sql, orderId);
         return orderDetailVOList;
     }
+
+    /**
+     * @description 查找订单信息
+     * @author lxl
+     * @date 2019-01-24 10:46
+     * @param orderId 订单id
+     * @return
+     */
+    @Override
+    public OrderEntity findOrderByOrderId(String orderId) {
+        String sql = "select order_id,wechat_user_id,app_info_id,addr_id,order_num,real_payment,state,rebate,create_at" +
+                " from order_info where order_id= ?";
+        List<OrderEntity> orderEntities = jdbcBaseDao.queryList(OrderEntity.class,sql,orderId);
+        if (orderEntities != null && orderEntities.size() > 0){
+            return orderEntities.get(0);
+        }
+        return null;
+    }
 }
