@@ -2,20 +2,26 @@ package data.driven.erm.business.order.impl;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.alibaba.fastjson.serializer.ObjectArrayCodec;
+import com.alibaba.fastjson.serializer.SerializerFeature;
 import data.driven.erm.business.order.OrderService;
 import data.driven.erm.business.wechat.WechatUserService;
 import data.driven.erm.dao.JDBCBaseDao;
 import data.driven.erm.entity.commodity.CommodityEntity;
 import data.driven.erm.entity.order.OrderEntity;
 import data.driven.erm.util.DateFormatUtil;
+import data.driven.erm.util.HttpUtil;
+import data.driven.erm.util.IpUtils;
 import data.driven.erm.util.UUIDUtil;
 import data.driven.erm.vo.order.OrderDetailVO;
 import data.driven.erm.vo.order.OrderVO;
+import data.driven.erm.vo.pay.SubmissionUnifiedorderParam;
 import data.driven.erm.vo.wechat.WechatUserInfoVO;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.servlet.http.HttpServletRequest;
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
@@ -255,4 +261,76 @@ public class OrderServiceImpl implements OrderService{
         }
         return null;
     }
+
+    /**
+     * @description 获取订单列表中商品的分类名称
+     * @author lxl
+     * @date 2019-01-24 12:21
+     * @param orderId
+     * @return catgName 分类名称
+     */
+    private String getCatgName(String orderId){
+        String sql = "select group_concat(distinct cci.catg_name) as catg_name from (order_detail_info odi " +
+                "LEFT JOIN commodity_info ci ON odi.commodity_id = ci.commodity_id ) LEFT JOIN commodity_catg_info cci " +
+                "ON ci.catg_id = cci.catg_id where odi.order_id = ?";
+        Object catgName = jdbcBaseDao.getColumn(sql,orderId);
+        if (catgName != null){
+            return catgName.toString();
+        }
+        return null;
+    }
+
+    /**
+     * @description 提交统一下单信息
+     * @author lxl
+     * @date 2019-01-24 11:05
+     * @param request
+     * @param appId 小程序appId
+     * @param openid 微信用户唯一标示
+     * @param orderId 订单id
+     * @return
+     */
+    @Override
+    public JSONObject submissionUnifiedorder(HttpServletRequest request, String appId, String openid, String orderId) {
+        String URL = "https://pay.easy7share.com/pay/pushOrder";
+
+        //门店id storeId = 1 现在还没有只能先写成 1
+        //商品描述 orderTitle = commodity_info表中的commodity_name,表中的commodity_id在order_rebate_info表中，然后通过commodity_id到commodity_info表中查看catg_id，通过catg_id到commodity_catg_info中查看catg_name后拼接到一起
+        //ip 需要调用统一获取ip
+        //金额totalFee = orderentity.getRealPayment()
+        //支付类型 tradeType = "JSAPI"
+        String ip = IpUtils.getIpAddr(request);
+        OrderEntity orderEntity = findOrderByOrderId(orderId);
+        List<OrderDetailVO> orderDetailVOList = findOrderDetailByOrderId(orderId);
+        String catgName = getCatgName(orderId);
+        SubmissionUnifiedorderParam submissionUnifiedorderParam = new SubmissionUnifiedorderParam(appId,"1",catgName,
+                orderId,orderEntity.getRealPayment().multiply(new BigDecimal("100")).intValue(),"JSAPI",openid,ip);
+        //javaBean转json字符串
+        String submissionUnifiedorderString = JSONObject.toJSONString(submissionUnifiedorderParam,
+                SerializerFeature.WriteNullStringAsEmpty, SerializerFeature.WriteNullBooleanAsFalse);
+        String result =  HttpUtil.doPost(URL,submissionUnifiedorderString);
+        return JSON.parseObject(result);
+    }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

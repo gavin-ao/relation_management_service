@@ -6,6 +6,7 @@ import data.driven.erm.vo.order.OrderDetailVO;
 import data.driven.erm.vo.order.OrderVO;
 import data.driven.erm.vo.wechat.WechatUserInfoVO;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 /**
@@ -79,6 +80,18 @@ public interface OrderService {
      * @return
      */
     OrderEntity findOrderByOrderId(String orderId);
+
+    /**
+     * @description 提交统一下单信息
+     * @author lxl
+     * @date 2019-01-24 11:05
+     * @param request
+     * @param appId 小程序appId
+     * @param openid 微信用户唯一标示
+     * @param orderId 订单id
+     * @return
+     */
+    JSONObject submissionUnifiedorder(HttpServletRequest request,String appId, String openid, String orderId);
 
 
 }
