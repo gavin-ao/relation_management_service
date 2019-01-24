@@ -63,7 +63,6 @@ public class WechatOrderController {
 
     /**
      * 立即购买，查询产品和地址
-     *
      * @param sessionID
      * @param commodityId
      * @return
@@ -200,7 +199,6 @@ public class WechatOrderController {
     @ResponseBody
     public JSONObject getPrepayInfo(@RequestBody @Valid PayPrepayVO payPrepayVO, BindingResult results) {
         JSONObject result = new JSONObject();
-        boolean success = false;
         String msg = "";
         if (results.hasErrors()) {
             result.put("success", false);
@@ -213,7 +211,14 @@ public class WechatOrderController {
             String storeId = payPrepayVO.getStoreId();
             String outTradeNo = payPrepayVO.getOutTradeNo();
             result = payAPI.getPrepay(appId, storeId, outTradeNo);
-            if (result.getBoolean("success")) {
+            if(result == null){
+                result.put("success",false);
+                msg = "获取下单信息失败，请重试";
+                result.put("msg",msg);
+                logger.error(msg);
+                return result;
+            }
+            if(result.getBoolean("success")){
                 logger.info("成功获取统一订单信息");
             } else {
                 logger.error(result.getString("msg"));
