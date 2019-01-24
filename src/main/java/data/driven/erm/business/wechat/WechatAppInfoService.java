@@ -31,4 +31,13 @@ public interface WechatAppInfoService {
      * @return
      */
     public List<String> findSowingMap(String appInfoId);
+
+    /**
+     * @description 获取实体
+     * @author lxl
+     * @date 2019-01-24 17:23
+     * @param appInfoId 小程序信息表Id
+     * @return
+     */
+    WechatAppInfoEntity getAppInfoEntity(String appInfoId);
 }
