@@ -11,10 +11,13 @@ import java.io.Serializable;
  **/
 
 public class PayPrepayVO implements Serializable {
+    /**小程序appId**/
     @NotNull
     private String appId;
+    /**门店id**/
     @NotNull
     private String storeId;
+    /**商户订单号，32位以内，只能是数字、大小写字母_-|* 且在同一个商户号下唯一**/
     @NotNull
     private String outTradeNo;
 
