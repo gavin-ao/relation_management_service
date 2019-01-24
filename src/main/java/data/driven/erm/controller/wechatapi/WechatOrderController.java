@@ -186,7 +186,8 @@ public class WechatOrderController {
         if (results.hasErrors()) {
             result.put("success",false);
             msg = results.getFieldError().getDefaultMessage();
-            result.put("msg",msg);
+            //不能暴露太具体的错误信息
+            result.put("msg","数据异常");
             logger.error(msg);
             return result;
         }else{
