@@ -19,9 +19,9 @@ import org.springframework.stereotype.Component;
 public class PayAPI {
     private static Logger logger = LoggerFactory.getLogger(PayAPI.class);
     /**获取统一下单信息的接口地址**/
-    private static String PREPAY_URL = "/prepay";
+    private static String PREPAY_URL = "/pay/prepay";
     /**统一下单信息的接口地址**/
-    private static String PUSH_ORDER_URL = "/pushOrder";
+    private static String PUSH_ORDER_URL = "/pay/pushOrder";
     @Value("${pay.url}")
     private String payUrl;
     private String getPrepayRequestURL(){
@@ -49,7 +49,7 @@ public class PayAPI {
          param.put("storeId",storeId);
          param.put("outTradeNo",outTradeNo);
          String url = getPrepayRequestURL();
-         String  result = HttpUtil.doGet(url,param);
+         String  result = HttpUtil.doPostSSL(url,JSONObject.toJSONString(param));
          JSONObject resultObj = JSONObject.parseObject(result);
          return  resultObj;
     }
