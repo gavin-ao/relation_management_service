@@ -107,9 +107,10 @@ public class WechatOrderController {
     public JSONObject submitOrder(HttpServletRequest request,String sessionID, String orderJson){
         WechatUserInfoVO wechatUserInfoVO = WechatApiSession.getSessionBean(sessionID).getUserInfo();
         JSONObject result = orderService.updateOrder(orderJson, wechatUserInfoVO);
-
+        logger.info("订单已插入数据库");
         if (result.getBoolean("success")){
             //如果订单生成成功，则调用支付统一下单接口
+            logger.info("调用支付统一下单接口");
             return orderService.submissionUnifiedorder(request,
                     wechatUserInfoVO.getAppInfoId(),wechatUserInfoVO.getOpenId(),result.getString("orderId"));
         }

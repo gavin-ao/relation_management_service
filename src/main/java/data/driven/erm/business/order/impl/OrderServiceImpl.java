@@ -17,6 +17,8 @@ import data.driven.erm.vo.order.OrderDetailVO;
 import data.driven.erm.vo.order.OrderVO;
 import data.driven.erm.vo.pay.SubmissionUnifiedorderParam;
 import data.driven.erm.vo.wechat.WechatUserInfoVO;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -36,6 +38,7 @@ import static data.driven.erm.util.JSONUtil.putMsg;
  */
 @Service
 public class OrderServiceImpl implements OrderService{
+    private static final Logger logger = LoggerFactory.getLogger(OrderServiceImpl.class);
 
     @Autowired
     private JDBCBaseDao jdbcBaseDao;
@@ -294,11 +297,6 @@ public class OrderServiceImpl implements OrderService{
     public JSONObject submissionUnifiedorder(HttpServletRequest request, String appId, String openid, String orderId) {
         String URL = "https://pay.easy7share.com/pay/pushOrder";
 
-        //门店id storeId = 1 现在还没有只能先写成 1
-        //商品描述 orderTitle = commodity_info表中的commodity_name,表中的commodity_id在order_rebate_info表中，然后通过commodity_id到commodity_info表中查看catg_id，通过catg_id到commodity_catg_info中查看catg_name后拼接到一起
-        //ip 需要调用统一获取ip
-        //金额totalFee = orderentity.getRealPayment()
-        //支付类型 tradeType = "JSAPI"
         String ip = IpUtils.getIpAddr(request);
         OrderEntity orderEntity = findOrderByOrderId(orderId);
         List<OrderDetailVO> orderDetailVOList = findOrderDetailByOrderId(orderId);
@@ -308,7 +306,9 @@ public class OrderServiceImpl implements OrderService{
         //javaBean转json字符串
         String submissionUnifiedorderString = JSONObject.toJSONString(submissionUnifiedorderParam,
                 SerializerFeature.WriteNullStringAsEmpty, SerializerFeature.WriteNullBooleanAsFalse);
+        logger.info("支付系统中的统一下单参数 "+submissionUnifiedorderString);
         String result =  HttpUtil.doPost(URL,submissionUnifiedorderString);
+        logger.info("统一下单后返回的信息 " + result);
         JSONObject resultJson = JSON.parseObject(result);
         resultJson.put("orderId",orderId);
         return resultJson;
