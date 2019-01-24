@@ -21,6 +21,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
@@ -39,11 +40,16 @@ import static data.driven.erm.util.JSONUtil.putMsg;
 @Service
 public class OrderServiceImpl implements OrderService{
     private static final Logger logger = LoggerFactory.getLogger(OrderServiceImpl.class);
+    /**统一下单信息的接口地址**/
+    private static String PUSH_ORDER_URL = "/pay/pushOrder";
 
     @Autowired
     private JDBCBaseDao jdbcBaseDao;
     @Autowired
     private WechatUserService wechatUserService;
+
+    @Value("${pay.url}")
+    private String payUrl;
 
     @Override
     public boolean haveOrder(String appInfoId, String wechatUserId) {
@@ -295,8 +301,7 @@ public class OrderServiceImpl implements OrderService{
      */
     @Override
     public JSONObject submissionUnifiedorder(HttpServletRequest request, String appId, String openid, String orderId) {
-        String URL = "https://pay.easy7share.com/pay/pushOrder";
-
+        StringBuilder urlBuilder = new StringBuilder(payUrl).append(PUSH_ORDER_URL);
         String ip = IpUtils.getIpAddr(request);
         OrderEntity orderEntity = findOrderByOrderId(orderId);
         List<OrderDetailVO> orderDetailVOList = findOrderDetailByOrderId(orderId);
@@ -307,7 +312,7 @@ public class OrderServiceImpl implements OrderService{
         String submissionUnifiedorderString = JSONObject.toJSONString(submissionUnifiedorderParam,
                 SerializerFeature.WriteNullStringAsEmpty, SerializerFeature.WriteNullBooleanAsFalse);
         logger.info("支付系统中的统一下单参数 "+submissionUnifiedorderString);
-        String result =  HttpUtil.doPost(URL,submissionUnifiedorderString);
+        String result =  HttpUtil.doPost(urlBuilder.toString(),submissionUnifiedorderString);
         logger.info("统一下单后返回的信息 " + result);
         JSONObject resultJson = JSON.parseObject(result);
         resultJson.put("orderId",orderId);
