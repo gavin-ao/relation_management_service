@@ -6,11 +6,13 @@ import data.driven.erm.business.commodity.CommodityService;
 import data.driven.erm.business.order.OrderRebateService;
 import data.driven.erm.business.order.OrderReceiveAddrService;
 import data.driven.erm.business.order.OrderService;
+import data.driven.erm.business.wechat.WechatAppInfoService;
 import data.driven.erm.business.wechat.WechatUserService;
 import data.driven.erm.common.Constant;
 import data.driven.erm.common.WechatApiSession;
 import data.driven.erm.entity.order.OrderEntity;
 import data.driven.erm.entity.order.OrderReceiveAddrEntity;
+import data.driven.erm.entity.wechat.WechatAppInfoEntity;
 import data.driven.erm.util.JSONUtil;
 import data.driven.erm.vo.commodity.CommodityVO;
 import data.driven.erm.vo.order.OrderDetailVO;
@@ -21,6 +23,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -55,15 +58,19 @@ public class WechatOrderController {
     private WechatUserService wechatUserService;
     @Autowired
     private PayAPI payAPI;
+    @Autowired
+    private WechatAppInfoService wechatAppInfoService;
+
     /**
      * 立即购买，查询产品和地址
+     *
      * @param sessionID
      * @param commodityId
      * @return
      */
     @ResponseBody
     @RequestMapping(path = "/purchaseImmediately")
-    public JSONObject purchaseImmediately(String sessionID, String commodityId){
+    public JSONObject purchaseImmediately(String sessionID, String commodityId) {
         WechatUserInfoVO wechatUserInfoVO = WechatApiSession.getSessionBean(sessionID).getUserInfo();
         JSONObject result = putMsg(true, "200", "调用成功");
         CommodityVO commodityVO = commodityService.getCommodityById(commodityId);
@@ -81,11 +88,11 @@ public class WechatOrderController {
         //TODO 优惠
         List<String> discountList = new ArrayList<String>();
 
-        if(orderService.haveOrder(wechatUserInfoVO.getAppInfoId(), wechatUserInfoVO.getWechatUserId())){
+        if (orderService.haveOrder(wechatUserInfoVO.getAppInfoId(), wechatUserInfoVO.getWechatUserId())) {
             discountList.add("95折");
-        }else{
+        } else {
             String inviter = wechatUserService.getInviter(wechatUserInfoVO.getAppInfoId(), wechatUserInfoVO.getWechatUserId());
-            if(inviter != null && inviter.trim().length() > 0){
+            if (inviter != null && inviter.trim().length() > 0) {
                 discountList.add("受邀优惠立减5%");
             }
         }
@@ -98,40 +105,49 @@ public class WechatOrderController {
 
     /**
      * 提交订单
+     *
      * @param sessionID
      * @param orderJson
      * @return
      */
     @ResponseBody
     @RequestMapping(path = "/submitOrder")
-    public JSONObject submitOrder(HttpServletRequest request,String sessionID, String orderJson){
+    @Transactional(rollbackFor = Exception.class)
+    public JSONObject submitOrder(HttpServletRequest request, String sessionID, String orderJson) {
         WechatUserInfoVO wechatUserInfoVO = WechatApiSession.getSessionBean(sessionID).getUserInfo();
         JSONObject result = orderService.updateOrder(orderJson, wechatUserInfoVO);
         logger.info("订单已插入数据库");
-        if (result.getBoolean("success")){
+        if (result.getBoolean("success")) {
             //如果订单生成成功，则调用支付统一下单接口
             logger.info("调用支付统一下单接口");
-            return orderService.submissionUnifiedorder(request,
-                    wechatUserInfoVO.getAppInfoId(),wechatUserInfoVO.getOpenId(),result.getString("orderId"));
+            WechatAppInfoEntity wechatAppInfoEntity = wechatAppInfoService.getAppInfoEntity(wechatUserInfoVO.getAppInfoId());
+            JSONObject resulJson = orderService.submissionUnifiedorder(request,
+                    wechatAppInfoEntity.getAppid(), wechatUserInfoVO.getOpenId(), result.getString("orderId"));
+            if (!resulJson.getBoolean("success")) {
+                throw new RuntimeException(resulJson.getString("msg"));
+            } else {
+                return resulJson;
+            }
         }
         return result;
     }
 
     /**
      * 完成支付
+     *
      * @param sessionID
      * @param orderId
      * @return
      */
     @ResponseBody
     @RequestMapping(path = "/completionOfPayment")
-    public JSONObject completionOfPayment(String sessionID, String orderId){
+    public JSONObject completionOfPayment(String sessionID, String orderId) {
         WechatUserInfoVO wechatUserInfoVO = WechatApiSession.getSessionBean(sessionID).getUserInfo();
         orderService.updateOrderState(orderId, wechatUserInfoVO.getWechatUserId(), 1);
         String userId = wechatUserService.getInviter(wechatUserInfoVO.getAppInfoId(), wechatUserInfoVO.getWechatUserId());
-        if(userId != null){
+        if (userId != null) {
             OrderVO order = orderService.getOrderById(orderId, wechatUserInfoVO.getAppInfoId(), wechatUserInfoVO.getWechatUserId());
-            if(order != null && order.getRebate().intValue() == 1){
+            if (order != null && order.getRebate().intValue() == 1) {
                 orderRebateService.insertOrderRebate(order, wechatUserInfoVO.getAppInfoId(), userId);
             }
         }
@@ -140,13 +156,14 @@ public class WechatOrderController {
 
     /**
      * 完成订单
+     *
      * @param sessionID
      * @param orderId
      * @return
      */
     @ResponseBody
     @RequestMapping(path = "/completionOfOrder")
-    public JSONObject completionOfOrder(String sessionID, String orderId){
+    public JSONObject completionOfOrder(String sessionID, String orderId) {
         WechatUserInfoVO wechatUserInfoVO = WechatApiSession.getSessionBean(sessionID).getUserInfo();
         orderService.updateOrderState(orderId, wechatUserInfoVO.getWechatUserId(), 2);
         return putMsg(true, "200", "调用成功");
@@ -154,19 +171,20 @@ public class WechatOrderController {
 
     /**
      * 根据用户查询订单列表
+     *
      * @param sessionID
      * @return
      */
     @ResponseBody
     @RequestMapping(path = "/findOrderList")
-    public JSONObject findOrderList(String sessionID){
+    public JSONObject findOrderList(String sessionID) {
         WechatUserInfoVO wechatUserInfoVO = WechatApiSession.getSessionBean(sessionID).getUserInfo();
         List<OrderVO> orderList = orderService.findOrderList(wechatUserInfoVO.getAppInfoId(), wechatUserInfoVO.getWechatUserId());
-        if(orderList != null && orderList.size() > 0){
-            for (OrderVO orderVO : orderList){
+        if (orderList != null && orderList.size() > 0) {
+            for (OrderVO orderVO : orderList) {
                 List<OrderDetailVO> detailList = orderVO.getDetailList();
-                if(detailList != null && detailList.size() > 0){
-                    for (OrderDetailVO orderDetailVO : detailList){
+                if (detailList != null && detailList.size() > 0) {
+                    for (OrderDetailVO orderDetailVO : detailList) {
                         orderDetailVO.setFilePath(Constant.STATIC_FILE_PATH + orderDetailVO.getFilePath());
                     }
                 }
@@ -185,25 +203,24 @@ public class WechatOrderController {
         boolean success = false;
         String msg = "";
         if (results.hasErrors()) {
-            result.put("success",false);
+            result.put("success", false);
             msg = results.getFieldError().getDefaultMessage();
-            result.put("msg",msg);
+            result.put("msg", msg);
             logger.error(msg);
             return result;
-        }else{
+        } else {
             String appId = payPrepayVO.getAppId();
             String storeId = payPrepayVO.getStoreId();
             String outTradeNo = payPrepayVO.getOutTradeNo();
-            result = payAPI.getPrepay(appId,storeId,outTradeNo);
-            if(result.getBoolean("success")){
+            result = payAPI.getPrepay(appId, storeId, outTradeNo);
+            if (result.getBoolean("success")) {
                 logger.info("成功获取统一订单信息");
-            }else{
+            } else {
                 logger.error(result.getString("msg"));
             }
             return result;
         }
     }
-
 
 
 }
