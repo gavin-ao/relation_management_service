@@ -43,4 +43,22 @@ public class WechatAppInfoServiceImpl implements WechatAppInfoService {
         List<String> filePathList = jdbcBaseDao.getColumns(String.class, sql, appInfoId);
         return filePathList;
     }
+
+    /**
+     * @description 获取实体
+     * @author lxl
+     * @date 2019-01-24 17:23
+     * @param appInfoId 小程序信息表Id
+     * @return
+     */
+    @Override
+    public WechatAppInfoEntity getAppInfoEntity(String appInfoId) {
+        String sql = "select app_info_id,app_name,appid,secret,create_at,creator from wechat_app_info " +
+                "where app_info_id = ?";
+        List<WechatAppInfoEntity> wechatAppInfoEntities = jdbcBaseDao.queryList(WechatAppInfoEntity.class,sql,appInfoId);
+        if (wechatAppInfoEntities != null && wechatAppInfoEntities.size() > 0){
+            return wechatAppInfoEntities.get(0);
+        }
+        return null;
+    }
 }
