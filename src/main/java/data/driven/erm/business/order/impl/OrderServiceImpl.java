@@ -309,7 +309,9 @@ public class OrderServiceImpl implements OrderService{
         String submissionUnifiedorderString = JSONObject.toJSONString(submissionUnifiedorderParam,
                 SerializerFeature.WriteNullStringAsEmpty, SerializerFeature.WriteNullBooleanAsFalse);
         String result =  HttpUtil.doPost(URL,submissionUnifiedorderString);
-        return JSON.parseObject(result);
+        JSONObject resultJson = JSON.parseObject(result);
+        resultJson.put("orderId",orderId);
+        return resultJson;
     }
 }
 
