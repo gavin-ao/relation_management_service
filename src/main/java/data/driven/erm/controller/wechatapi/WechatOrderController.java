@@ -9,6 +9,7 @@ import data.driven.erm.business.order.OrderService;
 import data.driven.erm.business.wechat.WechatUserService;
 import data.driven.erm.common.Constant;
 import data.driven.erm.common.WechatApiSession;
+import data.driven.erm.entity.order.OrderEntity;
 import data.driven.erm.entity.order.OrderReceiveAddrEntity;
 import data.driven.erm.util.JSONUtil;
 import data.driven.erm.vo.commodity.CommodityVO;
@@ -25,6 +26,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.util.ArrayList;
 import java.util.List;
@@ -102,9 +104,15 @@ public class WechatOrderController {
      */
     @ResponseBody
     @RequestMapping(path = "/submitOrder")
-    public JSONObject submitOrder(String sessionID, String orderJson){
+    public JSONObject submitOrder(HttpServletRequest request,String sessionID, String orderJson){
         WechatUserInfoVO wechatUserInfoVO = WechatApiSession.getSessionBean(sessionID).getUserInfo();
         JSONObject result = orderService.updateOrder(orderJson, wechatUserInfoVO);
+
+        if (result.getBoolean("success")){
+            //如果订单生成成功，则调用支付统一下单接口
+            return orderService.submissionUnifiedorder(request,
+                    wechatUserInfoVO.getAppInfoId(),wechatUserInfoVO.getOpenId(),result.getString("orderId"));
+        }
         return result;
     }
 
