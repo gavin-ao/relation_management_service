@@ -312,7 +312,7 @@ public class OrderServiceImpl implements OrderService{
         String submissionUnifiedorderString = JSONObject.toJSONString(submissionUnifiedorderParam,
                 SerializerFeature.WriteNullStringAsEmpty, SerializerFeature.WriteNullBooleanAsFalse);
         logger.info("支付系统中的统一下单参数 "+submissionUnifiedorderString);
-        String result =  HttpUtil.doPost(urlBuilder.toString(),submissionUnifiedorderString);
+        String result =  HttpUtil.doPostSSL(urlBuilder.toString(),submissionUnifiedorderString);
         logger.info("统一下单后返回的信息 " + result);
         JSONObject resultJson = JSON.parseObject(result);
         resultJson.put("orderId",orderId);
