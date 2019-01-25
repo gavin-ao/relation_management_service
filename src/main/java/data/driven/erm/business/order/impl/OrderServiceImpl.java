@@ -300,13 +300,14 @@ public class OrderServiceImpl implements OrderService{
      * @return
      */
     @Override
-    public JSONObject submissionUnifiedorder(HttpServletRequest request, String appId, String openid, String orderId) {
+    public JSONObject submissionUnifiedorder(HttpServletRequest request, String appId, String openid, String orderId,
+                                             String storeId) {
         StringBuilder urlBuilder = new StringBuilder(payUrl).append(PUSH_ORDER_URL);
         String ip = IpUtils.getIpAddr(request);
         OrderEntity orderEntity = findOrderByOrderId(orderId);
         List<OrderDetailVO> orderDetailVOList = findOrderDetailByOrderId(orderId);
         String catgName = getCatgName(orderId);
-        SubmissionUnifiedorderParam submissionUnifiedorderParam = new SubmissionUnifiedorderParam(appId,"1",catgName,
+        SubmissionUnifiedorderParam submissionUnifiedorderParam = new SubmissionUnifiedorderParam(appId,storeId,catgName,
                 orderId,orderEntity.getRealPayment().multiply(new BigDecimal("100")).intValue(),"JSAPI",openid,ip);
         //javaBean转json字符串
         String submissionUnifiedorderString = JSONObject.toJSONString(submissionUnifiedorderParam,

@@ -112,16 +112,16 @@ public class WechatOrderController {
     @ResponseBody
     @RequestMapping(path = "/submitOrder")
     @Transactional(rollbackFor = Exception.class)
-    public JSONObject submitOrder(HttpServletRequest request, String sessionID, String orderJson) {
+    public JSONObject submitOrder(HttpServletRequest request, String sessionID, String orderJson,String appId,String storeId) {
         WechatUserInfoVO wechatUserInfoVO = WechatApiSession.getSessionBean(sessionID).getUserInfo();
         JSONObject result = orderService.updateOrder(orderJson, wechatUserInfoVO);
+        logger.info("appId "+appId);
         logger.info("订单已插入数据库");
         if (result.getBoolean("success")) {
             //如果订单生成成功，则调用支付统一下单接口
             logger.info("调用支付统一下单接口");
-            WechatAppInfoEntity wechatAppInfoEntity = wechatAppInfoService.getAppInfoEntity(wechatUserInfoVO.getAppInfoId());
             JSONObject resulJson = orderService.submissionUnifiedorder(request,
-                    wechatAppInfoEntity.getAppid(), wechatUserInfoVO.getOpenId(), result.getString("orderId"));
+                    appId,wechatUserInfoVO.getOpenId(), result.getString("orderId"),storeId);
             if (!resulJson.getBoolean("success")) {
                 throw new RuntimeException(resulJson.getString("msg"));
             } else {

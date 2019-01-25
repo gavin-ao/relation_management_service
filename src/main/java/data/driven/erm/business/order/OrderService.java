@@ -91,7 +91,8 @@ public interface OrderService {
      * @param orderId 订单id
      * @return
      */
-    JSONObject submissionUnifiedorder(HttpServletRequest request,String appId, String openid, String orderId);
+    JSONObject submissionUnifiedorder(HttpServletRequest request,String appId, String openid, String orderId,
+                                      String storeId);
 
 
 }
