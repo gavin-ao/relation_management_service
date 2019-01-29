@@ -15,6 +15,7 @@ import data.driven.erm.util.IpUtils;
 import data.driven.erm.util.UUIDUtil;
 import data.driven.erm.vo.order.OrderDetailVO;
 import data.driven.erm.vo.order.OrderVO;
+import data.driven.erm.vo.pay.PayRefundParam;
 import data.driven.erm.vo.pay.SubmissionUnifiedorderParam;
 import data.driven.erm.vo.wechat.WechatUserInfoVO;
 import org.slf4j.Logger;
@@ -42,6 +43,8 @@ public class OrderServiceImpl implements OrderService{
     private static final Logger logger = LoggerFactory.getLogger(OrderServiceImpl.class);
     /**统一下单信息的接口地址**/
     private static String PUSH_ORDER_URL = "/pay/pushOrder";
+    /**申请退款接口地址**/
+    private static String PUSH_REFUND_URL ="/refund/";
 
     @Autowired
     private JDBCBaseDao jdbcBaseDao;
@@ -318,6 +321,36 @@ public class OrderServiceImpl implements OrderService{
         JSONObject resultJson = JSON.parseObject(result);
         resultJson.put("orderId",orderId);
         return resultJson;
+    }
+
+    /**
+     * @description 申请退款
+     * @author lxl
+     * @date 2019-01-29 15:34
+     * @param appid 小程序id
+     * @param storeId 门店id
+     * @param transactionId 微信订单号
+     * @param outTradeNo 商户订单号
+     * @param outRefundNo 商户退款单号
+     * @param totalFee 订单金额
+     * @param refundFee 退款金额
+     * @return
+     */
+    @Override
+    public JSONObject orderRefund(String appid, String storeId,String transactionId, String outTradeNo, String outRefundNo,
+                                  BigDecimal totalFee, BigDecimal refundFee) {
+        StringBuilder urlBuilder = new StringBuilder(payUrl).append(PUSH_REFUND_URL);
+        PayRefundParam payRefundParam = new PayRefundParam(appid,storeId,transactionId,outTradeNo,outRefundNo,
+                totalFee.multiply(new BigDecimal("100")).intValue(),refundFee.multiply(new BigDecimal("100")).intValue());
+        //javaBean转json字符串
+        String payRefundString = JSONObject.toJSONString(payRefundParam,SerializerFeature.WriteNullStringAsEmpty,
+                SerializerFeature.WriteNullBooleanAsFalse);
+        logger.info("申请退款参数： "+payRefundString);
+        String result = HttpUtil.doPostSSL(urlBuilder.toString(),payRefundString);
+        logger.info("申请退款返回的信息: "+result);
+        JSONObject resultJson = JSON.parseObject(result);
+        resultJson.put("orderId",outTradeNo);
+       return resultJson;
     }
 }
 

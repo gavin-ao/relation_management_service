@@ -7,6 +7,7 @@ import data.driven.erm.vo.order.OrderVO;
 import data.driven.erm.vo.wechat.WechatUserInfoVO;
 
 import javax.servlet.http.HttpServletRequest;
+import java.math.BigDecimal;
 import java.util.List;
 
 /**
@@ -93,6 +94,22 @@ public interface OrderService {
      */
     JSONObject submissionUnifiedorder(HttpServletRequest request,String appId, String openid, String orderId,
                                       String storeId);
+
+    /**
+     * @description 申请退款
+     * @author lxl
+     * @date 2019-01-29 15:34
+     * @param appid 小程序id
+     * @param storeId 门店id
+     * @param transactionId 微信订单号
+     * @param outTradeNo 商户订单号
+     * @param outRefundNo 商户退款单号
+     * @param totalFee 订单金额
+     * @param refundFee 退款金额
+     * @return
+     */
+    JSONObject orderRefund(String appid, String storeId,String transactionId, String outTradeNo, String outRefundNo,
+                           BigDecimal totalFee, BigDecimal refundFee);
 
 
 }
