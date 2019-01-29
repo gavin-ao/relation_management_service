@@ -30,6 +30,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
@@ -243,35 +244,25 @@ public class WechatOrderController {
 
     @RequestMapping(path = "/prepay")
     @ResponseBody
-    public JSONObject getPrepayInfo(@RequestBody @Valid PayPrepayVO payPrepayVO, BindingResult results) {
-        JSONObject result = new JSONObject();
+    public JSONObject getPrepayInfo( String sessionID,String appId,String storeId,String outTradeNo) {
+        logger.info("开始获取统一下单信息");
+        JSONObject result;
         String msg = "";
-        if (results.hasErrors()) {
+        result = payAPI.getPrepay(appId, storeId, outTradeNo);
+        if (result == null) {
+            result = new JSONObject();
             result.put("success", false);
-            msg = results.getFieldError().getDefaultMessage();
-            //不能暴露太具体的错误信息
-            result.put("msg","数据异常");
+            msg = "获取下单信息失败，请重试";
+            result.put("msg", msg);
             logger.error(msg);
             return result;
-        } else {
-            String appId = payPrepayVO.getAppId();
-            String storeId = payPrepayVO.getStoreId();
-            String outTradeNo = payPrepayVO.getOutTradeNo();
-            result = payAPI.getPrepay(appId, storeId, outTradeNo);
-            if(result == null){
-                result.put("success",false);
-                msg = "获取下单信息失败，请重试";
-                result.put("msg",msg);
-                logger.error(msg);
-                return result;
-            }
-            if(result.getBoolean("success")){
-                logger.info("成功获取统一订单信息");
-            } else {
-                logger.error(result.getString("msg"));
-            }
-            return result;
         }
+        if (result.getBoolean("success")) {
+            logger.info("成功获取统一订单信息");
+        } else {
+            logger.error(result.getString("msg"));
+        }
+        return result;
     }
 
 
