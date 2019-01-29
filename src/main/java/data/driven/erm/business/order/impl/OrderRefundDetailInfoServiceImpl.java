@@ -9,8 +9,8 @@ import data.driven.erm.util.UUIDUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
-import java.sql.SQLException;
 import java.util.Date;
 
 import static data.driven.erm.util.JSONUtil.putMsg;
@@ -21,6 +21,7 @@ import static data.driven.erm.util.JSONUtil.putMsg;
  * @Date: 2019/1/29 14:45
  * @Version 1.0
  */
+@Service
 public class OrderRefundDetailInfoServiceImpl implements OrderRefundDetailInfoService {
     private static final Logger logger = LoggerFactory.getLogger(OrderRefundDetailInfoServiceImpl.class);
 
