@@ -5,6 +5,7 @@ import data.driven.erm.api.PayAPI;
 import data.driven.erm.business.commodity.CommodityService;
 import data.driven.erm.business.order.OrderRebateService;
 import data.driven.erm.business.order.OrderReceiveAddrService;
+import data.driven.erm.business.order.OrderRefundDetailInfoService;
 import data.driven.erm.business.order.OrderService;
 import data.driven.erm.business.wechat.WechatAppInfoService;
 import data.driven.erm.business.wechat.WechatUserService;
@@ -12,8 +13,10 @@ import data.driven.erm.common.Constant;
 import data.driven.erm.common.WechatApiSession;
 import data.driven.erm.entity.order.OrderEntity;
 import data.driven.erm.entity.order.OrderReceiveAddrEntity;
+import data.driven.erm.entity.order.OrderRefundDetailInfoEntity;
 import data.driven.erm.entity.wechat.WechatAppInfoEntity;
 import data.driven.erm.util.JSONUtil;
+import data.driven.erm.util.UUIDUtil;
 import data.driven.erm.vo.commodity.CommodityVO;
 import data.driven.erm.vo.order.OrderDetailVO;
 import data.driven.erm.vo.order.OrderVO;
@@ -60,6 +63,9 @@ public class WechatOrderController {
     private PayAPI payAPI;
     @Autowired
     private WechatAppInfoService wechatAppInfoService;
+    /**订单退款详情信息表Service**/
+    @Autowired
+    private OrderRefundDetailInfoService orderRefundDetailInfoService;
 
     /**
      * 立即购买，查询产品和地址
@@ -152,6 +158,46 @@ public class WechatOrderController {
         }
         return putMsg(true, "200", "调用成功");
     }
+
+    /**
+     * @description 申请退款
+     * @author lxl
+     * @date 2019-01-29 15:00
+     * @param sessionID session信息
+     * @param  orderId 订单id
+     * @param storeId 门店id
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping(path = "/orderRefund")
+    public JSONObject orderRefund( String sessionID, String orderId, String storeId){
+        WechatUserInfoVO wechatUserInfoVO = WechatApiSession.getSessionBean(sessionID).getUserInfo();
+        //得到订单信息
+        OrderEntity orderEntity = orderService.findOrderByOrderId(orderId);
+        //得到小程序信息
+        WechatAppInfoEntity wechatAppInfoEntity = wechatAppInfoService.getAppInfoEntity(wechatUserInfoVO.getAppInfoId());
+        //初始化订单退款详情信息表实体
+        String outRefundNo = UUIDUtil.getUUID();
+        logger.info("商户退款单号： "+outRefundNo);
+        OrderRefundDetailInfoEntity rrderRefundDetailInfoEntity = new OrderRefundDetailInfoEntity(wechatAppInfoEntity.getAppid(),
+                wechatUserInfoVO.getWechatUserId(),storeId,"",outRefundNo,orderId,orderEntity.getRealPayment(),
+                orderEntity.getRealPayment());
+        //插入订单退款详情
+        JSONObject resultJson = orderRefundDetailInfoService.insertOrderRefundDetailInfoEntity(rrderRefundDetailInfoEntity);
+        if (resultJson.getBoolean("success")){
+            JSONObject refundJson = orderService.orderRefund(wechatAppInfoEntity.getAppid(),storeId,"",orderId,
+                    outRefundNo,orderEntity.getRealPayment(),orderEntity.getRealPayment());
+            logger.info("调用申请退款接口返回的信息： "+refundJson.toString());
+            if (refundJson.getBoolean("success")){
+                //修改订单状态3为退款成功
+                orderService.updateOrderState(orderId, wechatUserInfoVO.getWechatUserId(), 3);
+            }
+            return refundJson;
+        }else{
+            return resultJson;
+        }
+    }
+
 
     /**
      * 完成订单
