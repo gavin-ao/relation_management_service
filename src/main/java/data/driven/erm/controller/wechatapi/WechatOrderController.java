@@ -52,7 +52,7 @@ public class WechatOrderController {
     /**返回状态码**/
     private static final String RESULT_CODE = "result_code";
     /**状态码信息**/
-    private static final String SUCCESS = "SUCCESS";
+    private static final String SUCCESS = "success";
 
     @Autowired
     private OrderService orderService;
@@ -128,12 +128,12 @@ public class WechatOrderController {
         JSONObject result = orderService.updateOrder(orderJson, wechatUserInfoVO);
         logger.info("appId "+appId);
         logger.info("订单已插入数据库");
-        if (result.getBoolean("success")) {
+        if (result.getBoolean(SUCCESS)) {
             //如果订单生成成功，则调用支付统一下单接口
             logger.info("调用支付统一下单接口");
             JSONObject resulJson = orderService.submissionUnifiedorder(request,
                     appId,wechatUserInfoVO.getOpenId(), result.getString("orderId"),storeId);
-            if (!resulJson.getBoolean("success")) {
+            if (!resulJson.getBoolean(SUCCESS)) {
                 throw new RuntimeException(resulJson.getString("msg"));
             } else {
                 return resulJson;
@@ -189,12 +189,13 @@ public class WechatOrderController {
                 orderEntity.getRealPayment());
         //插入订单退款详情
         JSONObject resultJson = orderRefundDetailInfoService.insertOrderRefundDetailInfoEntity(rrderRefundDetailInfoEntity);
-        if (resultJson.getBoolean("success")){
+        if (resultJson.getBoolean(SUCCESS)){
             JSONObject refundJson = orderService.orderRefund(wechatAppInfoEntity.getAppid(),storeId,"",orderId,
                     outRefundNo,orderEntity.getRealPayment(),orderEntity.getRealPayment());
             logger.info("调用申请退款接口返回的信息： "+refundJson.toString());
-            if (SUCCESS.equals(refundJson.getString(RESULT_CODE))){
+            if (refundJson.getBoolean(SUCCESS)){
                 //修改订单状态3为退款成功
+                logger.info("进入修改订单状态中");
                 orderService.updateOrderState(orderId, wechatUserInfoVO.getWechatUserId(), 3);
             }
             return refundJson;
