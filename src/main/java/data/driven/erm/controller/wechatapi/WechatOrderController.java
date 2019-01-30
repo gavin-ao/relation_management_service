@@ -49,6 +49,10 @@ import static data.driven.erm.util.JSONUtil.putMsg;
 public class WechatOrderController {
 
     private static final Logger logger = LoggerFactory.getLogger(WechatOrderController.class);
+    /**返回状态码**/
+    private static final String RESULT_CODE = "result_code";
+    /**状态码信息**/
+    private static final String SUCCESS = "SUCCESS";
 
     @Autowired
     private OrderService orderService;
@@ -189,7 +193,7 @@ public class WechatOrderController {
             JSONObject refundJson = orderService.orderRefund(wechatAppInfoEntity.getAppid(),storeId,"",orderId,
                     outRefundNo,orderEntity.getRealPayment(),orderEntity.getRealPayment());
             logger.info("调用申请退款接口返回的信息： "+refundJson.toString());
-            if (refundJson.getBoolean("success")){
+            if (SUCCESS.equals(refundJson.getString(RESULT_CODE))){
                 //修改订单状态3为退款成功
                 orderService.updateOrderState(orderId, wechatUserInfoVO.getWechatUserId(), 3);
             }
