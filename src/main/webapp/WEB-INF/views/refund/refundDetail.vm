@@ -1,0 +1,33 @@
+##<link href="/static/plugins/refundList/refundList.css" rel="stylesheet">
+##<script src="/static/plugins/refundList/refundList.js"></script>
+
+<div>
+
+    <form id="formRefundDetail">
+        <div >
+            <span class="text">退货原因:</span>
+            <input type="text" name="refundReason" value="$!{data.refundReason}" class="form-control" style="width:auto" onblur="fieldLength(this)"/>
+        </div>
+        <div >
+            <span class="text">退货方式:</span>
+            <input type="text" name="processingMode" value="$!{data.processingMode}" class="form-control" style="width:auto"onblur="fieldLength(this)"/>
+        </div>
+        <div >
+            <span class="text">商品金额:</span>
+            <input type="text" name="totalFee" value="$!{data.totalFee}" class="form-control" style="width:auto"onblur="fieldLength(this)"/>
+        </div>
+        <div >
+            <span class="text">退款金额:</span>
+            <input type="text" name="refundFee" value="$!{data.refundFee}" class="form-control"style="width:auto" onblur="fieldLength(this)"/>
+        </div>
+        <div >
+            <span class="text">备注 :</span>
+            <input type="text" name="remarks" value="$!{data.remarks}"class="form-control" style="width:auto"onblur="fieldLength(this)"/>
+        </div>
+        #if($!{data.orderState}!=3)
+            <button onclick="agreeRefund(true,'$!{data.storeId}','$!{data.outRefundNo}')">同意退款</button>
+            <button onclick="agreeRefund(false,'$!{data.storeId}','$!{data.outRefundNo}')">拒绝退款</button>
+        #end
+
+    </form>
+</div>

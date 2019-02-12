@@ -197,6 +197,12 @@ public class OrderServiceImpl implements OrderService{
     }
 
     @Override
+    public void updateOrderState(String orderId,Integer state) {
+        String sql = "update order_info set state = ? where order_id = ? ";
+        jdbcBaseDao.executeUpdate(sql, state, orderId);
+    }
+
+    @Override
     public List<OrderVO> findOrderList(String appInfoId, String wechatUserId) {
         String sql = "select order_id,addr_id,order_num,real_payment,state,create_at from order_info where wechat_user_id = ? and app_info_id = ? order by create_at desc";
         List<OrderVO> orderVOList = jdbcBaseDao.queryList(OrderVO.class, sql, wechatUserId, appInfoId);

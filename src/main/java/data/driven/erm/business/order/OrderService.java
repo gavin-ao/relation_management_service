@@ -43,6 +43,18 @@ public interface OrderService {
     public void updateOrderState(String orderId, String wechatUserId, Integer state);
 
     /**
+    * 修改订单状态
+    * @author Logan
+    * @date 2019-02-13 01:41
+    * @param orderId
+    * @param state
+
+    * @return
+    */
+    public void updateOrderState(String orderId, Integer state);
+
+
+    /**
      * 查询当前用户的所有订单
      * @param appInfoId
      * @param wechatUserId

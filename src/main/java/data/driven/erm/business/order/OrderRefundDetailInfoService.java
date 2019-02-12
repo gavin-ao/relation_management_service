@@ -1,5 +1,6 @@
 package data.driven.erm.business.order;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import data.driven.erm.component.Page;
 import data.driven.erm.component.PageBean;
@@ -34,5 +35,27 @@ public interface OrderRefundDetailInfoService {
     * @return
     */
     Page<OrderRefundDetailInfoVO> findRefundPage(String keyword, String userId, PageBean pageBean);
+
+    /**
+    * 获取退款详情
+    * @author Logan
+    * @date 2019-02-13 00:09
+    * @param storeId
+    * @param outRefundNo
+
+    * @return
+    */
+    OrderRefundDetailInfoVO getRefundDetailInfo(String storeId,String outRefundNo);
+
+    /**
+    * 是否同意退款
+    * @author Logan
+    * @date 2019-02-13 01:14
+    * @param agree
+    * @param storeId
+    * @param outRefundNo
+
+    */
+    void agreeRefund(Boolean agree,String storeId,String outRefundNo);
 
 }

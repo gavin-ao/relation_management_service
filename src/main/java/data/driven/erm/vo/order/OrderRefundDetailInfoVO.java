@@ -26,6 +26,10 @@ public class OrderRefundDetailInfoVO extends OrderRefundDetailInfoEntity {
                 refundReason,  mobilePhone,  remarks);
     }
 
+    public OrderRefundDetailInfoVO() {
+
+    }
+
     public Integer getOrderState() {
         return orderState;
     }

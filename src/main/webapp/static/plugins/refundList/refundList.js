@@ -16,10 +16,28 @@ var tab = '';
         };
         tab = tablesData(tab, condition)
     })
+    var table = $('#example').DataTable();
+    $('#example tbody').on('click', 'tr', function () {
+        var data = table.row( this ).data();
+        getDetaiInfo(data);
+    } );
 }());
 
 
+function getDetaiInfo(row) {
+    var outRefundNo = row.outRefundNo;
+    var storeId = row.storeId;
+    $.ajax({
+        url: "/refund/detail/"+storeId+"/"+outRefundNo,
+        type: "post",
+        dataType: "html",
+        success: function (data) {
+            $("#detailContainer").html("");
+            $("#detailContainer").html(data);
+        }
+    })
 
+}
 function tablesData(datatable, condition) {
 
     if (datatable != '') {
@@ -71,11 +89,22 @@ function tablesData(datatable, condition) {
                 dataType: "json",
                 success: function (result) {
                     if (result.success) {
-                        var arry = ["appid", "storeId","outTradeNo", "outRefundNo", "commodityName", "totalFee", "refundFee", "refundFee","orderState","mobilePhone","createAt"];
+                        var arry = ["appid", "storeId", "outRefundNo","outTradeNo", "commodityName", "totalFee", "refundFee", "refundFee","orderState","mobilePhone","createAt"];
                         var tabledata = [];
                         for (var i = 0; i < result.page.result.length; i++) {
                             result.page.result[i]["cid"] = data.start + i + 1;
                             result.page.result[i]["createAt"] = timestampToTime(result.page.result[i]["createAt"] / 1000);
+                            switch (result.page.result[i]["orderState"]) {
+                                case 3:result.page.result[i]["refundState"] ="退款成功";
+                                       break;
+                                case 4:result.page.result[i]["refundState"] ="退款中";
+                                       break;
+                                case 5:result.page.result[i]["refundState"] ="同意退款";
+                                    break;
+                                case 6: result.page.result[i]["refundState"] ="拒绝退款";
+                                    break;
+                                default:result.page.result[i]["refundState"] ="";
+                            }
                             tabledata.push(returnIsNotInArray(arry, result.page.result[i]));
                         }
                         setTimeout(function () {
@@ -91,10 +120,6 @@ function tablesData(datatable, condition) {
                                 var val = $(this).text().trim();
                                 $(this).attr({title: val});
                             });
-                            // var html = '<span style="display: inline-block;margin-left: 20px;">共计 '+ result.hit +' 条</span>';
-                            //
-                            // $("#dataTables-example_length").find("span").remove();
-                            // $("#dataTables-example_length").append(html)
                         }, 200);
                     } else {
                         requestError(result);
@@ -106,14 +131,15 @@ function tablesData(datatable, condition) {
         aoColumns: [
             {"data": "appid", "sClass": "hidden"},
             {"data": "storeId", "sClass": "hidden"},
+            {"data": "orderState","sClass": "hidden"},
             {"data": "cid"},
-            {"data": "outTradeNo"},
             {"data": "outRefundNo"},
+            {"data": "outTradeNo"},
             {"data": "commodityName"},
             {"data": "totalFee"},
             {"data": "refundFee"},
             {"data": "mobilePhone"},
-            {"data": "orderState"},
+            {"data": "refundState"},
         ],
         aoColumnDefs: [
             // {
@@ -159,4 +185,16 @@ function tablesData(datatable, condition) {
     });
 
     return table;
+}
+
+function agreeRefund(agree,storeId,outRefundNo){
+    $.ajax({
+        url: "/refund/agreeRefund/"+agree+"/"+storeId+"/"+outRefundNo,
+        type: "post",
+        dataType: "json",
+        success: function (data) {
+            var table = $('#example').DataTable();
+            table.row($(this).parents('tr')).remove().draw();
+        }
+    })
 }

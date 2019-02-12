@@ -69,7 +69,7 @@ public class OrderRefundDetailInfoServiceImpl implements OrderRefundDetailInfoSe
      */
     @Override
     public Page<OrderRefundDetailInfoVO> findRefundPage(String keyword, String userId, PageBean pageBean) {
-        String sql = "SELECT refundInfo.*, refundInfo.state as orderState FROM order_refund_detail_info refundInfo\n" +
+        String sql = "SELECT refundInfo.*, orderInfo.state as orderState FROM order_refund_detail_info refundInfo\n" +
                      "JOIN order_info orderInfo ON refundInfo.out_trade_no = orderInfo.order_id \n" +
                       "WHERE orderInfo.state IN ( 3, 4, 5, 6 ) ";
         StringBuffer where = new StringBuffer();
@@ -84,5 +84,44 @@ public class OrderRefundDetailInfoServiceImpl implements OrderRefundDetailInfoSe
         }
         sql += " order by create_at desc";
         return jdbcBaseDao.queryPageWithListParam(OrderRefundDetailInfoVO.class, pageBean, sql, paramList);
+    }
+
+    /**
+     * 获取退款详情
+     *
+     * @param storeId
+     * @param outRefundNo
+     * @return
+     * @author Logan
+     * @date 2019-02-13 00:09
+     */
+    @Override
+    public OrderRefundDetailInfoVO getRefundDetailInfo(String storeId, String outRefundNo) {
+        String sql = "SELECT refundInfo.*, orderInfo.state as orderState FROM order_refund_detail_info refundInfo\n" +
+                "JOIN order_info orderInfo ON refundInfo.out_trade_no = orderInfo.order_id \n" +
+                "WHERE refundInfo.store_id=? and refundInfo.out_refund_no=? ";
+        return jdbcBaseDao.executeQuery(OrderRefundDetailInfoVO.class,sql,storeId,outRefundNo);
+    }
+
+    /**
+     * 是否同意退款
+     *
+     * @param agree
+     * @param storeId
+     * @param outRefundNo
+     * @author Logan
+     * @date 2019-02-13 01:14
+     */
+    @Override
+    public void agreeRefund(Boolean agree, String storeId, String outRefundNo) {
+        Integer state=6;
+        if(agree){
+            state = 5;
+        }
+        String sql = "UPDATE order_info orderInfo\n" +
+                     "JOIN order_refund_detail_info refundInfo ON refundInfo.out_trade_no = orderInfo.order_id \n" +
+                     "SET orderInfo.state = ? \n" +
+                     "WHERE refundInfo.store_id=? and refundInfo.out_refund_no=? \n";
+        jdbcBaseDao.executeUpdate(sql,state,storeId,outRefundNo);
     }
 }

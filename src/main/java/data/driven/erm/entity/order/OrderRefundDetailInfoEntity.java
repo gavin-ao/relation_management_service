@@ -116,6 +116,9 @@ public class OrderRefundDetailInfoEntity {
         this.remarks = remarks;
     }
 
+    public OrderRefundDetailInfoEntity() {
+    }
+
     public String getCommodityName() {
         return commodityName;
     }
