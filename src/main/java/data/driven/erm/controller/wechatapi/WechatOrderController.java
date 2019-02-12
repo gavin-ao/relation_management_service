@@ -36,6 +36,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import static data.driven.erm.util.JSONUtil.putMsg;
@@ -186,7 +187,7 @@ public class WechatOrderController {
         logger.info("商户退款单号： "+outRefundNo);
         OrderRefundDetailInfoEntity rrderRefundDetailInfoEntity = new OrderRefundDetailInfoEntity(wechatAppInfoEntity.getAppid(),
                 wechatUserInfoVO.getWechatUserId(),storeId,"",outRefundNo,orderId,orderEntity.getRealPayment(),
-                orderEntity.getRealPayment());
+                orderEntity.getRealPayment(),"",new Date(),1,2,"","");
         //插入订单退款详情
         JSONObject resultJson = orderRefundDetailInfoService.insertOrderRefundDetailInfoEntity(rrderRefundDetailInfoEntity);
         if (resultJson.getBoolean(SUCCESS)){
