@@ -41,7 +41,7 @@
 //         }
 //     })
     navSelect();
-    $($("#main-menu").find("li>ul>li")[0]).trigger("click");
+    $($("#main-menu").find("li")[0]).trigger("click");
     // $.ajax({
     //     url: "/system/store/getStoreId",
     //     type: "post",
@@ -156,23 +156,23 @@ function navSelect() {
         if(navName == "companyManage"){
             $("#contain_head_left").show();
             $.ajax({
-                url: "/wechat/total/dataStatistics",
+                url: "/wechat/total/bossKanban",
                 type: "post",
                 dataType: "html",
                 success: function (data) {
-                    $("#main-contain").html("");
-                    $("#main-contain").html(data);
+                    $("#contain_main").html("");
+                    $("#contain_main").html(data);
                 }
             })
         }else if(navName == "refundList"){
 
             $.ajax({
-                url: "/wechat/total/dataStatistics",
+                url: "/refund/index",
                 type: "post",
                 dataType: "html",
                 success: function (data) {
-                    $("#main-contain").html("");
-                    $("#main-contain").html(data);
+                    $("#contain_main").html("");
+                    $("#contain_main").html(data);
                 }
             })
         }else if(navName == "awardCancel"){
