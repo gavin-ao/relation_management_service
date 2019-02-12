@@ -79,12 +79,12 @@ public class OrderRefundDetailInfoEntity {
     /**
      * 处理方式
      */
-    private Integer processingMode;
+    private String processingMode;
 
     /**
      * 退款原因
      */
-    private Integer refundReason;
+    private String refundReason;
 
     /**
      * 手机号码
@@ -98,8 +98,8 @@ public class OrderRefundDetailInfoEntity {
 
     public OrderRefundDetailInfoEntity(String appid, String wechatUserId, String storeId, String transactionId,
                                        String outRefundNo, String outTradeNo, BigDecimal totalFee, BigDecimal refundFee,
-                                       String commodityName,Date transactionDate,Integer processingMode,
-                                       Integer refundReason,String mobilePhone,String remarks) {
+                                       String commodityName,Date transactionDate,String processingMode,
+                                       String refundReason,String mobilePhone,String remarks) {
         this.appid = appid;
         this.wechatUserId = wechatUserId;
         this.storeId = storeId;
@@ -132,22 +132,6 @@ public class OrderRefundDetailInfoEntity {
         this.transactionDate = transactionDate;
     }
 
-    public Integer getProcessingMode() {
-        return processingMode;
-    }
-
-    public void setProcessingMode(Integer processingMode) {
-        this.processingMode = processingMode;
-    }
-
-    public Integer getRefundReason() {
-        return refundReason;
-    }
-
-    public void setRefundReason(Integer refundReason) {
-        this.refundReason = refundReason;
-    }
-
     public String getMobilePhone() {
         return mobilePhone;
     }
@@ -170,6 +154,22 @@ public class OrderRefundDetailInfoEntity {
 
     public void setOrderRefundDetailInfoId(String orderRefundDetailInfoId) {
         this.orderRefundDetailInfoId = orderRefundDetailInfoId;
+    }
+
+    public String getProcessingMode() {
+        return processingMode;
+    }
+
+    public void setProcessingMode(String processingMode) {
+        this.processingMode = processingMode;
+    }
+
+    public String getRefundReason() {
+        return refundReason;
+    }
+
+    public void setRefundReason(String refundReason) {
+        this.refundReason = refundReason;
     }
 
     public String getAppid() {
