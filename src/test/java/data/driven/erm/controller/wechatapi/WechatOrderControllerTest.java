@@ -1,6 +1,8 @@
 package data.driven.erm.controller.wechatapi;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import data.driven.erm.util.HttpUtil;
 import data.driven.erm.vo.pay.PayPrepayVO;
 import org.junit.Assert;
 import org.junit.Before;
@@ -43,8 +45,17 @@ public class WechatOrderControllerTest extends UnitTestBase {
         prepayVO.setOutTradeNo("20181agv2184946");
         prepayVO.setStoreId("1");
         String param = JSONObject.toJSONString(prepayVO);
-        RequestBuilder request = MockMvcRequestBuilders.get("/wechatapi/order/prepay")
-                .contentType(MediaType.APPLICATION_JSON_UTF8).content(param);
+        JSONObject paramObj = JSONObject.parseObject(param);
+        paramObj.put("sessionID","sessionID");
+//        HttpUtil.doPost("/wechatapi/order/prepay",paramObj);
+         param =JSONObject.toJSONString(paramObj);
+         JSONObject  obj = new JSONObject();
+         obj.put("appId","wx0e8660984c4eb63b");
+         obj.put("storeId","1");
+         obj.put("outTradeNo","20181agv2184946");
+         obj.put("sessionID","sessionID");
+        RequestBuilder request = MockMvcRequestBuilders.post("/wechatapi/order/prepay")
+                .contentType(MediaType.APPLICATION_JSON_UTF8).content(JSONObject.toJSONString(obj));
 
         MvcResult mvcResult = null;
         try {

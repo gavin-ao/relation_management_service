@@ -47,7 +47,7 @@
 ##<script src="/static/plugins/echarts.min.js"></script>
 ##<script src="/static/plugins/china.js"></script>
 <script src="http://gallery.echartsjs.com/dep/echarts/map/js/china.js"></script>
-
+<script src="/static/plugins/dataTables/datatables.js"></script>
 <script src="/static/plugins/common/d3.js"></script>
 <script src="/static/service/login.js"></script>
 <script src="/static/plugins/Table.js"></script>
