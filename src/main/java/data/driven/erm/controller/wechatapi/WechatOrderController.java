@@ -187,7 +187,7 @@ public class WechatOrderController {
         logger.info("商户退款单号： "+outRefundNo);
         OrderRefundDetailInfoEntity rrderRefundDetailInfoEntity = new OrderRefundDetailInfoEntity(wechatAppInfoEntity.getAppid(),
                 wechatUserInfoVO.getWechatUserId(),storeId,"",outRefundNo,orderId,orderEntity.getRealPayment(),
-                orderEntity.getRealPayment(),"",new Date(),1,2,"","");
+                orderEntity.getRealPayment(),"",new Date(),"","","","");
         //插入订单退款详情
         JSONObject resultJson = orderRefundDetailInfoService.insertOrderRefundDetailInfoEntity(rrderRefundDetailInfoEntity);
         if (resultJson.getBoolean(SUCCESS)){
@@ -271,5 +271,61 @@ public class WechatOrderController {
         return result;
     }
 
-
+    /**
+     * @description 获取申请退款详情
+     * @author lxl
+     * @date 2019-02-12 16:28
+     * @param sessionID session信息
+     * @param orderId 订单id
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping(path = "/refundDetail")
+    public JSONObject refundDetail(String sessionID,String orderId){
+//        WechatUserInfoVO wechatUserInfoVO = WechatApiSession.getSessionBean(sessionID).getUserInfo();
+        //得到订单信息
+        OrderEntity orderEntity = orderService.findOrderByOrderId(orderId);
+        List<OrderDetailVO> orderDetailVOlist = orderService.findOrderDetailByOrderId(orderId);
+        StringBuffer commodityName = new StringBuffer();
+        if(orderDetailVOlist != null && orderDetailVOlist.size() > 0){
+            for (int i = 0 ; i < orderDetailVOlist.size(); i++){
+                OrderDetailVO orderDetailVO = orderDetailVOlist.get(i);
+                if (i == orderDetailVOlist.size() - 1){
+                    commodityName.append(orderDetailVO.getCommodityName());
+                }else{
+                    commodityName.append(orderDetailVO.getCommodityName()+"、");
+                }
+            }
+        }else{
+            return putMsg(false, "200", "获取申请退款信息失败");
+        }
+        JSONObject refundJson = putMsg(true, "200", "插入订单退款详情信息成功");
+        refundJson.put("commodityName",commodityName.toString());
+        refundJson.put("totalFee",orderEntity.getRealPayment());
+        refundJson.put("orderId",orderId);
+        refundJson.put("refundFee",orderEntity.getRealPayment());
+        refundJson.put("transactionDate",orderEntity.getCreateAt());
+        return refundJson;
+    }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
