@@ -8,7 +8,6 @@ function clickToZoomIn(imagesDom) {
 function imgShow(outerdiv, innerdiv, bigimg, _this){
     var src = _this.attr("src");//获取当前点击的pimg元素中的src属性
     $(bigimg).attr("src", src);//设置#bigimg元素的src属性
-   debugger;
     /*获取当前点击图片的真实大小，并显示弹出层及大图*/
     $("<img/>").attr("src", src).load(function(){
         var windowW = $(window).width();//获取当前窗口宽度
