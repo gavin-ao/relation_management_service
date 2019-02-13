@@ -1,11 +1,11 @@
 ##<link href="/static/plugins/refundList/refundList.css" rel="stylesheet">
 <script src="/static/plugins/refundList/imagesView.js"></script>
 
-<div style="margin-top: 80px">
+<div style="margin-top: 80px ;width:100%">
 
         <div >
-            <span class="text">订单号:</span>
-            <input type="text" name="outTradeNo" value="$!{data.outTradeNo}" class="form-control" style="width:auto" />
+            <span class="text">退款单号:</span>
+            <input type="text" name="outTradeNo" value="$!{data.outRefundNo}" class="form-control" style="width:auto" />
         </div>
         <div >
             <span class="text">退货原因:</span>
