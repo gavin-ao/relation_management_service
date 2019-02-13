@@ -190,10 +190,10 @@ function tablesData(datatable, condition) {
 }
 
 function agreeRefund(agree,storeId,outRefundNo){
-    var go = true;
+    var go = false;
     if(agree){
         $.MsgBox.Confirm("谨慎操作","请谨慎！点【确定】将继续，退款返回给买家，不可撤销！",function () {
-            go=false;
+            go=true;
         });
     }else{
        go = true;
