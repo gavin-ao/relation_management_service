@@ -3,10 +3,8 @@ package data.driven.erm.controller.wechatapi;
 import com.alibaba.fastjson.JSONObject;
 import data.driven.erm.api.PayAPI;
 import data.driven.erm.business.commodity.CommodityService;
-import data.driven.erm.business.order.OrderRebateService;
-import data.driven.erm.business.order.OrderReceiveAddrService;
-import data.driven.erm.business.order.OrderRefundDetailInfoService;
-import data.driven.erm.business.order.OrderService;
+import data.driven.erm.business.order.*;
+import data.driven.erm.business.wechat.SysPictureService;
 import data.driven.erm.business.wechat.WechatAppInfoService;
 import data.driven.erm.business.wechat.WechatUserService;
 import data.driven.erm.common.Constant;
@@ -14,27 +12,23 @@ import data.driven.erm.common.WechatApiSession;
 import data.driven.erm.entity.order.OrderEntity;
 import data.driven.erm.entity.order.OrderReceiveAddrEntity;
 import data.driven.erm.entity.order.OrderRefundDetailInfoEntity;
+import data.driven.erm.entity.wechat.SysPictureEntity;
 import data.driven.erm.entity.wechat.WechatAppInfoEntity;
 import data.driven.erm.util.JSONUtil;
 import data.driven.erm.util.UUIDUtil;
 import data.driven.erm.vo.commodity.CommodityVO;
 import data.driven.erm.vo.order.OrderDetailVO;
 import data.driven.erm.vo.order.OrderVO;
-import data.driven.erm.vo.pay.PayPrepayVO;
 import data.driven.erm.vo.wechat.WechatUserInfoVO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.validation.Valid;
+import javax.servlet.http.HttpServletResponse;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -72,6 +66,12 @@ public class WechatOrderController {
     /**订单退款详情信息表Service**/
     @Autowired
     private OrderRefundDetailInfoService orderRefundDetailInfoService;
+    /**图片信息Service**/
+    @Autowired
+    private SysPictureService sysPictureService;
+    /**退款图片表**/
+    @Autowired
+    private OrderRefundImageService orderRefundImageService;
 
     /**
      * 立即购买，查询产品和地址
@@ -187,7 +187,7 @@ public class WechatOrderController {
         logger.info("商户退款单号： "+outRefundNo);
         OrderRefundDetailInfoEntity rrderRefundDetailInfoEntity = new OrderRefundDetailInfoEntity(wechatAppInfoEntity.getAppid(),
                 wechatUserInfoVO.getWechatUserId(),storeId,"",outRefundNo,orderId,orderEntity.getRealPayment(),
-                orderEntity.getRealPayment(),"",new Date(),"","","","");
+                orderEntity.getRealPayment(),"",orderEntity.getCreateAt(),"","","","");
         //插入订单退款详情
         JSONObject resultJson = orderRefundDetailInfoService.insertOrderRefundDetailInfoEntity(rrderRefundDetailInfoEntity);
         if (resultJson.getBoolean(SUCCESS)){
@@ -287,6 +287,8 @@ public class WechatOrderController {
         OrderEntity orderEntity = orderService.findOrderByOrderId(orderId);
         List<OrderDetailVO> orderDetailVOlist = orderService.findOrderDetailByOrderId(orderId);
         StringBuffer commodityName = new StringBuffer();
+        logger.info("进入获取申请退款详情");
+        logger.info("orderId "+orderId);
         if(orderDetailVOlist != null && orderDetailVOlist.size() > 0){
             for (int i = 0 ; i < orderDetailVOlist.size(); i++){
                 OrderDetailVO orderDetailVO = orderDetailVOlist.get(i);
@@ -306,6 +308,84 @@ public class WechatOrderController {
         refundJson.put("refundFee",orderEntity.getRealPayment());
         refundJson.put("transactionDate",orderEntity.getCreateAt());
         return refundJson;
+    }
+
+    /**
+     * @description 提交申请信息
+     * @author lxl
+     * @date 2019-02-13 10:01
+     * @param request
+     * @param response
+     * @param sessionID session信息
+     * @param paramJsonArr 图片数组
+     * @param orderId 订单id
+     * @param storeId 门店id
+     * @param processingMode 退款方式
+     * @param refundReason 退款原因
+     * @param mobilePhone 手机号码
+     * @param remarks 备注
+     * @param commodityName 商品名称
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping(path ="/uploadRefundInfo",method = RequestMethod.POST)
+    public JSONObject uploadRefundInfo(HttpServletRequest request, HttpServletResponse response, String sessionID,
+                                       String paramJsonArr,String orderId,String storeId,String processingMode,
+                                       String refundReason,String mobilePhone,String remarks,String commodityName){
+        logger.info("进入提交申请信息");
+        logger.info("订单id："+orderId);
+        logger.info("Sessionid："+sessionID);
+        WechatUserInfoVO wechatUserInfoVO = WechatApiSession.getSessionBean(sessionID).getUserInfo();
+        if(wechatUserInfoVO.getWechatUserId() == null){
+            return JSONUtil.putMsg(false,"108","请先登录授权");
+        }
+        if (paramJsonArr == null){
+            return JSONUtil.putMsg(false,"101","参数为空");
+        }
+        //得到订单信息
+        OrderEntity orderEntity = orderService.findOrderByOrderId(orderId);
+        logger.info("得到订单信息成功");
+        //得到小程序信息
+        WechatAppInfoEntity wechatAppInfoEntity = wechatAppInfoService.getAppInfoEntity(wechatUserInfoVO.getAppInfoId());
+        logger.info("得到小程序信息成功");
+        //初始化订单退款详情信息表实体
+        String outRefundNo = UUIDUtil.getUUID();
+        logger.info("商户退款单号： "+outRefundNo);
+        OrderRefundDetailInfoEntity rrderRefundDetailInfoEntity = new OrderRefundDetailInfoEntity(wechatAppInfoEntity.getAppid(),
+                wechatUserInfoVO.getWechatUserId(),storeId,"",outRefundNo,orderId,orderEntity.getRealPayment(),
+                orderEntity.getRealPayment(),commodityName,orderEntity.getCreateAt(),processingMode,
+                refundReason,mobilePhone,remarks);
+        //插入订单退款详情
+        JSONObject resultJson = orderRefundDetailInfoService.insertOrderRefundDetailInfoEntity(rrderRefundDetailInfoEntity);
+        logger.info("插入订单退款详情成功");
+        if (resultJson.getBoolean(SUCCESS)){
+            List<String> fileList = JSONObject.parseArray(paramJsonArr,String.class);
+            List<SysPictureEntity> sysPictureList = new ArrayList<>();
+            Date date = new Date();
+            //上传图片
+            for (String file : fileList){
+                sysPictureService.insertPictures(wechatUserInfoVO,date,sysPictureList,file);
+            }
+            logger.info("上传图片成功");
+            //插入图片信息
+            if (sysPictureList.size() > 0){
+                sysPictureService.insertManyPicture(sysPictureList);
+                logger.info("批量插入图片数据成功");
+                //插入订单退款详情信息表与退款图片表关联表
+                for (SysPictureEntity sysPictureEntity : sysPictureList){
+                    orderRefundImageService.insertOrderRefundImageEntity(resultJson.getString("orderRefundDetailInfoId"),
+                            sysPictureEntity.getPictureId());
+                }
+                logger.info("插入订单退款详情信息表与退款图片表关联表");
+
+            }
+            //修改订单状态3为退款中
+            logger.info("进入修改订单状态中");
+            orderService.updateOrderState(orderId, wechatUserInfoVO.getWechatUserId(), 4);
+            return JSONUtil.putMsg(true,"200","提交申请信息");
+        }else{
+            return resultJson;
+        }
     }
 }
 
