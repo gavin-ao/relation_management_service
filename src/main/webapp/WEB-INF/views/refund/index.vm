@@ -1,47 +1,40 @@
 <link href="/static/plugins/refundList/refundList.css" rel="stylesheet">
 <script src="/static/plugins/refundList/refundList.js"></script>
 
-<div>
+<div style="height:100%">
 
 
-    <div class="searchPar" style="">
-##        <div class="search" style="float: left">
-##            <select name="" id="selectStatus" onchange="changeAddtype()" class="form-control">
-##                <option value="1" selected>企业微信新增</option>
-##                <option value="2">非企业微信新增</option>
-##            </select>
-##        </div>
+    <div class="searchPar" style="margin: 5px">
         <div class="search" style="float: right;">
 
             <input type="text" id="inputKeyword" class="form-control" placeholder="请输入订单号搜索">
             <span id="selectBtn">搜索</span>
         </div>
     </div>
+    <div style="height: calc(100% - 80px);overflow-y: auto">
+        <div class="dataTables" style="float:left ;display:inline;width:75%">
+            <table id="example" class="display" style="width:100%">
+                <thead>
+                <tr>
+                    <th style="width:0px">storeId</th> ##隐藏storeId,写死为1
+                    <th style="width:0px">appId</th> ##隐藏appId
+                    <th style="width:0px">orderState</th> ##隐藏orderState
+                    <th style="width:40px">编号</th>
+                    <th style="width:20%">退款号</th>
+                    <th style="width:10%">商品名称</th>
+                    <th style="width:5%">订单金额</th>
+                    <th style="width:10%">退款金额</th>
+                    <th style="width:15%">客户手机号</th>
+                    <th style="width:10%">退款状态</th>
+                </tr>
+                </thead>
+                <tbody>
 
-    <div class="dataTables" style="float:left ">
-        <table id="example" class="display" >
-            <thead>
-            <tr>
-                <th style="width:0px">storeId</th> ##隐藏storeId,写死为1
-                <th style="width:0px">appId</th> ##隐藏appId
-                <th style="width:0px">orderState</th> ##隐藏orderState
-                <th style="width:10px">编号</th>
-                <th style="width:10%">退款号</th>
-                <th style="width:10%">订单号</th>
-                <th style="width:10%">商品名称</th>
-                <th style="width:5%">订单金额</th>
-                <th style="width:5%">退款金额</th>
-                <th style="width:5%">客户手机号</th>
-                <th style="width:5%">退款状态</th>
-            </tr>
-            </thead>
-            <tbody>
+                </tbody>
+            </table>
+        </div>
+        <div id="detailContainer" style="float:left;">
 
-            </tbody>
-        </table>
+        </div>
     </div>
-   <div id="detailContainer">
-
-   </div>
-
 </div>

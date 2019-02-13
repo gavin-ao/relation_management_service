@@ -136,7 +136,6 @@ function tablesData(datatable, condition) {
             {"data": "orderState","sClass": "hidden"},
             {"data": "cid"},
             {"data": "outRefundNo"},
-            {"data": "outTradeNo"},
             {"data": "commodityName"},
             {"data": "totalFee"},
             {"data": "refundFee"},
@@ -190,23 +189,23 @@ function tablesData(datatable, condition) {
 }
 
 function agreeRefund(agree,storeId,outRefundNo){
-    var go = false;
     if(agree){
-        $.MsgBox.Confirm("谨慎操作","请谨慎！点【确定】将继续，退款返回给买家，不可撤销！",function () {
-            go=true;
+        $.MsgBox.Confirm("谨慎操作","请谨慎！点【确定】退款将返还给买家，不可撤销！",function () {
+            doAgreeRefund(agree,storeId,outRefundNo)
         });
     }else{
-       go = true;
+        doAgreeRefund(agree,storeId,outRefundNo)
     }
-    if(go){
-        $.ajax({
-            url: "/refund/agreeRefund/"+agree+"/"+storeId+"/"+outRefundNo,
-            type: "post",
-            dataType: "json",
-            success: function (data) {
-                var table = $('#example').DataTable();
-                table.row($(this).parents('tr')).remove().draw();
-            }
-        })
-    }
+}
+
+function doAgreeRefund(agree,storeId,outRefundNo) {
+    $.ajax({
+        url: "/refund/agreeRefund/"+agree+"/"+storeId+"/"+outRefundNo,
+        type: "post",
+        dataType: "json",
+        success: function (data) {
+            var table = $('#example').DataTable();
+            table.row($(this).parents('tr')).remove().draw();
+        }
+    })
 }
