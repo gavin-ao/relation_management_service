@@ -131,12 +131,11 @@ function tablesData(datatable, condition) {
             });
         },
         aoColumns: [
-            {"data": "appid", "sClass": "hidden"},
             {"data": "storeId", "sClass": "hidden"},
             {"data": "orderState","sClass": "hidden"},
             {"data": "cid"},
             {"data": "outTradeNo"},
-            {"data": "commodityName"},
+            {"data": "commodityName","sClass":"longText"},
             {"data": "refundFee"},
             {"data": "mobilePhone"},
             {"data": "refundState"},
