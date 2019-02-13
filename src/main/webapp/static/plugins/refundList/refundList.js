@@ -34,6 +34,8 @@ function getDetaiInfo(row) {
         success: function (data) {
             $("#detailContainer").html("");
             $("#detailContainer").html(data);
+            // var imageDom = $('#picList');
+            clickToZoomIn($(".pimg"));
         }
     })
 

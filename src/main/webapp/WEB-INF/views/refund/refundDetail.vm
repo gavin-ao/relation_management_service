@@ -1,5 +1,5 @@
 ##<link href="/static/plugins/refundList/refundList.css" rel="stylesheet">
-##<script src="/static/plugins/refundList/refundList.js"></script>
+<script src="/static/plugins/refundList/imagesView.js"></script>
 
 <div>
 
@@ -23,6 +23,15 @@
         <div >
             <span class="text">备注 :</span>
             <input type="text" name="remarks" value="$!{data.remarks}"class="form-control" style="width:auto"onblur="fieldLength(this)"/>
+        </div>
+        <div id="picList">
+            <img class="pimg" src="/img/a.jpg" />
+            <img class="pimg" src="/img/b.jpg" style="width:100px; height:200px" />
+        </div>
+        <div id="outerdiv" style="position:fixed;top:0;left:0;background:rgba(0,0,0,0.7);z-index:2;width:100%;height:100%;display:none;">
+            <div id="innerdiv" style="position:absolute;">
+                <img id="bigimg" style="border:5px solid #fff;" src="" />
+            </div>
         </div>
         #if($!{data.orderState}!=3)
             <button onclick="agreeRefund(true,'$!{data.storeId}','$!{data.outRefundNo}')">同意退款</button>
