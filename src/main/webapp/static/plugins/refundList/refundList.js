@@ -17,16 +17,22 @@ var tab = '';
         tab = tablesData(tab, condition)
     })
     var table = $('#example').DataTable();
-    $('#example tbody').on('click', 'tr', function () {
-        var data = table.row( this ).data();
-        getDetaiInfo(data);
-    } );
+    $('#example tbody').on('click','td', function (e){
+        debugger;
+        e.preventDefault();
+        var storeId = $(this).parents('tr').find("td")[0].innerHTML.trim();
+        var outRefundNo = $(this).parents('tr').find("td")[1].innerHTML.trim();
+        getDetaiInfo(storeId,outRefundNo);
+    })
+    // $('#example tbody').on('click', 'tr', function () {
+    //     debugger;
+    //     var data = table.row( this ).data();
+    //     getDetaiInfo(data);
+    // } );
 }());
 
 
-function getDetaiInfo(row) {
-    var outRefundNo = row.outRefundNo;
-    var storeId = row.storeId;
+function getDetaiInfo(storeId,outRefundNo) {
     $.ajax({
         url: "/refund/detail/"+storeId+"/"+outRefundNo,
         type: "post",
@@ -132,7 +138,7 @@ function tablesData(datatable, condition) {
         },
         aoColumns: [
             {"data": "storeId", "sClass": "hidden"},
-            {"data": "orderState","sClass": "hidden"},
+            {"data": "outRefundNo","sClass": "hidden"},
             {"data": "cid"},
             {"data": "outTradeNo"},
             {"data": "commodityName","sClass":"longText"},

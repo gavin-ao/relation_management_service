@@ -17,7 +17,7 @@
                 <thead>
                 <tr>
                     <th style="width:0px">storeId</th> ##隐藏storeId,写死为1
-                    <th style="width:0px">orderState</th> ##隐藏orderState
+                    <th style="width:0px">outRefundNo</th> ##隐藏orderState
                     <th style="width:12%">编号</th>
                     <th style="width:10%">订单号</th>
                     <th style="width:18%">商品名称</th>
