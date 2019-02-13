@@ -7,6 +7,7 @@ import data.driven.erm.component.PageBean;
 import data.driven.erm.dao.JDBCBaseDao;
 import data.driven.erm.entity.order.OrderRefundDetailInfoEntity;
 import data.driven.erm.util.JSONUtil;
+import data.driven.erm.util.RequestUtil;
 import data.driven.erm.util.UUIDUtil;
 import data.driven.erm.vo.order.OrderRefundDetailInfoVO;
 import org.slf4j.Logger;
@@ -14,6 +15,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -123,5 +125,30 @@ public class OrderRefundDetailInfoServiceImpl implements OrderRefundDetailInfoSe
                      "SET orderInfo.state = ? \n" +
                      "WHERE refundInfo.store_id=? and refundInfo.out_refund_no=? \n";
         jdbcBaseDao.executeUpdate(sql,state,storeId,outRefundNo);
+    }
+
+    /**
+     * 获取退款单的图片地址
+     *
+     * @param orderRefundDetailInfoId
+     * @return
+     * @author Logan
+     * @date 2019-02-13 11:55
+     */
+    @Override
+    public List<String> getPicUrls(HttpServletRequest request, String orderRefundDetailInfoId) {
+        String sql = "SELECT picture_id FROM order_refund_image where order_refund_detail_info_id=?";
+        List<String> picIds = jdbcBaseDao.getColumns(String.class,sql,orderRefundDetailInfoId);
+        List<String> result = new ArrayList<>();
+        StringBuilder urlBuilder = new StringBuilder();
+        for(String picId:picIds){
+            if(urlBuilder.length()>0){
+                urlBuilder.delete(0,urlBuilder.length());
+            }
+            String filePath = RequestUtil.getStaticFilePath(request);
+            urlBuilder.append(filePath).append(picId);
+            result.add(urlBuilder.toString());
+        }
+        return result;
     }
 }

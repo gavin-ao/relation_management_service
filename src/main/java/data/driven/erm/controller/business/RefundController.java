@@ -18,8 +18,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
+import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.util.List;
 
 /**
  * @program: relation_management_service
@@ -65,10 +71,12 @@ public class RefundController {
     }
 
     @RequestMapping(path="/detail/{storeId}/{outRefundNo}")
-    public ModelAndView getRefundDetail(@PathVariable String storeId, @PathVariable String outRefundNo){
+    public ModelAndView getRefundDetail(HttpServletRequest request, @PathVariable String storeId, @PathVariable String outRefundNo){
         ModelAndView mv = new ModelAndView("/refund/refundDetail");
         OrderRefundDetailInfoVO orderRefundDetailInfo = refundService.getRefundDetailInfo(storeId,outRefundNo);
         mv.addObject("data",orderRefundDetailInfo);
+        List<String> picUrls = refundService.getPicUrls(request,orderRefundDetailInfo.getOrderRefundDetailInfoId());
+        mv.addObject("picUrls",picUrls);
         return mv;
     }
 
@@ -93,4 +101,6 @@ public class RefundController {
         result.put("success",true);
         return result;
     }
+
+
 }
