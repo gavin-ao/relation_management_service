@@ -1,7 +1,9 @@
 package data.driven.erm.business.wechat;
 
 import data.driven.erm.entity.wechat.SysPictureEntity;
+import data.driven.erm.vo.wechat.WechatUserInfoVO;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -20,4 +22,17 @@ public interface SysPictureService {
      * @return
      */
     void insertManyPicture(List<SysPictureEntity> list);
+
+    /**
+     * @description 上传图片
+     * @author lxl
+     * @date 2019-02-13 10:37
+     * @param wechatUserInfoVO 微信用户信息
+     * @param date 时间
+     * @param sysPictureList 图片对像数组
+     * @param pictureJson 图片Json
+     * @return
+     */
+    String insertPictures(WechatUserInfoVO wechatUserInfoVO, Date date,List<SysPictureEntity> sysPictureList,
+                          String pictureJson);
 }

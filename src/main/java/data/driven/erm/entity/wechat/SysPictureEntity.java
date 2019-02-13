@@ -20,6 +20,14 @@ public class SysPictureEntity {
     /** 创建日期 **/
     private Date createAt;
 
+    public SysPictureEntity(){}
+    public SysPictureEntity(String pictureId, String realName, String wechatUser, Date createAt) {
+        this.pictureId = pictureId;
+        this.realName = realName;
+        this.wechatUser = wechatUser;
+        this.createAt = createAt;
+    }
+
     public String getPictureId() {
         return pictureId;
     }
