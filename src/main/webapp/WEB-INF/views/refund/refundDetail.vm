@@ -5,27 +5,27 @@
 
         <div >
             <span class="text">退款单号:</span>
-            <input type="text" name="outTradeNo" value="$!{data.outRefundNo}" class="form-control" style="width:auto" />
+            <input readonly type="text" name="outTradeNo" value="$!{data.outRefundNo}" class="form-control" style="width:100%" />
         </div>
         <div >
             <span class="text">退货原因:</span>
-            <input type="text" name="refundReason" value="$!{data.refundReason}" class="form-control" style="width:auto"/>
+            <input readonly type="text" name="refundReason" value="$!{data.refundReason}" class="form-control" style="width:100%""/>
         </div>
         <div >
             <span class="text">退货方式:</span>
-            <input type="text" name="processingMode" value="$!{data.processingMode}" class="form-control" style="width:auto"/>
+            <input readonly type="text" name="processingMode" value="$!{data.processingMode}" class="form-control" style="width:100%"/>
         </div>
         <div >
             <span class="text">商品金额:</span>
-            <input type="text" name="totalFee" value="$!{data.totalFee}" class="form-control" style="width:auto"/>
+            <input readonly type="text" name="totalFee" value="$!{data.totalFee}" class="form-control" style="width:100%"/>
         </div>
         <div >
             <span class="text">退款金额:</span>
-            <input type="text" name="refundFee" value="$!{data.refundFee}" class="form-control"style="width:auto"/>
+            <input readonly type="text" name="refundFee" value="$!{data.refundFee}" class="form-control" style="width:100%"/>
         </div>
         <div >
             <span class="text">备注 :</span>
-            <input type="text" name="remarks" value="$!{data.remarks}"class="form-control" style="width:auto"/>
+            <input readonly type="text" name="remarks" value="$!{data.remarks}"class="form-control" style="width:100%"/>
         </div>
         <div id="picList">
             <span class="text">举证照片:</span>
