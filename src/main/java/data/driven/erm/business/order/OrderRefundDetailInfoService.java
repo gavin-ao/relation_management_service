@@ -7,6 +7,9 @@ import data.driven.erm.component.PageBean;
 import data.driven.erm.entity.order.OrderRefundDetailInfoEntity;
 import data.driven.erm.vo.order.OrderRefundDetailInfoVO;
 
+import javax.servlet.http.HttpServletRequest;
+import java.util.List;
+
 /**
  * @Author: lxl
  * @describe 订单退款详情信息表Service
@@ -58,4 +61,13 @@ public interface OrderRefundDetailInfoService {
     */
     void agreeRefund(Boolean agree,String storeId,String outRefundNo);
 
+    /**
+    * 获取退款单的图片地址
+    * @author Logan
+    * @date 2019-02-13 11:55
+    * @param orderRefundDetailInfoId
+
+    * @return
+    */
+    List<String> getPicUrls(HttpServletRequest request,String orderRefundDetailInfoId);
 }

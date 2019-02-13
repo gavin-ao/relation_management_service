@@ -34,6 +34,8 @@ function getDetaiInfo(row) {
         success: function (data) {
             $("#detailContainer").html("");
             $("#detailContainer").html(data);
+            // var imageDom = $('#picList');
+            clickToZoomIn($(".pimg"));
         }
     })
 
@@ -188,13 +190,23 @@ function tablesData(datatable, condition) {
 }
 
 function agreeRefund(agree,storeId,outRefundNo){
-    $.ajax({
-        url: "/refund/agreeRefund/"+agree+"/"+storeId+"/"+outRefundNo,
-        type: "post",
-        dataType: "json",
-        success: function (data) {
-            var table = $('#example').DataTable();
-            table.row($(this).parents('tr')).remove().draw();
-        }
-    })
+    var go = false;
+    if(agree){
+        $.MsgBox.Confirm("谨慎操作","请谨慎！点【确定】将继续，退款返回给买家，不可撤销！",function () {
+            go=true;
+        });
+    }else{
+       go = true;
+    }
+    if(go){
+        $.ajax({
+            url: "/refund/agreeRefund/"+agree+"/"+storeId+"/"+outRefundNo,
+            type: "post",
+            dataType: "json",
+            success: function (data) {
+                var table = $('#example').DataTable();
+                table.row($(this).parents('tr')).remove().draw();
+            }
+        })
+    }
 }
