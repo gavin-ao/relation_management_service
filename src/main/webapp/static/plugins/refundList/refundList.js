@@ -18,7 +18,6 @@ var tab = '';
     })
     var table = $('#example').DataTable();
     $('#example tbody').on('click','td', function (e){
-        debugger;
         e.preventDefault();
         var storeId = $(this).parents('tr').find("td")[0].innerHTML.trim();
         var outRefundNo = $(this).parents('tr').find("td")[1].innerHTML.trim();
