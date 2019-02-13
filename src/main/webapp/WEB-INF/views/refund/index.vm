@@ -1,8 +1,5 @@
 <link href="/static/plugins/refundList/refundList.css" rel="stylesheet">
-##<script src="/static/plugins/distpicker/distpicker.data.js"></script>
-##<script src="/static/plugins/distpicker/distpicker.js"></script>
-##<script src="/static/plugins/aftersales-staff/staff.js"></script>
-##<link href="/static/plugins/aftersales-staff/zTreeStyle.css" rel="stylesheet">
+<script src="/static/plugins/refundList/refundList.js"></script>
 
 <div>
 
@@ -16,25 +13,26 @@
 ##        </div>
         <div class="search" style="float: right;">
 
-            <input type="text" id="inputKeyword" class="form-control" placeholder="请输入客服人员名称键词搜索">
+            <input type="text" id="inputKeyword" class="form-control" placeholder="请输入订单号搜索">
             <span id="selectBtn">搜索</span>
         </div>
     </div>
 
-    <div class="dataTables" style="">
-        <table id="example" class="display" style="width:100%">
+    <div class="dataTables" style="float:left ">
+        <table id="example" class="display" >
             <thead>
             <tr>
-                <th style="width:0px"></th> ##隐藏storeId,写死为1
-                <th style="width:0px"></th> ##隐藏appId
-                <th style="width:10%">订单号</th>
+                <th style="width:0px">storeId</th> ##隐藏storeId,写死为1
+                <th style="width:0px">appId</th> ##隐藏appId
+                <th style="width:0px">orderState</th> ##隐藏orderState
+                <th style="width:10px">编号</th>
                 <th style="width:10%">退款号</th>
-                <th style="width:5%">商品名称</th>
+                <th style="width:10%">订单号</th>
+                <th style="width:10%">商品名称</th>
+                <th style="width:5%">订单金额</th>
                 <th style="width:5%">退款金额</th>
                 <th style="width:5%">客户手机号</th>
-                <th style="width:10%">申请时间</th>
                 <th style="width:5%">退款状态</th>
-                <th style="width:30%">操作</th>
             </tr>
             </thead>
             <tbody>
@@ -42,5 +40,8 @@
             </tbody>
         </table>
     </div>
+   <div id="detailContainer">
+
+   </div>
 
 </div>
