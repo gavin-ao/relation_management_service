@@ -19,13 +19,13 @@
                     <th style="width:0px">storeId</th> ##隐藏storeId,写死为1
                     <th style="width:0px">appId</th> ##隐藏appId
                     <th style="width:0px">orderState</th> ##隐藏orderState
-                    <th style="width:40px">编号</th>
-                    <th style="width:20%">退款号</th>
+                    <th style="width:25px">编号</th>
+                    <th style="width:10%">退款号</th>
                     <th style="width:10%">商品名称</th>
-                    <th style="width:5%">订单金额</th>
+                    <th style="width:10%">订单金额</th>
                     <th style="width:10%">退款金额</th>
                     <th style="width:15%">客户手机号</th>
-                    <th style="width:10%">退款状态</th>
+                    <th style="width:20%">退款状态</th>
                 </tr>
                 </thead>
                 <tbody>
