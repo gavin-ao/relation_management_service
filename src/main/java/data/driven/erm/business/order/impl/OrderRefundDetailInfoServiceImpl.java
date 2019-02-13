@@ -137,16 +137,18 @@ public class OrderRefundDetailInfoServiceImpl implements OrderRefundDetailInfoSe
      */
     @Override
     public List<String> getPicUrls(HttpServletRequest request, String orderRefundDetailInfoId) {
-        String sql = "SELECT picture_id FROM order_refund_image where order_refund_detail_info_id=?";
-        List<String> picIds = jdbcBaseDao.getColumns(String.class,sql,orderRefundDetailInfoId);
+        String sql = "SELECT sysPic.file_path FROM order_refund_image refundImage\n" +
+                "JOIN sys_picture sysPic on sysPic.picture_id=refundImage.picture_id\n" +
+                "where refundImage.order_refund_detail_info_id=?";
+        List<String> picPaths = jdbcBaseDao.getColumns(String.class,sql,orderRefundDetailInfoId);
         List<String> result = new ArrayList<>();
         StringBuilder urlBuilder = new StringBuilder();
-        for(String picId:picIds){
+        for(String picPath:picPaths){
             if(urlBuilder.length()>0){
                 urlBuilder.delete(0,urlBuilder.length());
             }
             String filePath = RequestUtil.getStaticFilePath(request);
-            urlBuilder.append(filePath).append(picId);
+            urlBuilder.append(filePath).append(picPath);
             result.add(urlBuilder.toString());
         }
         return result;
