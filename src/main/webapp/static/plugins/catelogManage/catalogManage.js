@@ -146,10 +146,10 @@ function tablesData(datatable, condition, parentCode) {
                 "aTargets": [5],
                 "mRender": function (data, type, full, meta) {
 
-                    return "<span><a href>编辑</a></span>" +
-                           "<span><a href>设为无效</a></span>"+
-                           "<span><a href>描述属性</a></span>"+
-                           "<span><a href>规格属性</a></span>";
+                    return "<span><a style='padding: 2px 4px;margin-left: 8px;'>编辑</a></span>" +
+                           "<span><a style='padding: 2px 4px;margin-left: 8px;'>设为无效</a></span>"+
+                           "<span><a style='padding: 2px 4px;margin-left: 8px;'>描述属性</a></span>"+
+                           "<span><a style='padding: 2px 4px;margin-left: 8px;'>规格属性</a></span>";
                 }
             },
             {
