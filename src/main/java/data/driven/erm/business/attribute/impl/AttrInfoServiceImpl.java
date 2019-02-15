@@ -17,7 +17,6 @@ import org.springframework.stereotype.Service;
 import java.util.Date;
 import java.util.List;
 
-import static data.driven.erm.util.JSONUtil.putMsg;
 
 /**
  * @Author: lxl
@@ -103,6 +102,26 @@ public class AttrInfoServiceImpl implements AttrInfoService{
             e.printStackTrace();
         }
         return JSONUtil.putMsg(false,"101","插入属性信息和属性值失败");
+    }
+
+    /**
+     * @description 修改属性名称
+     * @author lxl
+     * @date 2019-02-15 16:24
+     * @param attrId 属性表id
+     * @param attrName 属性名称
+     * @return
+     */
+    @Override
+    public JSONObject updateAttrName(String attrId,String attrName) {
+        String sql = "update attr_info set attr_name= ? where attr_id = ?";
+        try {
+            jdbcBaseDao.executeUpdate(sql,attrName,attrId);
+            return JSONUtil.putMsg(true,"200","修改属性名称成功");
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return JSONUtil.putMsg(false,"101","修改属性名称失败");
     }
 
     /**
