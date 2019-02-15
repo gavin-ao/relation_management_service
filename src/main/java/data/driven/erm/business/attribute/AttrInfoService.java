@@ -30,7 +30,7 @@ public interface AttrInfoService {
      * @param attrType 属性类型
      * @return
      */
-    AttrInfoVO getAttrInfoAndValue(Integer attrType);
+    List<AttrInfoVO> getAttrInfoAndValue(Integer attrType);
 
     /**
      * @description 新增属性同时新增属性值

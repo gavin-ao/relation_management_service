@@ -67,14 +67,15 @@ public class AttrInfoServiceImpl implements AttrInfoService{
      * @return
      */
     @Override
-    public AttrInfoVO getAttrInfoAndValue(Integer attrType) {
+    public List<AttrInfoVO> getAttrInfoAndValue(Integer attrType) {
         String attrInfoSql = "select attr_id,attr_name,attr_type,attr_code,create_at,update_at from attr_info" +
                 " where attr_type = ?";
         List<AttrInfoVO> AttrInfoVOList = jdbcBaseDao.queryList(AttrInfoVO.class,attrInfoSql,attrType);
         if (AttrInfoVOList != null && AttrInfoVOList.size() > 0){
-            AttrInfoVO attrInfoVo =  AttrInfoVOList.get(0);
-            attrInfoVo.setAttrValueEntityList(getAttrValueList(attrInfoVo.getAttrId()));
-            return attrInfoVo;
+            for (AttrInfoVO attrInfoVO : AttrInfoVOList){
+                attrInfoVO.setAttrValueEntityList(getAttrValueList(attrInfoVO.getAttrId()));
+            }
+            return AttrInfoVOList;
         }
         return null;
     }
