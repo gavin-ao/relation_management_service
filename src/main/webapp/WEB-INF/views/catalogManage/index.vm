@@ -1,5 +1,5 @@
-<link href="/static/plugins/catelogManage/catalogManage.css" rel="stylesheet">
-<script src="/static/plugins/catelogManage/catalogManage.js"></script>
+<link href="/static/plugins/catalogManage/catalogManage.css" rel="stylesheet">
+<script src="/static/plugins/catalogManage/catalogManage.js"></script>
 
 <div style="height:100%">
 
