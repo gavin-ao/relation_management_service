@@ -178,7 +178,7 @@ function navSelect() {
         }else if(navName == "catelogManage"){
 
             $.ajax({
-                url: "/catelog/index",
+                url: "/catalog/index",
                 type: "post",
                 dataType: "html",
                 success: function (data) {

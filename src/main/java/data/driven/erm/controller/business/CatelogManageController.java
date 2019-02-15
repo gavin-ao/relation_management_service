@@ -12,6 +12,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -29,9 +30,15 @@ public class CatelogManageController {
     @Autowired
     private CommodityCatgService commodityCatgService;
 
-    @RequestMapping("/findCatelogPage/{parentCode}")
+    @RequestMapping("/index")
+    public ModelAndView index(){
+        ModelAndView mv = new ModelAndView("/catalogManage/index");
+        return  mv;
+    }
+
+    @RequestMapping(value = {"/findCatalogPage/","/findCatalogPage/{parentCode}"})
     @ResponseBody
-    public JSONObject getCatelogPage(HttpServletRequest request, HttpServletResponse response, @PathVariable String parentCode,
+    public JSONObject getCatalogPage(HttpServletRequest request, HttpServletResponse response, @PathVariable (required = false) String parentCode,
                                      String keyword, Integer pageNo, Integer pageSize){
         UserInfoEntity user = ApplicationSessionFactory.getUser(request, response);
         JSONObject result = new JSONObject();

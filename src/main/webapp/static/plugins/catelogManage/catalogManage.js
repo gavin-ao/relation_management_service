@@ -93,7 +93,7 @@ function tablesData(datatable, condition, parentCode) {
             }
             $.ajax({
                 type: "post",
-                url: "/catelog/findCatelogPage/"+parentCode,//如果parentCode是空，则是第一级的目录
+                url: "/catalog/findCatalogPage/"+parentCode,//如果parentCode是空，则是第一级的目录
                 cache: false,  //禁用缓存
                 data: param,  //传入组装的参数?
                 // headers: {"Content-type": "text/plain;charset=utf-8"},
@@ -135,7 +135,6 @@ function tablesData(datatable, condition, parentCode) {
             });
         },
         aoColumns: [
-            {"data": "cid"},
             {"data": "catgCode"},
             {"data": "catgName"},
             {"data": "fmtCreateTime"},
@@ -144,18 +143,18 @@ function tablesData(datatable, condition, parentCode) {
         ],
         aoColumnDefs: [
             {
-                "aTargets": [6],
+                "aTargets": [5],
                 "mRender": function (data, type, full, meta) {
 
-                    return "<span><href>编辑</href></span>" +
-                           "<span><href>设为无效</href></span>"+
-                           "<span><href>描述属性</href></span>"+
-                           "<span><href>规格属性</href></span>";
+                    return "<span><a style='padding: 2px 4px;margin-left: 8px;'>编辑</a></span>" +
+                           "<span><a style='padding: 2px 4px;margin-left: 8px;'>设为无效</a></span>"+
+                           "<span><a style='padding: 2px 4px;margin-left: 8px;'>描述属性</a></span>"+
+                           "<span><a style='padding: 2px 4px;margin-left: 8px;'>规格属性</a></span>";
                 }
             },
             {
                 "bSortable": false,
-                "aTargets": [1, 2, 3, 4,5,6]
+                "aTargets": [1, 2, 3, 4,5]
             }
 
         ],

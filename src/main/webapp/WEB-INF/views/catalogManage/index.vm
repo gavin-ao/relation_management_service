@@ -1,5 +1,5 @@
-<link href="/static/plugins/catelogManage/catalogManage.css.css" rel="stylesheet">
-<script src="/static/plugins/catelogManage/catalogManage.js.js"></script>
+<link href="/static/plugins/catelogManage/catalogManage.css" rel="stylesheet">
+<script src="/static/plugins/catelogManage/catalogManage.js"></script>
 
 <div style="height:100%">
 
@@ -12,7 +12,7 @@
 ##        </div>
 ##    </div>
     <div style="height: calc(100% - 80px);overflow-y: auto">
-        <div class="dataTables" style="float:left ;display:inline;width:65%">
+        <div class="dataTables" style="width:100%">
             <table id="example" class="display" style="width:100%">
                 <thead>
                 <tr>
@@ -28,9 +28,6 @@
 
                 </tbody>
             </table>
-        </div>
-        <div id="detailContainer" style="float:left;width:30%">
-
         </div>
     </div>
 </div>
