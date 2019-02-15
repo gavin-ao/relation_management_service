@@ -20,7 +20,19 @@
     /*margin-top: -30px;*/
     cursor: pointer;
 }
-
+.contain_main .addCatalog {
+    width: 120px;
+    height: 40px;
+    line-height: 40px;
+    text-align: center;
+    font-size: 13px;
+    color: #FFF;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    background-color: rgba(22, 155, 213, 1);
+    /*margin: 20px 0px 0px 20px;*/
+}
 
 #distpicker {
     display: inline-block;
