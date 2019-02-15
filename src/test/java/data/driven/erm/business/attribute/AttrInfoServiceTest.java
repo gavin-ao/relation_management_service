@@ -59,24 +59,36 @@ public class AttrInfoServiceTest extends UnitTestBase {
      * @date 2019-02-15 16:04
      * @return
      */
-    @Test
-    public void insertAtrrInfoAndValue(){
-        //增加描述属性及属性值 start
+//    @Test
+//    public void insertAtrrInfoAndValue(){
+//        //增加描述属性及属性值 start
+////        List<String> attrValueList = new ArrayList<>();
+////        attrValueList.add("6个月");
+////        attrValueList.add("12个月");
+////        attrValueList.add("18个月");
+////        JSONObject resultJson = attrInfoService.insertAtrrInfoAndValue("保质期",attrValueList,0);
+//        //增加描述属性及属性值 end
+//
+//        //增加规格属性及属性值 start
 //        List<String> attrValueList = new ArrayList<>();
-//        attrValueList.add("6个月");
-//        attrValueList.add("12个月");
-//        attrValueList.add("18个月");
-//        JSONObject resultJson = attrInfoService.insertAtrrInfoAndValue("保质期",attrValueList,0);
-        //增加描述属性及属性值 end
+//        attrValueList.add("红色");
+//        attrValueList.add("黑色");
+//        attrValueList.add("蓝色");
+//        JSONObject resultJson = attrInfoService.insertAtrrInfoAndValue("颜色",attrValueList,1);
+//
+//
+//        System.out.println(resultJson.getString("msg"));
+//    }
 
-        //增加规格属性及属性值 start
-        List<String> attrValueList = new ArrayList<>();
-        attrValueList.add("红色");
-        attrValueList.add("黑色");
-        attrValueList.add("蓝色");
-        JSONObject resultJson = attrInfoService.insertAtrrInfoAndValue("颜色",attrValueList,1);
-
-
+    /**
+     * @description 修改属性名称
+     * @author lxl
+     * @date 2019-02-15 16:24
+     * @return
+     */
+    @Test
+    public void updateAttrName(){
+        JSONObject resultJson = attrInfoService.updateAttrName("5c66744c7053bb1fd80bffc9","产地");
         System.out.println(resultJson.getString("msg"));
     }
 }
