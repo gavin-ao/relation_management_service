@@ -100,7 +100,7 @@ function tablesData(datatable, condition, parentCode) {
                 dataType: "json",
                 success: function (result) {
                     if (result.success) {
-                        var arry = ["catgCode","catgName","updateAt","createAt","state","stateDesc"];
+                        var arry = ["catgCode","catgName","updateAt","createAt","state","stateDesc","fmtCreateTime","fmtUpdateTime"];
                         var tabledata = [];
                         for (var i = 0; i < result.page.result.length; i++) {
                             result.page.result[i]["cid"] = data.start + i + 1;
@@ -186,5 +186,4 @@ function tablesData(datatable, condition, parentCode) {
     });
 
     return table;
-}
 }
