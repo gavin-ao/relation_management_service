@@ -41,7 +41,8 @@
 //         }
 //     })
     navSelect();
-    $($("#main-menu").find("li")[0]).trigger("click");
+    //增加默认点击事件
+    $($("#main-menu").find("li>ul>li")[0]).trigger("click");
     // $.ajax({
     //     url: "/system/store/getStoreId",
     //     type: "post",
@@ -153,6 +154,7 @@ function navSelect() {
         $(this).parent().parent().siblings().find("li").removeClass("bgStyle");
         $(this).addClass("bgStyle");
         $("#contain_head_left").hide();
+        // debugger;
         if(navName == "companyManage"){
             $("#contain_head_left").show();
             $.ajax({
