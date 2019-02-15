@@ -21,7 +21,7 @@
             <ul class="nav" id="main-menu">
                 <li class="sel" name="refundList">退款单</li>
                 <li class="sel" name="companyManage" style="">数据统计</li>
-
+                <li class="sel" name="catelogManage" style="">类目管理</li>
             </ul>
 
         </div>

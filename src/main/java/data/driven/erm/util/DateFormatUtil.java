@@ -21,6 +21,7 @@ public class DateFormatUtil {
 
     public static final String normalPattern = "yyyy-MM-dd";
 
+    public static final String timePattern = "yyyy-MM-dd HH:mm:ss";
     public static final ThreadLocal<Map<String,SimpleDateFormat>> local = new ThreadLocal<Map<String,SimpleDateFormat>>();
 
     /**

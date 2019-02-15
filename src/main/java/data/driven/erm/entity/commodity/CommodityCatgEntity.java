@@ -22,6 +22,10 @@ public class CommodityCatgEntity {
     private Date createAt;
     /** 创建人 **/
     private String creator;
+    /** 修改时间 **/
+    private Date updateAt;
+    /** 状态 0 无效 1 有效 **/
+    private Integer state;
 
     public String getCatgId() {
         return catgId;
@@ -77,5 +81,21 @@ public class CommodityCatgEntity {
 
     public void setCreator(String creator) {
         this.creator = creator;
+    }
+
+    public Date getUpdateAt() {
+        return updateAt;
+    }
+
+    public void setUpdateAt(Date updateAt) {
+        this.updateAt = updateAt;
+    }
+
+    public Integer getState() {
+        return state;
+    }
+
+    public void setState(Integer state) {
+        this.state = state;
     }
 }
