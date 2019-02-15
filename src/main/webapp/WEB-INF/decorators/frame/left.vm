@@ -1,12 +1,19 @@
 <link href="/static/service/css/bootstrap.css" rel='stylesheet' type='text/css' />
-<link href="/static/service/css/style.css?v=20170703154841" rel='stylesheet' type='text/css' />
+##<link href="/static/service/css/style.css?v=20170703154841" rel='stylesheet' type='text/css' />
 <link rel="stylesheet" href="/static/plugins/dataTables/datatables.css"/>
 ##<link href="/static/service/css/custom.css" rel="stylesheet">
 ##<link href="/static/service/images/ico/inter3i.ico?v=20170703154841" mce_href="favicon.ico" rel="bookmark" type="image/x-icon" />
 ##<link href="/static/service/images/ico/inter3i.ico?v=20170703154841" mce_href="favicon.ico" rel="icon" type="image/x-icon" />
 ##<link href="/static/service/images/ico/inter3i.ico?v=20170703154841" mce_href="favicon.ico" rel="shortcut icon" type="image/x-icon" />
+<link href="/static/plugins/css/commonStyle.css" rel="stylesheet">
 <link rel="stylesheet" href="/static/plugins/css/jquery-confirm.css" type="text/css" />
 <link rel="stylesheet" href="/static/plugins/css/jquery-ui.min.css" type="text/css" />
+<style>
+    html, body {
+        height:  100%;
+        overflow: hidden;
+    }
+</style>
 <div style="width: 220px;float: left;background-color: ">
     <div class="header-left">
         <div class="logo">
@@ -18,12 +25,20 @@
     </div>
     <nav class="navbar-default navbar-side" id="navbarH" role="navigation" style="background-color: #4E546C; width: 100%;height:calc(100% - 80px) ;float: left;font-size: 16px;">
         <div class="sidebar-collapse">
-            <ul class="nav" id="main-menu">
-                <li class="sel" name="refundList">退款单</li>
-                <li class="sel" name="companyManage" style="">数据统计</li>
-                <li class="sel" name="catelogManage" style="">类目管理</li>
+            <ul class="nav mineStyle" id="main-menu">
+                <li>
+                    <div class="">
+                        <img src="/static/service/images/dianshang.png" style="width: 25px; height: 25px;" alt="">
+                        电商
+                    </div>
+                    <ul class="nav main-menu">
+                        <li class="bgStyle" name="refundList">退款单</li>
+                        <li  name="companyManage" style="">数据统计</li>
+                        <li  name="catelogManage" style="">类目管理</li>
+                        <li  name="attributeManage" style="">属性管理</li>
+                    </ul>
+                </li>
             </ul>
-
         </div>
 
     </nav>
