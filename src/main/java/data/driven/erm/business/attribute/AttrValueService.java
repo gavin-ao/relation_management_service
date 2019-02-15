@@ -35,4 +35,14 @@ public interface AttrValueService {
      * @return
      */
     JSONObject insertAttrValue(String attrValue,String attrId,Date createAt,Date updateAt);
+
+    /**
+     * @description 修改属性值信息
+     * @author lxl
+     * @date 2019-02-15 16:36
+     * @param attrValueId 属性值表id
+     * @param attrValue 属性值
+     * @return
+     */
+    JSONObject updateAttrValue(String attrValueId,String attrValue);
 }
