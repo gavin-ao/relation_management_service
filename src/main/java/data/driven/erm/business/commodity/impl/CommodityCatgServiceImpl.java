@@ -51,10 +51,9 @@ public class CommodityCatgServiceImpl implements CommodityCatgService {
         List<Object> paramList = new ArrayList<Object>();
 
         if(level>0){
-            sql= "select * from commodity_catg_info where catg_level =? and catg_code like ? and catg_code <> ?";
+            sql= "select * from commodity_catg_info where catg_level =? and catg_code like ? ";
             paramList.add(level+1);
             paramList.add(parentCode+ "%");
-            paramList.add(parentCode);
         }else{
             sql= "select * from commodity_catg_info where catg_level=1";
         }
