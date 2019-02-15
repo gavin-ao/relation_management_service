@@ -5,6 +5,7 @@ import data.driven.erm.component.Page;
 import data.driven.erm.component.PageBean;
 import data.driven.erm.dao.JDBCBaseDao;
 import data.driven.erm.entity.commodity.CommodityCatgEntity;
+import data.driven.erm.util.UUIDUtil;
 import data.driven.erm.vo.commodity.CommodityCatgVO;
 import data.driven.erm.vo.order.OrderRefundDetailInfoVO;
 import org.apache.commons.lang3.StringUtils;
@@ -12,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -68,5 +70,56 @@ public class CommodityCatgServiceImpl implements CommodityCatgService {
         sql += " order by create_at desc";
 
         return jdbcBaseDao.queryPageWithListParam(CommodityCatgVO.class, pageBean, sql, paramList);
+    }
+
+    /**
+     * 插入目录，返回code
+     * @author Logan
+     * @date 2019-02-15 18:41
+     * @param parentCode
+     * @param level
+     * @param name
+     * @param state
+
+     * @return
+     */
+    @Override
+    public synchronized String insertCatalog(String parentCode,Integer level, String name,Integer state) {
+        String countSql = "select max(ord) from commodity_catg_info where level = ? and catg_code like ?";
+        Object maxOrd = jdbcBaseDao.getColumn(countSql,level,parentCode+"%");
+        int ord=0;
+        if(maxOrd != null){
+            ord = Integer.parseInt(maxOrd.toString()) + 1;
+        }
+        String code = generateCode(parentCode,level,ord);
+        String insertSql = "insert commodity_catg_info(catg_id,catg_name,catg_code,catg_level,ord,create_at,update_at,state)" +
+                                                    "values(?,?,?,?,?,?,?,?) ";
+        Date now = new Date();
+        jdbcBaseDao.executeUpdate(insertSql, UUIDUtil.getUUID(),name,code,level,ord,now,now,state );
+        return code;
+    }
+
+    private String generateCode(String parentCode, Integer level,Integer ord){
+        String formatStr="";
+        if(level==1 || level ==2){
+            formatStr="%03d";
+        }else{
+            formatStr="%05d";
+        }
+        String code = String.format(formatStr,ord);
+        if(StringUtils.isNotEmpty(parentCode)) {
+            StringBuilder codeBuilder = new StringBuilder(parentCode);
+            codeBuilder.append(code);
+            return codeBuilder.toString();
+        }else{
+            return code;
+        }
+
+    }
+
+    public static void main(String[] args){
+        int a = 2;
+        String b = String.format("%03d",a);
+        System.out.println(b);
     }
 }
