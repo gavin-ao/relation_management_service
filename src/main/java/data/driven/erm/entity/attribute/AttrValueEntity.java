@@ -34,6 +34,15 @@ public class AttrValueEntity {
      */
     private Date updateAt;
 
+    public AttrValueEntity(){}
+    public AttrValueEntity(String attrValueId, String attrValue, String attrId, Date createAt, Date updateAt) {
+        this.attrValueId = attrValueId;
+        this.attrValue = attrValue;
+        this.attrId = attrId;
+        this.createAt = createAt;
+        this.updateAt = updateAt;
+    }
+
     public String getAttrValueId() {
         return attrValueId;
     }

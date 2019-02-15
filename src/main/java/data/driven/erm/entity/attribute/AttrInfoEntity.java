@@ -39,6 +39,16 @@ public class AttrInfoEntity {
      */
     private Date updateAt;
 
+    public AttrInfoEntity(){}
+    public AttrInfoEntity(String attrId, String attrName, Integer attrType, String attrCode, Date createAt, Date updateAt) {
+        this.attrId = attrId;
+        this.attrName = attrName;
+        this.attrType = attrType;
+        this.attrCode = attrCode;
+        this.createAt = createAt;
+        this.updateAt = updateAt;
+    }
+
     public String getAttrId() {
         return attrId;
     }
