@@ -11,9 +11,9 @@ button,input,textarea,select{outline:none;box-shadow:none;}
 input:-webkit-autofill, textarea:-webkit-autofill, select:-webkit-autofill{
     background-color: #fff!important;
 }
-a{
-    color: #000;
-}
+/*a{*/
+    /*color: #000;*/
+/*}*/
 a:hover,a:active,a:link{
     text-decoration:none;
     color: #000;

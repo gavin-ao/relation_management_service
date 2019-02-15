@@ -302,6 +302,16 @@ function navSelect() {
                 }
             })
 
+        }else if(navName == "attributeManage"){
+            $.ajax({
+                url: "/attribute/index",
+                type: "post",
+                dataType: "html",
+                success: function (data) {
+                    $("#contain_main").html("");
+                    $("#contain_main").html(data);
+                }
+            })
         }
 
     });

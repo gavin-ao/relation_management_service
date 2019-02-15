@@ -1,0 +1,33 @@
+<link href="/static/plugins/catalogManage/catalogManage.css" rel="stylesheet">
+<script src="/static/plugins/catalogManage/catalogManage.js"></script>
+
+<div style="height:100%">
+
+
+##    <div class="searchPar" style="margin: 5px">
+##        <div class="search" style="float: right;">
+##
+##            <input type="text" id="inputKeyword" class="form-control" placeholder="请输入订单号搜索">
+##            <span id="selectBtn">搜索</span>
+##        </div>
+##    </div>
+    <div style="height: calc(100% - 80px);overflow-y: auto">
+        <div class="dataTables" style="width:100%">
+            <table id="example" class="display" style="width:100%">
+                <thead>
+                <tr>
+                    <th style="width:12%">ID</th>
+                    <th style="width:10%">类目名称</th>
+                    <th style="width:15%">创建时间</th>
+                    <th style="width:15%">更新时间</th>
+                    <th style="width:20%">状态</th>
+                    <th style="width:20%">操作</th>
+                </tr>
+                </thead>
+                <tbody>
+
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
