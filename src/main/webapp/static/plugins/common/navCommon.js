@@ -175,6 +175,17 @@ function navSelect() {
                     $("#contain_main").html(data);
                 }
             })
+        }else if(navName == "catelogManage"){
+
+            $.ajax({
+                url: "/catelog/index",
+                type: "post",
+                dataType: "html",
+                success: function (data) {
+                    $("#contain_main").html("");
+                    $("#contain_main").html(data);
+                }
+            })
         }else if(navName == "awardCancel"){
             var datatable = $("#example").dataTable();
             if (datatable) {
@@ -402,7 +413,6 @@ function downloadImg() {
 
 function returnIsNotInArray(arr, obj) {
     var arry = [];
-    // var arrName = ["read_count","praises_count","comments_count","reposts_count"];
     for (var key in obj) {
         if (key == "text") {
             obj[key] = obj[key] + "...";
