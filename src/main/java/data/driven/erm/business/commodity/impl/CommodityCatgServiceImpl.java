@@ -34,7 +34,7 @@ public class CommodityCatgServiceImpl implements CommodityCatgService {
 
     /**
      * 根据父节点的Code获取子节点的目录页
-     * parentCode为""时，则返回根节点的目录页面
+     * level=0时，则返回根节点的目录页面
      *
      * @param parentCode
      * @param keyword
@@ -45,13 +45,14 @@ public class CommodityCatgServiceImpl implements CommodityCatgService {
      * @date 2019-02-15 16:08
      */
     @Override
-    public Page<CommodityCatgVO> findfindCommodityCatgPage(String parentCode, String keyword, String userId, PageBean pageBean) {
+    public Page<CommodityCatgVO> findfindCommodityCatgPage(Integer level,String parentCode, String keyword, String userId, PageBean pageBean) {
         String sql = "";
         StringBuffer where = new StringBuffer();
         List<Object> paramList = new ArrayList<Object>();
 
-        if(StringUtils.isNotEmpty(parentCode)){
-            sql= "select * from commodity_catg_info where catg_code like ? and catg_code <> ?";
+        if(level>0){
+            sql= "select * from commodity_catg_info where catg_level =? and catg_code like ? and catg_code <> ?";
+            paramList.add(level+1);
             paramList.add(parentCode+ "%");
             paramList.add(parentCode);
         }else{

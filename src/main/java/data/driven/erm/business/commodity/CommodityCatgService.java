@@ -31,5 +31,5 @@ public interface CommodityCatgService {
 
     * @return
     */
-    public Page<CommodityCatgVO> findfindCommodityCatgPage(String parentCode, String keyword, String userId, PageBean pageBean);
+    public Page<CommodityCatgVO> findfindCommodityCatgPage(Integer level, String parentCode, String keyword, String userId, PageBean pageBean);
 }
