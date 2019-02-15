@@ -17,7 +17,7 @@ public interface CommodityCatgService {
      * 查找所有的产品分类
      * @return
      */
-    public List<CommodityCatgEntity> findCommodityCatgList();
+     List<CommodityCatgEntity> findCommodityCatgList();
 
     /**
     * 根据父节点的Code获取子节点的目录页
@@ -31,5 +31,18 @@ public interface CommodityCatgService {
 
     * @return
     */
-    public Page<CommodityCatgVO> findfindCommodityCatgPage(String parentCode, String keyword, String userId, PageBean pageBean);
+     Page<CommodityCatgVO> findfindCommodityCatgPage(Integer level, String parentCode, String keyword, String userId, PageBean pageBean);
+
+     /**
+     * 插入目录，返回code
+     * @author Logan
+     * @date 2019-02-15 18:41
+     * @param parentCode
+     * @param level
+     * @param name
+     * @param state
+
+     * @return
+     */
+     String insertCatalog(String parentCode,Integer level, String name,Integer state);
 }

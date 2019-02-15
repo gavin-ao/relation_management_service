@@ -154,15 +154,22 @@
     padding: 0px 15px;
 }
 
-#example thead tr th:nth-child(1), #example tbody tr td:nth-child(3) {
+#example thead tr th:nth-child(1), #example tbody tr td:nth-child(1) {
     font-size:10px;
     width: 80px !important;
     max-width: 80px !important;
 }
-#example thead tr th:nth-child(2), #example tbody tr td:nth-child(3) {
+#example thead tr th:nth-child(2) {
     font-size:10px;
     width: 120px !important;
     max-width: 80px !important;
+}
+#example tbody tr td:nth-child(2) {
+    font-size:10px;
+    width: 120px !important;
+    max-width: 80px !important;
+    cursor: pointer;
+    color:#337ab7;
 }
 #example thead tr th:nth-child(3), #example tbody tr td:nth-child(3) {
     font-size:10px;
@@ -177,7 +184,7 @@
 
 #example thead tr th:nth-child(5), #example tbody tr td:nth-child(5) {
     font-size:10px;
-    width: 60px !important;
+    width: 20px !important;
     max-width: 160px !important;
 }
 

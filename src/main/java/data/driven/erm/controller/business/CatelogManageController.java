@@ -36,9 +36,9 @@ public class CatelogManageController {
         return  mv;
     }
 
-    @RequestMapping(value = {"/findCatalogPage/","/findCatalogPage/{parentCode}"})
+    @RequestMapping(value = {"/findCatalogPage/{level}","/findCatalogPage/{level}/{parentCode}"})
     @ResponseBody
-    public JSONObject getCatalogPage(HttpServletRequest request, HttpServletResponse response, @PathVariable (required = false) String parentCode,
+    public JSONObject getCatalogPage(HttpServletRequest request, HttpServletResponse response, @PathVariable Integer level,@PathVariable (required = false) String parentCode,
                                      String keyword, Integer pageNo, Integer pageSize){
         UserInfoEntity user = ApplicationSessionFactory.getUser(request, response);
         JSONObject result = new JSONObject();
@@ -53,7 +53,7 @@ public class CatelogManageController {
         pageBean.setPageSize(pageSize);
 
         Page<CommodityCatgVO> page =
-                commodityCatgService.findfindCommodityCatgPage(parentCode, keyword, user.getUserId(), pageBean);
+                commodityCatgService.findfindCommodityCatgPage(level,parentCode, keyword, user.getUserId(), pageBean);
         result.put("success", true);
         result.put("page", page);
         return result;

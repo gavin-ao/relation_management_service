@@ -1,29 +1,29 @@
-var tab = '';
+var tab = ''; cataloglevel=1;
 (function () {
 
     //获取表格数据
-    tab = tablesData(tab,"","");
+    tab = tablesData(tab,"",0,"");
 
 
     //搜索
-    $("#selectBtn").off("click");
-    $("#selectBtn").on("click", function () {
-        var selectStatus = $("#selectStatus").val();
-        var inputKeyword = $("#inputKeyword").val();
-        var condition = {
-            selectStatus: selectStatus,
-            inputKeyword: inputKeyword.trim()
-        };
-        tab = tablesData(tab, condition)
-    })
-
-    // $('#example tbody').on('click','td', function (e){
-    //     e.preventDefault();
-    //     //todo:获取详情
-    //     // var storeId = $(this).parents('tr').find("td")[0].innerHTML.trim();
-    //     // var outRefundNo = $(this).parents('tr').find("td")[1].innerHTML.trim();
-    //     getDetaiInfo(storeId,outRefundNo);
+    // $("#selectBtn").off("click");
+    // $("#selectBtn").on("click", function () {
+    //     var selectStatus = $("#selectStatus").val();
+    //     var inputKeyword = $("#inputKeyword").val();
+    //     var condition = {
+    //         selectStatus: selectStatus,
+    //         inputKeyword: inputKeyword.trim()
+    //     };
+    //     tab = tablesData(tab, condition)
     // })
+//TODO:下钻响应
+    $('#example tbody').on('click','td:nth-child(2)', function (e){
+        e.preventDefault();
+        var catalogCode = $(this).parents('tr').find("td")[0].innerHTML.trim();
+        if(cataloglevel<3) {
+            drillDown(catalogCode);
+        }
+    })
 
 
     // var table = $('#example').DataTable();
@@ -34,22 +34,13 @@ var tab = '';
     // } );
 }());
 
-
-function getDetaiInfo(storeId,outRefundNo) {
-    $.ajax({
-        url: "/refund/detail/"+storeId+"/"+outRefundNo,
-        type: "post",
-        dataType: "html",
-        success: function (data) {
-            $("#detailContainer").html("");
-            $("#detailContainer").html(data);
-            // var imageDom = $('#picList');
-            clickToZoomIn($(".pimg"));
-        }
-    })
+//下钻
+function drillDown(parentCode) {
+    tab = tablesData(tab, "",cataloglevel,parentCode);
+    cataloglevel++;
 
 }
-function tablesData(datatable, condition, parentCode) {
+function tablesData(datatable, condition, level,parentCode) {
 
     if (datatable != '') {
         datatable.fnDestroy();         //销毁datatable
@@ -91,9 +82,15 @@ function tablesData(datatable, condition, parentCode) {
                 // param.stats = condition.selectStatus;
                 param.keyword = condition.inputKeyword;
             }
+            var requestUrl=""
+            if(level==0){
+                requestUrl = "/catalog/findCatalogPage/0";
+            }else{
+                requestUrl = "/catalog/findCatalogPage/"+cataloglevel+"/"+parentCode;
+            }
             $.ajax({
                 type: "post",
-                url: "/catalog/findCatalogPage/"+parentCode,//如果parentCode是空，则是第一级的目录
+                url: requestUrl,
                 cache: false,  //禁用缓存
                 data: param,  //传入组装的参数?
                 // headers: {"Content-type": "text/plain;charset=utf-8"},
