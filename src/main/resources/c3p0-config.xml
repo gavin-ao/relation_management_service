@@ -8,9 +8,9 @@
 		<!--<property name="driverClass">com.mysql.cj.jdbc.Driver</property>-->
 
 		<!--aliyun正式环境-->
-		<property name="jdbcUrl">jdbc:mysql://rm-2ze3je9fdk20d823r.mysql.rds.aliyuncs.com:3306/erm?characterEncoding=utf-8&amp;useSSL=true</property>
-		<property name="user">user_online</property>
-		<property name="password">AOyg123!@#</property>
+		<!--<property name="jdbcUrl">jdbc:mysql://rm-2ze3je9fdk20d823r.mysql.rds.aliyuncs.com:3306/erm?characterEncoding=utf-8&amp;useSSL=true</property>-->
+		<!--<property name="user">user_online</property>-->
+		<!--<property name="password">AOyg123!@#</property>-->
 
 		<!--aliyun测试环境-->
 		<!--<property name="jdbcUrl">jdbc:mysql://rm-2ze3je9fdk20d823r.mysql.rds.aliyuncs.com:3306/erm-test?characterEncoding=utf-8&amp;useSSL=true</property>-->
@@ -18,18 +18,27 @@
 		<!--<property name="password">AOyg123!@#</property>-->
 
 		<!--aliyun测试数据库外网环境- 本地启动使用 -->
-		<!--<property name="jdbcUrl">jdbc:mysql://rm-2ze3je9fdk20d823rqo.mysql.rds.aliyuncs.com:3306/erm-test?characterEncoding=utf-8&amp;useSSL=true</property>-->
-		<!--<property name="user">user_test</property>-->
-		<!--<property name="password">AOyg123!@#</property>-->
+		<property name="jdbcUrl">jdbc:mysql://rm-2ze3je9fdk20d823rqo.mysql.rds.aliyuncs.com:3306/erm-test?characterEncoding=utf-8&amp;useSSL=true</property>
+		<property name="user">user_test</property>
+		<property name="password">AOyg123!@#</property>
 
 		<!--<property name="jdbcUrl">jdbc:mysql://127.0.0.1:3306/erm?characterEncoding=utf-8&amp;useSSL=false</property>-->
 		<!--<property name="user">root</property>-->
 		<!--<property name="password"></property>-->
 
-		<property name="acquireIncrement">5</property><!-- 如果池中数据连接不够时一次增长多少个 -->
-		<property name="initialPoolSize">10</property>
-		<property name="minPoolSize">10</property>
-		<property name="maxPoolSize">100</property>
+		<!--测试 -->
+		<property name="acquireIncrement">1</property><!-- 如果池中数据连接不够时一次增长多少个 -->
+		<property name="initialPoolSize">2</property>
+		<property name="minPoolSize">2</property>
+		<property name="maxPoolSize">10</property>
+
+		<!--正式上线 -->
+		<!--<property name="acquireIncrement">5</property>&lt;!&ndash; 如果池中数据连接不够时一次增长多少个 &ndash;&gt;-->
+		<!--<property name="initialPoolSize">10</property>-->
+		<!--<property name="minPoolSize">10</property>-->
+		<!--<property name="maxPoolSize">100</property>-->
+
+
 		<property name="maxStatements">0</property>
 		<property name="maxStatementsPerConnection">10</property>
         <!-- 如果在设置的时间范围连接没有被使用，则丢弃该连接，mysql的wait_timeout默认是28800，这里必须比mysql的wait_timeout小 -->
