@@ -42,6 +42,16 @@ public interface AttrInfoService {
      * @return 
      */
     JSONObject insertAtrrInfoAndValue(String attrName, List<String> attrValueList,Integer attrType);
+
+    /**
+     * @description 修改属性名称
+     * @author lxl
+     * @date 2019-02-15 16:24
+     * @param attrId 属性表id
+     * @param attrName 属性名称
+     * @return
+     */
+    JSONObject updateAttrName(String attrId,String attrName);
 }
 
 

@@ -76,4 +76,24 @@ public class AttrValueServiceImpl implements AttrValueService {
         }
         return JSONUtil.putMsg(false,"101","插入属性值信息失败");
     }
+
+    /**
+     * @description 修改属性值信息
+     * @author lxl
+     * @date 2019-02-15 16:36
+     * @param attrValueId 属性值表id
+     * @param attrValue 属性值
+     * @return
+     */
+    @Override
+    public JSONObject updateAttrValue(String attrValueId, String attrValue) {
+        String sql = "update attr_value set attr_value = ? where attr_value_id = ?";
+        try {
+            jdbcBaseDao.executeUpdate(sql,attrValue,attrValueId);
+            return JSONUtil.putMsg(true,"200","修改属性值信息成功");
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return JSONUtil.putMsg(false,"101","修改属性值信息失败");
+    }
 }
