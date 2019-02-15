@@ -138,8 +138,8 @@ function tablesData(datatable, condition, parentCode) {
             {"data": "cid"},
             {"data": "catgCode"},
             {"data": "catgName"},
-            {"data": "createAt"},
-            {"data": "updateAt"},
+            {"data": "fmtCreateTime"},
+            {"data": "fmtUpdateTime"},
             {"data": "stateDesc"},
         ],
         aoColumnDefs: [
