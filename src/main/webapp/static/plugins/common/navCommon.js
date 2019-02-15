@@ -146,12 +146,12 @@
 })();
 
 function navSelect() {
-    $("#main-menu").off("click","li");
-    $("#main-menu").on("click","li",function(){
+    $("#main-menu").off("click","li>ul>li");
+    $("#main-menu").on("click","li>ul>li",function(){
         var navName = $.trim($(this).attr("name"));
-        $(this).siblings().removeClass("sel");
-        $(this).parent().parent().siblings().find("li").removeClass("sel");
-        $(this).addClass("sel");
+        $(this).siblings().removeClass("bgStyle");
+        $(this).parent().parent().siblings().find("li").removeClass("bgStyle");
+        $(this).addClass("bgStyle");
         $("#contain_head_left").hide();
         if(navName == "companyManage"){
             $("#contain_head_left").show();
