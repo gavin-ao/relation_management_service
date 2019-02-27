@@ -1,6 +1,7 @@
 package data.driven.erm.business.shop.impl;
 
 import com.alibaba.fastjson.JSONObject;
+import data.driven.erm.business.attribute.impl.AttrBrandServiceImpl;
 import data.driven.erm.business.commodity.CommodityService;
 import data.driven.erm.business.shop.ShopService;
 import data.driven.erm.dao.JDBCBaseDao;
@@ -10,20 +11,17 @@ import data.driven.erm.entity.wechat.SysPictureEntity;
 import data.driven.erm.util.FileUtil;
 import data.driven.erm.util.UUIDUtil;
 import data.driven.erm.vo.commodity.CommodityVO;
-import data.driven.erm.vo.wechat.WechatUserInfoVO;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.multipart.MultipartHttpServletRequest;
 
-import javax.servlet.http.HttpServletRequest;
+
 import java.io.*;
 import java.math.BigDecimal;
 import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Date;
-import java.util.List;
 
 import static data.driven.erm.util.JSONUtil.putMsg;
 
@@ -35,6 +33,7 @@ import static data.driven.erm.util.JSONUtil.putMsg;
  */
 @Service
 public class ShopServiceImpl implements ShopService {
+    private static final Logger logger = LoggerFactory.getLogger(AttrBrandServiceImpl.class);
     @Autowired
     private JDBCBaseDao jdbcBaseDao;
 
@@ -73,6 +72,7 @@ public class ShopServiceImpl implements ShopService {
     public JSONObject updateCommodityCatgOrd(String catgId, String catgName, String catgCode, Integer catgLevel, String saveType) {
         try{
             if ("insert".equals(saveType)){
+                logger.info("进入新增类目");
                 CommodityCatgEntity commodityCatgEntitye = new CommodityCatgEntity();
                 commodityCatgEntitye.setCatgId(catgId);
                 commodityCatgEntitye.setCatgName(catgName);
@@ -84,10 +84,13 @@ public class ShopServiceImpl implements ShopService {
                 commodityCatgEntitye.setCreateAt(createAt);
                 commodityCatgEntitye.setCreator("system");
                 jdbcBaseDao.insert(commodityCatgEntitye, "commodity_catg_info");
+                logger.info("新增类目成功");
                 return putMsg(true,"200","保存成功");
             }else if("update".equals(saveType)){
+                logger.info("进入修改类目");
                 String sql = "update commodity_catg_info set catg_name = ? where catg_id = ?";
                 jdbcBaseDao.executeUpdate(sql, catgName,catgId);
+                logger.info("新增类目成功");
                 return putMsg(true,"200","保存成功");
             }
             return putMsg(false, "103", "保存失败");
@@ -113,6 +116,7 @@ public class ShopServiceImpl implements ShopService {
     public JSONObject saveCommodityInfo(String url, String commodityId, String catgId,String catg_code, String commodityName, BigDecimal suggestPrices, BigDecimal prices, String saveType) {
         try{
             if ("insert".equals(saveType)){
+                logger.info("新增商品");
                 CommodityEntity commodityEntity = new CommodityEntity();
                 commodityEntity.setCommodityId(commodityId);
                 commodityEntity.setCatgId(catgId);
@@ -125,8 +129,10 @@ public class ShopServiceImpl implements ShopService {
                 commodityEntity.setCreator("system");
                 commodityEntity.setPictureId(insertPictures(url));
                 jdbcBaseDao.insert(commodityEntity, "commodity_info");
+                logger.info("新增商品成功");
                 return putMsg(true,"200","保存成功");
             }else if("update".equals(saveType)){
+                logger.info("修改商品");
                 CommodityVO commodityVO = commodityService.getCommodityById(commodityId);
                 commodityVO.getPictureId();
                 //删除图片数据库信息
@@ -135,6 +141,7 @@ public class ShopServiceImpl implements ShopService {
                 String pictureId = insertPictures(url);
                 String sql = "update commodity_info set catg_id = ?,catg_code=?,commodity_name=?,suggest_prices=?,prices=?,picture_id=? where commodity_id = ?";
                 jdbcBaseDao.executeUpdate(sql, catgId,catg_code,commodityName,suggestPrices,prices,pictureId,commodityId);
+                logger.info("修改商品成功");
                 return putMsg(true,"200","保存成功");
             }
             return putMsg(false, "103", "保存失败");
