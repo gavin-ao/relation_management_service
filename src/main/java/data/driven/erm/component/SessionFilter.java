@@ -32,6 +32,7 @@ public class SessionFilter implements Filter{
         EXCLUDE_URL_SET.add("/static");
         //微信接口不需要过滤
         EXCLUDE_URL_SET.add("/wechatapi");
+        EXCLUDE_URL_SET.add("/shop");
     }
 
     @Override
