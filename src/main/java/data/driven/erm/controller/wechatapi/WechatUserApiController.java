@@ -15,6 +15,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import java.math.BigDecimal;
+
 /**
  * @author hejinkai - 可删除
  * @date 2018/6/29
@@ -57,7 +59,7 @@ public class WechatUserApiController {
         WechatUserInfoVO userInfo = WechatApiSession.getSessionBean(sessionID).getUserInfo();
         Integer inviterNum = wechatUserService.totalInviterNum(userInfo.getAppInfoId(), userInfo.getWechatUserId());
         result.put("inviterNum", inviterNum);
-        Integer rebateMoney = orderRebateService.getRebateMoney(userInfo.getAppInfoId(), userInfo.getWechatUserId());
+        BigDecimal rebateMoney = orderRebateService.getRebateMoney(userInfo.getAppInfoId(), userInfo.getWechatUserId());
         result.put("rebateMoney", rebateMoney);
         return result;
     }
