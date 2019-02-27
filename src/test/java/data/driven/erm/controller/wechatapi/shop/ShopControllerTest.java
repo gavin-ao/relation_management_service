@@ -27,6 +27,6 @@ public class ShopControllerTest extends UnitTestBase {
     @Test
     public void saveCommodityInfo(){
         shopService.saveCommodityInfo("http://shop.xinkebao.cn/files/upload/img/u/2019/02/21/GJIR.jpg","8","8","008",
-                "【茅台官方授权】贵州茅台迎宾酒 53度 中国红 500ml",new BigDecimal(228),new BigDecimal(0.02),"insert");
+                "【茅台官方授权】贵州茅台迎宾酒 53度 中国红 500ml",new BigDecimal(228),new BigDecimal(0.02),"insert",1);
     }
 }

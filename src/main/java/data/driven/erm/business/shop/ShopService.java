@@ -46,8 +46,10 @@ public interface ShopService {
      * @param prices 零售价格
      * @param saveType 保存类型 insert 新增 update 修改
      * @param url 图片地址
+     * @param isMarkeTable 上架状态 0 未上架 1 上架
      * @return
      */
-    JSONObject saveCommodityInfo(String url,String commodityId, String catgId,String catg_code, String commodityName, BigDecimal suggestPrices, BigDecimal prices, String saveType);
+    JSONObject saveCommodityInfo(String url,String commodityId, String catgId,String catg_code, String commodityName,
+                                 BigDecimal suggestPrices, BigDecimal prices, String saveType,Integer isMarkeTable);
 
 }

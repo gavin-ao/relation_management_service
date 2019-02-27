@@ -110,10 +110,13 @@ public class ShopServiceImpl implements ShopService {
      * @param prices 零售价格
      * @param saveType 保存类型 insert 新增 update 修改
      * @param url 图片地址
+     * @param isMarkeTable 上架状态 0 未上架 1 上架
      * @return
      */
     @Override
-    public JSONObject saveCommodityInfo(String url, String commodityId, String catgId,String catg_code, String commodityName, BigDecimal suggestPrices, BigDecimal prices, String saveType) {
+    public JSONObject saveCommodityInfo(String url, String commodityId, String catgId,String catg_code,
+                                        String commodityName, BigDecimal suggestPrices, BigDecimal prices,
+                                        String saveType,Integer isMarkeTable) {
         try{
             if ("insert".equals(saveType)){
                 logger.info("新增商品");
@@ -127,6 +130,7 @@ public class ShopServiceImpl implements ShopService {
                 commodityEntity.setCatgCode(catg_code);
                 commodityEntity.setCreateAt(new Date());
                 commodityEntity.setCreator("system");
+                commodityEntity.setIsMarkeTable(isMarkeTable);
                 commodityEntity.setPictureId(insertPictures(url));
                 jdbcBaseDao.insert(commodityEntity, "commodity_info");
                 logger.info("新增商品成功");
@@ -139,8 +143,10 @@ public class ShopServiceImpl implements ShopService {
                 String sqldele = "DELETE FROM sys_picture WHERE picture_id = ?";
                 jdbcBaseDao.executeUpdate(sqldele,commodityVO.getPictureId());
                 String pictureId = insertPictures(url);
-                String sql = "update commodity_info set catg_id = ?,catg_code=?,commodity_name=?,suggest_prices=?,prices=?,picture_id=? where commodity_id = ?";
-                jdbcBaseDao.executeUpdate(sql, catgId,catg_code,commodityName,suggestPrices,prices,pictureId,commodityId);
+                String sql = "update commodity_info set catg_id = ?,catg_code=?,commodity_name=?,suggest_prices=?," +
+                        "prices=?,picture_id=? ,is_Marke_Table = ? where commodity_id = ?";
+                jdbcBaseDao.executeUpdate(sql, catgId,catg_code,commodityName,suggestPrices,prices,pictureId,
+                        commodityId,isMarkeTable);
                 logger.info("修改商品成功");
                 return putMsg(true,"200","保存成功");
             }
