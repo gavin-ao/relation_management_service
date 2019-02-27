@@ -34,14 +34,14 @@ public class CommodityEntity {
     private String creator;
 
     /**上架状态**/
-    private Integer isMarkeTable;
+    private Integer isMarketable;
 
-    public Integer getIsMarkeTable() {
-        return isMarkeTable;
+    public Integer getIsMarketable() {
+        return isMarketable;
     }
 
-    public void setIsMarkeTable(Integer isMarkeTable) {
-        this.isMarkeTable = isMarkeTable;
+    public void setIsMarketable(Integer isMarketable) {
+        this.isMarketable = isMarketable;
     }
 
     public String getCommodityId() {
