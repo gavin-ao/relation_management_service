@@ -145,8 +145,8 @@ public class ShopServiceImpl implements ShopService {
                 String pictureId = insertPictures(url);
                 String sql = "update commodity_info set catg_id = ?,catg_code=?,commodity_name=?,suggest_prices=?," +
                         "prices=?,picture_id=? ,is_Marke_Table = ? where commodity_id = ?";
-                jdbcBaseDao.executeUpdate(sql, catgId,catg_code,commodityName,suggestPrices,prices,pictureId,
-                        commodityId,isMarkeTable);
+                jdbcBaseDao.executeUpdate(sql, catgId,catg_code,commodityName,suggestPrices,prices,pictureId,isMarkeTable,
+                        commodityId);
                 logger.info("修改商品成功");
                 return putMsg(true,"200","保存成功");
             }
