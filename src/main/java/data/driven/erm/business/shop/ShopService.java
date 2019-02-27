@@ -52,4 +52,13 @@ public interface ShopService {
     JSONObject saveCommodityInfo(String url,String commodityId, String catgId,String catg_code, String commodityName,
                                  BigDecimal suggestPrices, BigDecimal prices, String saveType,Integer isMarkeTable);
 
+    /**
+     * @description 修改商品上架状态只有定时会用到
+     * @author lxl
+     * @date 2019-02-27 17:33
+     * @param commodityId 商品id
+     * @param isMarketable 上架状态 0 未上架 1 上架
+     * @return
+     */
+    JSONObject saveMarketable(String commodityId,Integer isMarketable);
 }

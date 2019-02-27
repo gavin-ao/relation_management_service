@@ -110,13 +110,13 @@ public class ShopServiceImpl implements ShopService {
      * @param prices 零售价格
      * @param saveType 保存类型 insert 新增 update 修改
      * @param url 图片地址
-     * @param isMarkeTable 上架状态 0 未上架 1 上架
+     * @param isMarketable 上架状态 0 未上架 1 上架
      * @return
      */
     @Override
     public JSONObject saveCommodityInfo(String url, String commodityId, String catgId,String catg_code,
                                         String commodityName, BigDecimal suggestPrices, BigDecimal prices,
-                                        String saveType,Integer isMarkeTable) {
+                                        String saveType,Integer isMarketable) {
         try{
             if ("insert".equals(saveType)){
                 logger.info("新增商品");
@@ -130,7 +130,7 @@ public class ShopServiceImpl implements ShopService {
                 commodityEntity.setCatgCode(catg_code);
                 commodityEntity.setCreateAt(new Date());
                 commodityEntity.setCreator("system");
-                commodityEntity.setIsMarkeTable(isMarkeTable);
+                commodityEntity.setIsMarketable(isMarketable);
                 commodityEntity.setPictureId(insertPictures(url));
                 jdbcBaseDao.insert(commodityEntity, "commodity_info");
                 logger.info("新增商品成功");
@@ -138,17 +138,20 @@ public class ShopServiceImpl implements ShopService {
             }else if("update".equals(saveType)){
                 logger.info("修改商品");
                 CommodityVO commodityVO = commodityService.getCommodityById(commodityId);
-                commodityVO.getPictureId();
-                //删除图片数据库信息
-                String sqldele = "DELETE FROM sys_picture WHERE picture_id = ?";
-                jdbcBaseDao.executeUpdate(sqldele,commodityVO.getPictureId());
-                String pictureId = insertPictures(url);
-                String sql = "update commodity_info set catg_id = ?,catg_code=?,commodity_name=?,suggest_prices=?," +
-                        "prices=?,picture_id=? ,is_Marke_Table = ? where commodity_id = ?";
-                jdbcBaseDao.executeUpdate(sql, catgId,catg_code,commodityName,suggestPrices,prices,pictureId,isMarkeTable,
-                        commodityId);
-                logger.info("修改商品成功");
-                return putMsg(true,"200","保存成功");
+                if (commodityVO == null){
+                    return putMsg(false, "103", "商品不存在");
+                }else{
+                    //删除图片数据库信息
+                    String sqldele = "DELETE FROM sys_picture WHERE picture_id = ?";
+                    jdbcBaseDao.executeUpdate(sqldele,commodityVO.getPictureId());
+                    String pictureId = insertPictures(url);
+                    String sql = "update commodity_info set catg_id = ?,catg_code=?,commodity_name=?,suggest_prices=?," +
+                            "prices=?,picture_id=? ,is_marketable = ? where commodity_id = ?";
+                    jdbcBaseDao.executeUpdate(sql, catgId,catg_code,commodityName,suggestPrices,prices,pictureId,isMarketable,
+                            commodityId);
+                    logger.info("修改商品成功");
+                    return putMsg(true,"200","保存成功");
+                }
             }
             return putMsg(false, "103", "保存失败");
         }catch (Exception e){
@@ -156,7 +159,25 @@ public class ShopServiceImpl implements ShopService {
         }
     }
 
-
+    /**
+     * @description 修改商品上架状态只有定时会用到
+     * @author lxl
+     * @date 2019-02-27 17:33
+     * @param commodityId 商品id
+     * @param isMarketable 上架状态 0 未上架 1 上架
+     * @return
+     */
+    @Override
+    public JSONObject saveMarketable(String commodityId, Integer isMarketable) {
+        CommodityVO commodityVO = commodityService.getCommodityById(commodityId);
+        if (commodityVO == null){
+            return putMsg(false, "103", "商品不存在");
+        }else{
+            String sql = "update commodity_info set is_marketable = ? where commodity_id = ?";
+            jdbcBaseDao.executeUpdate(sql,isMarketable,commodityId);
+            return putMsg(true, "200", "更新商品上架状态成功");
+        }
+    }
 
 
     /**

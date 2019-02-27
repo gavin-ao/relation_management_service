@@ -60,20 +60,35 @@ public class shopController {
      * @param prices 零售价格
      * @param saveType 保存类型 insert 新增 update 修改
      * @param urlPath 图片的URL
-     * @param isMarkeTable 上架状态 0 未上架 1 上架
+     * @param isMarketable 上架状态 0 未上架 1 上架
      * @return
      */
     @RequestMapping("/saveCommodityInfo")
     @ResponseBody
     public JSONObject saveCommodityInfo(String urlPath,String commodityId, String catgId, String catg_code,
                                         String commodityName, BigDecimal suggestPrices, BigDecimal prices,
-                                        String saveType,Integer isMarkeTable){
+                                        String saveType,Integer isMarketable){
 
 
         return shopService.saveCommodityInfo(urlPath,commodityId,catgId,catg_code,commodityName,suggestPrices,
-                prices,saveType,isMarkeTable);
+                prices,saveType,isMarketable);
 //        return shopService.saveCommodityInfo("http://shop.xinkebao.cn/files/upload/img/u/2019/02/21/GJIR.jpg","8","8","008",
 //                "【茅台官方授权】贵州茅台迎宾酒 53度 中国红 500ml",new BigDecimal(228),new BigDecimal(0.02),"insert");
+    }
+
+    /**
+     * @description 修改商品上架状态只有定时会用到
+     * @author lxl
+     * @date 2019-02-27 17:33
+     * @param commodityId 商品id
+     * @param isMarketable 上架状态 0 未上架 1 上架
+     * @return
+     */
+    @RequestMapping("/saveMarketable")
+    @ResponseBody
+    public JSONObject saveMarketable(String commodityId,Integer isMarketable){
+
+        return shopService.saveMarketable(commodityId,isMarketable);
     }
 }
 
