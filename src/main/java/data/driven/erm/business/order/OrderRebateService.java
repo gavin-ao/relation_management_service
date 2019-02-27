@@ -3,6 +3,7 @@ package data.driven.erm.business.order;
 import data.driven.erm.vo.order.OrderRebateVO;
 import data.driven.erm.vo.order.OrderVO;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 /**
@@ -27,7 +28,7 @@ public interface OrderRebateService {
      * @param wechatUserId
      * @return
      */
-    public Integer getRebateMoney(String appInfoId, String wechatUserId);
+    public BigDecimal getRebateMoney(String appInfoId, String wechatUserId);
 
     /**
      * 获取最新二十条返利信息

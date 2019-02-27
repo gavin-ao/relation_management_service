@@ -1,5 +1,6 @@
 package data.driven.erm.business.order.impl;
 
+import data.driven.erm.business.attribute.impl.AttrBrandServiceImpl;
 import data.driven.erm.business.order.OrderRebateService;
 import data.driven.erm.business.order.OrderService;
 import data.driven.erm.dao.JDBCBaseDao;
@@ -8,6 +9,8 @@ import data.driven.erm.util.UUIDUtil;
 import data.driven.erm.vo.order.OrderDetailVO;
 import data.driven.erm.vo.order.OrderRebateVO;
 import data.driven.erm.vo.order.OrderVO;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -21,6 +24,7 @@ import java.util.List;
  */
 @Service
 public class OrderRebateServiceImpl implements OrderRebateService {
+    private static final Logger logger = LoggerFactory.getLogger(OrderRebateServiceImpl.class);
 
     @Autowired
     private JDBCBaseDao jdbcBaseDao;
@@ -30,19 +34,27 @@ public class OrderRebateServiceImpl implements OrderRebateService {
 
     @Override
     public boolean insertOrderRebate(OrderVO order, String appInfoId, String wechatUserId) {
+        logger.info("进入保存分利方法");
+        logger.info("保存分利方法RealPayment："+order.getRealPayment());
+
         if(order.getRealPayment()!=null&&order.getRealPayment().doubleValue()>0){
             if(!exists(order.getWechatUserId(), appInfoId, wechatUserId)){
+                logger.info("进入真实保存");
+                logger.info("进入真实保存OrderId："+order.getOrderId());
                 List<OrderDetailVO> detailVOList = orderService.findOrderDetailByOrderId(order.getOrderId());
                 BigDecimal price = new BigDecimal(0);
                 BigDecimal multiplyP = new BigDecimal(0.05);
+                logger.info("进入真实保price："+price);
+                logger.info("进入真实保multiplyP："+multiplyP);
                 if(detailVOList != null && detailVOList.size() > 0){
                     for (OrderDetailVO orderDetailVO : detailVOList){
                         price = price.add(orderDetailVO.getTotalPrice().multiply(multiplyP));
                     }
+                    logger.info("进入真实保price："+price);
                 }else{
                     return false;
                 }
-
+                logger.info("开始保存");
                 OrderRebateEntity orderRebateEntity = new OrderRebateEntity();
                 orderRebateEntity.setRebateId(UUIDUtil.getUUID());
                 orderRebateEntity.setWechatUserId(wechatUserId);
@@ -52,6 +64,7 @@ public class OrderRebateServiceImpl implements OrderRebateService {
                 orderRebateEntity.setRebateAt(new Date());
                 orderRebateEntity.setRebateMoney(price);
                 jdbcBaseDao.insert(orderRebateEntity, "order_rebate_info");
+                logger.info("保存分利方法成功");
             }
         }
         return true;
@@ -71,9 +84,13 @@ public class OrderRebateServiceImpl implements OrderRebateService {
     }
 
     @Override
-    public Integer getRebateMoney(String appInfoId, String wechatUserId) {
+    public BigDecimal getRebateMoney(String appInfoId, String wechatUserId) {
         String sql = "select sum(rebate_money) from order_rebate_info where wechat_user_id = ? and app_info_id = ?";
-        return jdbcBaseDao.getCount(sql, wechatUserId, appInfoId);
+        Object object = jdbcBaseDao.getColumn(sql, wechatUserId, appInfoId);
+        if(object != null){
+            return new BigDecimal(object.toString());
+        }
+        return null;
     }
 
     @Override
