@@ -21,7 +21,9 @@ public class CommodityServiceImpl implements CommodityService {
 
     @Override
     public List<CommodityVO> findCommodityListByCatgId(String catgId) {
-        String sql = "select c.commodity_id,c.commodity_name,c.suggest_prices,c.prices,c.remark,p.file_path from commodity_info c left join sys_picture p on p.picture_id = c.picture_id where c.catg_id = ? order by c.ord";
+        String sql = "select c.commodity_id,c.commodity_name,c.suggest_prices,c.prices,c.remark,p.file_path from" +
+                " commodity_info c left join sys_picture p on p.picture_id = c.picture_id where c.catg_id = ?" +
+                " and c.is_Marke_Table = 1 order by c.ord";
         List<CommodityVO> list = jdbcBaseDao.queryList(CommodityVO .class, sql, catgId);
         return list;
     }
