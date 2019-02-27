@@ -33,6 +33,17 @@ public class CommodityEntity {
     /** 创建人 **/
     private String creator;
 
+    /**上架状态**/
+    private Integer isMarkeTable;
+
+    public Integer getIsMarkeTable() {
+        return isMarkeTable;
+    }
+
+    public void setIsMarkeTable(Integer isMarkeTable) {
+        this.isMarkeTable = isMarkeTable;
+    }
+
     public String getCommodityId() {
         return commodityId;
     }
