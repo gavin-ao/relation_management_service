@@ -31,7 +31,7 @@
                 </tbody>
             </table>
         </div>
-        <div id="detailContainer" style="float:left;width:30%">
+        <div id="detailContainer" style="float:left;width:30%;height:900px;">
 
         </div>
     </div>
