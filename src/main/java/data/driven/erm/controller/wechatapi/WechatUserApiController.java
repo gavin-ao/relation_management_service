@@ -60,7 +60,11 @@ public class WechatUserApiController {
         Integer inviterNum = wechatUserService.totalInviterNum(userInfo.getAppInfoId(), userInfo.getWechatUserId());
         result.put("inviterNum", inviterNum);
         BigDecimal rebateMoney = orderRebateService.getRebateMoney(userInfo.getAppInfoId(), userInfo.getWechatUserId());
-        result.put("rebateMoney", rebateMoney);
+        if (rebateMoney == null){
+            result.put("rebateMoney", 0);
+        }else{
+            result.put("rebateMoney", rebateMoney);
+        }
         return result;
     }
 
