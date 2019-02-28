@@ -54,7 +54,7 @@ public class ShopServiceImpl implements ShopService {
         if (ord != null){
             return Integer.parseInt(ord.toString());
         }
-        return null;
+        return 0;
     }
 
     /**
@@ -79,7 +79,7 @@ public class ShopServiceImpl implements ShopService {
                 commodityCatgEntitye.setCatgCode(catgCode);
                 commodityCatgEntitye.setCatgLevel(catgLevel);
                 Integer ord = getCommodityCatgOrd(catgLevel);
-                commodityCatgEntitye.setOrd(ord);
+                commodityCatgEntitye.setOrd(ord+1);
                 Date createAt = new Date();
                 commodityCatgEntitye.setCreateAt(createAt);
                 commodityCatgEntitye.setCreator("system");
