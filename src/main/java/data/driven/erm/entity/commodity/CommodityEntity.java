@@ -35,6 +35,16 @@ public class CommodityEntity {
 
     /**上架状态**/
     private Integer isMarketable;
+    /** 商品描述 **/
+    private String introduction;
+
+    public String getIntroduction() {
+        return introduction;
+    }
+
+    public void setIntroduction(String introduction) {
+        this.introduction = introduction;
+    }
 
     public Integer getIsMarketable() {
         return isMarketable;
