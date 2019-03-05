@@ -18,7 +18,12 @@
 		<!--<property name="password">AOyg123!@#</property>-->
 
 		<!--aliyun测试数据库外网环境- 本地启动使用 -->
-		<property name="jdbcUrl">jdbc:mysql://rm-2ze3je9fdk20d823rqo.mysql.rds.aliyuncs.com:3306/erm-test?characterEncoding=utf-8&amp;useSSL=true</property>
+		<!--<property name="jdbcUrl">jdbc:mysql://rm-2ze3je9fdk20d823rqo.mysql.rds.aliyuncs.com:3306/erm-test?characterEncoding=utf-8&amp;useSSL=true</property>-->
+	<!--<property name="user">user_test</property>-->
+	<!--<property name="password">AOyg123!@#</property>-->
+
+		<!--新测试数据库外网环境- 本地启动使用 -->
+		<property name="jdbcUrl">jdbc:mysql://47.95.238.103:3306/erm-test?characterEncoding=utf-8&amp;useSSL=true</property>
 		<property name="user">user_test</property>
 		<property name="password">AOyg123!@#</property>
 
