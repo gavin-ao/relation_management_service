@@ -55,7 +55,7 @@ public class WechatTotalController {
      */
     @RequestMapping(path = "/coreData")
     public ModelAndView coreData(String startDate, String endDate){
-        ModelAndView mv = new ModelAndView("/data-statistics/core-data");
+        ModelAndView mv = new ModelAndView("/data-statistics/smallProgram-coreData");
         dealTotalAll("activityNum", mv, wechatTotalService.totalActivityNum(startDate, endDate));
         dealTotalAll("spreadRangeNum", mv, wechatTotalService.totalSpreadRangeNum(startDate, endDate));
         dealTotalAll("fissionEffectNewPeopleNum", mv, wechatTotalService.totalFissionEffectNewPeopleNum(startDate, endDate));
