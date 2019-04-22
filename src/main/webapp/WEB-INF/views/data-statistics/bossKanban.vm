@@ -26,7 +26,7 @@
                                                                                       placeholder="结束时间"
                                                                                       id="endTime">
 </div>
-<div class="contain_main_content" style="overflow-y: scroll;height: calc(100% - 80px)">
+<div class="contain_main_content">
     <div class="contain_main_data" id="contain_main_data">
         <div data-iden="totalActivityNumView">
             <p class="activitytitle">活跃用户(人)</p>

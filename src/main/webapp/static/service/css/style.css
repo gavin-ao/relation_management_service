@@ -33,10 +33,10 @@
 }
 
 #main-menu li {
-    text-align: center;
+    /*text-align: center;*/
     line-height: 80px;
     cursor: pointer;
-    color: #fff;
+    /*color: #fff;*/
     font-family: 'PingFangSC-Regular', 'PingFang SC';
     font-weight: 400;
     font-style: normal;

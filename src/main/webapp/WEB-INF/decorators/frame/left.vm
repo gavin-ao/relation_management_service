@@ -1,5 +1,5 @@
 <link href="/static/service/css/bootstrap.css" rel='stylesheet' type='text/css' />
-##<link href="/static/service/css/style.css?v=20170703154841" rel='stylesheet' type='text/css' />
+<link href="/static/service/css/style.css?v=20170703154841" rel='stylesheet' type='text/css' />
 <link rel="stylesheet" href="/static/plugins/dataTables/datatables.css"/>
 ##<link href="/static/service/css/custom.css" rel="stylesheet">
 ##<link href="/static/service/images/ico/inter3i.ico?v=20170703154841" mce_href="favicon.ico" rel="bookmark" type="image/x-icon" />
@@ -33,9 +33,9 @@
                     </div>
                     <ul class="nav main-menu">
 
-##                        <li  name="companyManage" style="">数据统计</li>
-                        <li class="bgStyle" name="catelogManage" style="">类目管理</li>
-                        <li  name="attributeManage" style="">属性管理</li>
+                        <li  name="companyManage" style="">数据统计</li>
+##                        <li class="bgStyle" name="catelogManage" style="">类目管理</li>
+##                        <li  name="attributeManage" style="">属性管理</li>
                         <li  name="refundList">退款单</li>
                     </ul>
                 </li>

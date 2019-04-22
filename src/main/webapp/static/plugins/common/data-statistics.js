@@ -38,7 +38,7 @@ function allSmallProgram() {
 function selecyCondition() {
     $("#user_manage .dropdown-menu").off('click',"li");
     $("#user_manage .dropdown-menu").on('click', 'li', function () {
-
+        console.log(this)
         var that = this;
         var content = $.trim($(this).text());
         var dropMenu;
