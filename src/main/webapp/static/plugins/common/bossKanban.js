@@ -172,7 +172,7 @@ function chartMapShow() {
     var options = {
         tooltip: {
             show: true,
-            formatter: function(params) {
+            formatter: function (params) {
                 return params.name + '：' + params.data['value'] + '%'
             },
         },
@@ -181,7 +181,7 @@ function chartMapShow() {
             text: ['高', '低'],
             showLabel: true,
             seriesIndex: [0],
-            orient:'horizontal',
+            orient: 'horizontal',
             min: 0,
             max: 10,
             inRange: {
@@ -197,7 +197,7 @@ function chartMapShow() {
             roam: true,
             map: 'china',
             label: {
-                normal:{
+                normal: {
                     show: true,
                     fontSize: 8,
                     position: "inside"
@@ -226,10 +226,11 @@ function chartMapShow() {
             type: 'map',
             roam: false,
             geoIndex: 0,
-            data:  [{
-                name: '北京',
-                value: 5.3
-            },
+            data: [
+                {
+                    name: '北京',
+                    value: 5.3
+                },
                 {
                     name: '天津',
                     value: 3.8
@@ -390,7 +391,7 @@ function chartLineBarShow() {
             // left: '4%',
             // right: '40',
             bottom: '2%',
-            top:'5',
+            top: '5',
             containLabel: true
         },
         xAxis: {
