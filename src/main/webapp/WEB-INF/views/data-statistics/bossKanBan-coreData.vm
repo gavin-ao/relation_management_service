@@ -1,0 +1,16 @@
+<div data-iden="totalActivityNumView">
+    <p class="activitytitle">活跃度(点击次数)</p>
+    <p class="activitySum">$!{activityNum}</p>
+</div>
+<div data-iden="totalSpreadRangeNumView">
+    <p class="activitytitle">活跃用户(人)</p>
+    <p class="activitySum">$!{spreadRangeNum}</p>
+</div>
+<div data-iden="totalFissionEffectNewPeopleNumView">
+    <p class="activitytitle">裂变效果(新增用户)</p>
+    <p class="activitySum">$!{fissionEffectNewPeopleNum}</p>
+</div>
+<div data-iden="totalShareNumView">
+    <p class="activitytitle">传播热度(分享人数)</p>
+    <p class="activitySum">$!{sharePeopleNum}</p>
+</div>
