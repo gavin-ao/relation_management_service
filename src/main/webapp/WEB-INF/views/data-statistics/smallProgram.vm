@@ -32,23 +32,10 @@
 </div>
 <div class="contain_main_content">
     <div class="contain_main_data" id="contain_main_data">
-        <div data-iden="totalActivityNumView">
-            <p class="activitytitle">活跃度(点击次数)</p>
-            <p class="activitySum">6705</p>
-        </div>
-        <div data-iden="totalSpreadRangeNumView">
-            <p class="activitytitle">活跃用户(人)</p>
-            <p class="activitySum">4200</p>
-        </div>
-        <div data-iden="totalFissionEffectNewPeopleNumView">
-            <p class="activitytitle">裂变效果(新增用户)</p>
-            <p class="activitySum">560</p>
-        </div>
-        <div data-iden="totalShareNumView">
-            <p class="activitytitle">传播热度(分享人数)</p>
-            <p class="activitySum">300</p>
-        </div>
+
     </div>
+
+
     <div class="contain_main_graph">
         <div class="titles">
             <span>日活趋势</span>

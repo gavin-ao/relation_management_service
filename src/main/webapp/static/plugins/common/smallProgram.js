@@ -10,7 +10,7 @@ var wholeAppInfoId, wholeStartTime, wholeEndTime;
     // coreDataSel()
 
 
-    // coreDataShow()
+    coreDataShow();
     // $("#navbarH").height($("#page-wrapper").height() - 80)
 
     $($("#contain_main_head > div")[0]).find('input').trigger("click");
@@ -51,6 +51,32 @@ function laydateTime() {
     });
 }
 
+// 核心数据选择
+function coreDataSel() {
+    $("#contain_main_data").off('click', "div");
+    $("#contain_main_data").on('click', "div", function () {
+        console.log(2222)
+        $(this).siblings().attr("class", "");
+        $(this).attr("class", "selectData");
+        var urlName = $(this).attr("data-iden");
+        var title = $(this).attr("data-num");
+        // dataTrendDiagram(urlName, title);
+    })
+}
+// 核心数据展示
+function coreDataShow(appInfoId) {
+    $.ajax({
+        url: "/wechat/total/coreData",
+        type: "post",
+        data: { startDate: wholeStartTime, endDate: wholeEndTime},
+        dataType: "html",
+        success: function (data) {
+            $("#contain_main_data").html(data);
+            coreDataSel();
+            // changeTimeAfterDataChange();
+        }
+    })
+}
 //线形图 日活趋势
 function chartLineShow() {
     var myChartLine = echarts.init(document.getElementById('main_Lines'));
@@ -151,7 +177,6 @@ function chartFunnelShow() {
         myChartLine.resize();
     }
 }
-
 
 // 饼图展示  新老用户成交占比
 function chartPieShow(data) {
