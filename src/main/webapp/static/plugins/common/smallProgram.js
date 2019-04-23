@@ -425,20 +425,20 @@ function dailyLiveTrend(urlName) {
 
 // 漏斗图展示 用户转化漏斗
 function userTransformation() {
-    chartFunnelShow()
-    // $.ajax({
-    //     url: "/wechat/total/"+urlName,
-    //     dataType: "json",
-    //     type:"post",
-    //     data: {appInfoId: wholeAppInfoId, startDate: wholeStartTime, endDate: wholeEndTime},
-    //     success: function (data) {
-    //
-    //         if(data.success){
-    //             chartLineShow(data.data)
-    //
-    //         }
-    //     }
-    // })
+    // chartFunnelShow()
+    $.ajax({
+        url: "/wechat/total/totalUserRetainView ",
+        dataType: "json",
+        type:"post",
+        data: {startDate: wholeStartTime, endDate: wholeEndTime},
+        success: function (data) {
+            console.log(data);
+            if(data.success){
+                chartLineShow(data.data)
+
+            }
+        }
+    })
 }
 // 新老用户成交占比 饼图展示
 function salabilitySeries() {

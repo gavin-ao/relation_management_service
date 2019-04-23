@@ -1,7 +1,7 @@
-<style>
-    table{width: calc(100% - 10px)!important;margin0 auto;border: 1px solid #555555; margin: 1px; border-collapse: collapse; }
-    table td,table th{border: 1px solid #555555;text-align: center;}
-</style>
+##<style>
+##    table{width: calc(100% - 10px)!important;margin0 auto;border: 1px solid #555555; margin: 1px; border-collapse: collapse; }
+##    table td,table th{border: 1px solid #555555;text-align: center;}
+##</style>
 <div class="contain_main_head" style="" id="contain_main_head">
     <div class="dateSelect">
         <input type="radio" name="chose" class="Nearly7days"> 近7日

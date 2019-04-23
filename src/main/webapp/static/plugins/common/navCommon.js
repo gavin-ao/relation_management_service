@@ -43,19 +43,6 @@
     navSelect();
     //增加默认点击事件
     $($("#main-menu").find("li>ul>li")[0]).trigger("click");
-    // $.ajax({
-    //     url: "/system/store/getStoreId",
-    //     type: "post",
-    //     dataType: "json",
-    //     success: function (data) {
-    //        if(data.success){
-    //            $("#dataStoreId").attr("datastoreid",data.storeId);
-    //        }else{
-    //            requestError(data);
-    //        }
-    //     }
-    // });
-    // allSmallProgram();
 
 }(jQuery));
 
@@ -155,10 +142,32 @@ function navSelect() {
         $(this).addClass("bgStyle");
         $("#contain_head_left").hide();
         // debugger;
-        if(navName == "companyManage"){
+        if(navName == "bossKanBan"){
             $("#contain_head_left").show();
             $.ajax({
                 url: "/wechat/total/bossKanban",
+                type: "post",
+                dataType: "html",
+                success: function (data) {
+                    $("#contain_main").html("");
+                    $("#contain_main").html(data);
+                }
+            })
+        }else if(navName == "salesPer"){
+
+            $.ajax({
+                url: "/wechat/total/salesPer",
+                type: "post",
+                dataType: "html",
+                success: function (data) {
+                    $("#contain_main").html("");
+                    $("#contain_main").html(data);
+                }
+            })
+        }else if(navName == "smallProgram"){
+
+            $.ajax({
+                url: "/wechat/total/smallProgram",
                 type: "post",
                 dataType: "html",
                 success: function (data) {
@@ -170,141 +179,6 @@ function navSelect() {
 
             $.ajax({
                 url: "/refund/index",
-                type: "post",
-                dataType: "html",
-                success: function (data) {
-                    $("#contain_main").html("");
-                    $("#contain_main").html(data);
-                }
-            })
-        }else if(navName == "catelogManage"){
-
-            $.ajax({
-                url: "/catalog/index",
-                type: "post",
-                dataType: "html",
-                success: function (data) {
-                    $("#contain_main").html("");
-                    $("#contain_main").html(data);
-                }
-            })
-        }else if(navName == "awardCancel"){
-            var datatable = $("#example").dataTable();
-            if (datatable) {
-                datatable.fnClearTable();    //清空数据
-                datatable.fnDestroy();         //销毁datatable
-            }
-
-            $.ajax({
-                url: "/wechat/total/personalCenter",
-                type: "post",
-                dataType: "html",
-                success: function (data) {
-                    $("#main-contain").html("");
-                    $("#main-contain").html(data);
-                }
-            })
-        }else if(navName == "materialDownloading"){
-            $.ajax({
-                url: "/wechat/total/materialDownloading",
-                type: "post",
-                dataType: "html",
-                success: function (data) {
-                    $("#main-contain").html("");
-                    $("#main-contain").html(data);
-                }
-            })
-        }else if( navName == "dataStatistics"){
-            $("#contain_head_left").show();
-            $.ajax({
-                url: "/wechat/total/dataStatistics",
-                type: "post",
-                dataType: "html",
-                success: function (data) {
-                    $("#main-contain").html("");
-                    $("#main-contain").html(data);
-                }
-            })
-        }else if(navName == "taskManage"){
-            var datatable = $("#example").dataTable();
-            if (datatable) {
-                datatable.fnClearTable();    //清空数据
-                datatable.fnDestroy();         //销毁datatable
-            }
-            $.ajax({
-                url: "/wechat/total/taskManage",
-                type: "post",
-                dataType: "html",
-                success: function (data) {
-                    $("#main-contain").html("");
-                    $("#main-contain").html(data);
-                }
-            })
-        }else if( navName == "customerConfigureManage"){
-            // var datatable = $("#example").dataTable();
-            // if (datatable) {
-            //     datatable.fnClearTable();    //清空数据
-            //     datatable.fnDestroy();         //销毁datatable
-            // }
-            $.ajax({
-                url: "/customer/customerConfigureManage",
-                type: "post",
-                dataType: "html",
-                success: function (data) {
-                    $("#main-contain").html("");
-                    $("#main-contain").html(data);
-                }
-            })
-        }else if( navName == "integratingdataStatistics"){
-            $("#contain_head_left").show();
-            $.ajax({
-                url: "/integrating/total/dataStatistics",
-                type: "post",
-                dataType: "html",
-                success: function (data) {
-                    $("#main-contain").html("");
-                    $("#main-contain").html(data);
-                }
-            })
-        }else if(navName =="aftersales-staff"){
-            //售后人员管理
-            $.ajax({
-                url: "/aftersales-staff/index",
-                type: "post",
-                dataType: "html",
-                success: function (data) {
-                    $("#main-contain").html("");
-                    $("#main-contain").html(data);
-                }
-            })
-        }else if(navName == "customSelfmenuManage"){
-            //菜单管理
-            $.ajax({
-                url:"/menu/index",
-                type:"post",
-                dataType:"html",
-                success: function (data) {
-                    $("#main-contain").html("");
-                    $("#main-contain").html(data);
-                }
-            })
-        }else if(navName == "materialManage"){
-            //显示下拉列表
-            $("#contain_head_left").show();
-            //素材管理
-            $.ajax({
-                url:"/material/index",
-                type:"post",
-                dataType:"html",
-                success: function (data) {
-                    $("#main-contain").html("");
-                    $("#main-contain").html(data);
-                }
-            })
-
-        }else if(navName == "attributeManage"){
-            $.ajax({
-                url: "/attribute/index",
                 type: "post",
                 dataType: "html",
                 success: function (data) {
@@ -467,4 +341,36 @@ function saveImage() {
             clickImgPng(false);
         });
     }
+}
+
+function clickImgPng(flag) {
+    $(".downloadPng").off("click");
+    $(".downloadPng").on("click", function (event) {
+        console.log(this)
+        var pngName = $(this).attr("data-name");
+        var that = this;
+        var targetDom = $(that).parent().parent().find(".graphs")[0];
+        var targetDom1 = $(that).parent().parent().find(".graphs");
+        if(flag){
+            var height = targetDom1.outerHeight()+20;
+        }else{
+            var height = targetDom1.outerHeight()*2+20;
+        }
+        html2canvas(targetDom, {
+            useCORS: true,
+            height: height,
+            backgroundColor: '#ffffff',
+            allowTaint: true,
+            taintTest: false
+        }).then(function (canvas) {
+            //生成base64图片数据
+            var dataUrl = canvas.toDataURL("image/png");
+            //以下代码为下载此图片功能
+            var triggerDownload = $("<a>").attr("href", dataUrl).attr("download", pngName + ".png").appendTo("body");
+            triggerDownload[0].click();
+            triggerDownload.remove();
+        });
+
+    });
+
 }

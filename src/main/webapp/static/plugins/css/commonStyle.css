@@ -47,7 +47,7 @@ a:hover,a:active,a:link{
     width: 100%;
 }
 .main-menu li {
-    padding-left: 55px;
+    padding-left: 50px;
     line-height: 50px;
     cursor: pointer;
     color: #fff;
@@ -123,8 +123,8 @@ a:hover,a:active,a:link{
     font-style: normal;
     font-size: 20px;
     color: #FFFFFF;
-    height: 60px;
-    line-height: 60px;
+    height: 70px;
+    line-height: 70px;
     padding-left: 20px;
 }
 .mineStyle>li>div>img{
@@ -132,6 +132,10 @@ a:hover,a:active,a:link{
     height: 30px;
     vertical-align: middle;
     /*padding-left: 30px;*/
+}
+.mineStyle>li>div>span{
+    display: inline-block;
+    vertical-align: middle;
 }
 table{
     /*border: 1px solid #f0f0f0;*/

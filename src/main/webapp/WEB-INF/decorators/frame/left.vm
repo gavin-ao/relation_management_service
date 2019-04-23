@@ -26,16 +26,28 @@
     <nav class="navbar-default navbar-side" id="navbarH" role="navigation" style="background-color: #4E546C; width: 100%;height:calc(100% - 80px) ;float: left;font-size: 16px;">
         <div class="sidebar-collapse">
             <ul class="nav mineStyle" id="main-menu">
+
+                <li class="statistics">
+                    <div>
+                        <img src="/static/service/images/u151.png" alt="">
+                        <span>数据统计</span>
+                    </div>
+                    <ul class="nav main-menu">
+                        <li  name="bossKanBan" style="">老板看板</li>
+                        <li  name="salesPer" style="">销售业绩报表</li>
+                        <li  name="smallProgram" style="">小程序流量分析</li>
+                    </ul>
+                </li>
                 <li>
                     <div class="">
                         <img src="/static/service/images/dianshang.png" style="width: 25px; height: 25px;" alt="">
-                        电商
+                        <span>电商</span>
                     </div>
                     <ul class="nav main-menu">
 
-                        <li  name="companyManage" style="">数据统计</li>
-##                        <li class="bgStyle" name="catelogManage" style="">类目管理</li>
-##                        <li  name="attributeManage" style="">属性管理</li>
+##                        <li  name="companyManage" style="">数据统计</li>
+                    ##                        <li class="bgStyle" name="catelogManage" style="">类目管理</li>
+                    ##                        <li  name="attributeManage" style="">属性管理</li>
                         <li  name="refundList">退款单</li>
                     </ul>
                 </li>
