@@ -349,7 +349,7 @@ public class WechatTotalServiceImpl implements WechatTotalService {
             return JSONUtil.putMsg(false, "102", "时间获取失败，请检查时间格式");
         }
         String sql = "select sum(odi.total_price) from order_detail_info odi left join order_info o on o.order_id = odi.order_id where o.state = 1 or o.state = 2 and o.create_at between ? and ?";
-        Integer countNum = jdbcBaseDao.getCount(sql,  start, end);
+        Object countNum = jdbcBaseDao.getColumn(sql,  start, end);
         if(countNum == null){
             countNum = 0;
         }
