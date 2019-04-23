@@ -81,29 +81,28 @@ public interface WechatTotalService {
     public JSONObject totalOldAndNewUser(String startDate, String endDate);
 
     /**
-     * 根据时间范围统计传播轨迹 - 默认为0的方式统计
-     * @param startDate
-     * @param endDate
-     * @return
-     */
-    public JSONObject totalSpreadTrajectory(String startDate, String endDate);
-
-    /**
-     * 根据时间范围统计传播轨迹
-     * @param startDate
-     * @param endDate
-     * @param type  统计方式  A-C 在 B-A之前， 为0时按照A-C和B独立出，为1时按照A-C和B-A出现
-     * @param sortType 排序方式，默认为0按照level排序，1则按照人数排序
-     * @return
-     */
-    public JSONObject totalSpreadTrajectory(String startDate, String endDate, Integer type, Integer sortType);
-
-    /**
      * 漏斗图
      * @param startDate
      * @param endDate
      * @return
      */
     public JSONObject totalFunnelView(String startDate, String endDate);
+
+    /**
+     * 用户邀请排行 - 取前十个
+     * @param startDate
+     * @param endDate
+     * @return
+     */
+    public JSONObject totalInviteRankView(String startDate, String endDate);
+
+    /**
+     * 用户邀请排行 - 取前十个
+     * @param startDate
+     * @param endDate
+     * @return
+     */
+    public JSONObject totalUserRetainView(String startDate, String endDate);
+
 
 }

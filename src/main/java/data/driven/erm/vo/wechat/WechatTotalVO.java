@@ -10,6 +10,8 @@ public class WechatTotalVO {
     private Long countNum;
     /** 时间 **/
     private String groupTime;
+    /** 留存率分组名称 **/
+    private String retentionGroup;
 
     public WechatTotalVO(Long countNum, String groupTime) {
         this.countNum = countNum;
@@ -28,5 +30,13 @@ public class WechatTotalVO {
     }
     public void setGroupTime(String groupTime) {
         this.groupTime = groupTime;
+    }
+
+    public String getRetentionGroup() {
+        return retentionGroup;
+    }
+
+    public void setRetentionGroup(String retentionGroup) {
+        this.retentionGroup = retentionGroup;
     }
 }

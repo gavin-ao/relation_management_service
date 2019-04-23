@@ -136,4 +136,41 @@ public class WechatTotalController {
         return wechatTotalService.totalOldAndNewUser(startDate, endDate);
     }
 
+    /**
+     * 用户转化漏斗图
+     * @param startDate
+     * @param endDate
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping(path = "/totalFunnelView")
+    public JSONObject totalFunnelView(String startDate, String endDate){
+        return wechatTotalService.totalFunnelView(startDate, endDate);
+    }
+
+    /**
+     * 用户邀请排行
+     * @param startDate
+     * @param endDate
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping(path = "/totalInviteRankView")
+    public JSONObject totalInviteRankView(String startDate, String endDate){
+        return wechatTotalService.totalInviteRankView(startDate, endDate);
+    }
+
+    /**
+     * 留存率
+     * @param startDate
+     * @param endDate
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping(path = "/totalUserRetainView")
+    public JSONObject totalUserRetainView(String startDate, String endDate){
+        return wechatTotalService.totalUserRetainView(startDate, endDate);
+    }
+
+
 }
