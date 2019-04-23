@@ -454,3 +454,17 @@ function isInArray(arr, value) {
     }
     return false;
 }
+
+function saveImage() {
+    var userAgent = navigator.userAgent.toLowerCase();
+    var flag =userAgent.match(/version\/([\d.]+).*safari/)?1:0;
+    if (flag) {
+        $.getScript("/static/plugins/html2canvas.min.js",function(){
+            clickImgPng(true);
+        });
+    }else {
+        $.getScript("/static/plugins/html2canvas.js", function () {
+            clickImgPng(false);
+        });
+    }
+}

@@ -12,7 +12,8 @@ var wholeAppInfoId, wholeStartTime, wholeEndTime;
 
     // coreDataShow()
     // $("#navbarH").height($("#page-wrapper").height() - 80)
-
+// 下载图片
+    saveImage();
     $($("#contain_main_head > div")[0]).find('input').trigger("click");
 }())
 
