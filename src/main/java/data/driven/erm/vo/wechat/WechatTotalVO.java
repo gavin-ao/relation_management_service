@@ -1,5 +1,7 @@
 package data.driven.erm.vo.wechat;
 
+import java.math.BigDecimal;
+
 /**
  * 用于微信统计
  * @author hejinkai
@@ -8,6 +10,8 @@ package data.driven.erm.vo.wechat;
 public class WechatTotalVO {
     /** 合计 **/
     private Long countNum;
+    /** 平均数 **/
+    private BigDecimal averageNum;
     /** 时间 **/
     private String groupTime;
     /** 留存率分组名称 **/
@@ -38,5 +42,13 @@ public class WechatTotalVO {
 
     public void setRetentionGroup(String retentionGroup) {
         this.retentionGroup = retentionGroup;
+    }
+
+    public BigDecimal getAverageNum() {
+        return averageNum;
+    }
+
+    public void setAverageNum(BigDecimal averageNum) {
+        this.averageNum = averageNum;
     }
 }

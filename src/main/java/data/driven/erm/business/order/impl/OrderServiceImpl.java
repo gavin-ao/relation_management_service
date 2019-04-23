@@ -2,7 +2,6 @@ package data.driven.erm.business.order.impl;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
-import com.alibaba.fastjson.serializer.ObjectArrayCodec;
 import com.alibaba.fastjson.serializer.SerializerFeature;
 import data.driven.erm.business.order.OrderService;
 import data.driven.erm.business.wechat.WechatUserService;
@@ -24,6 +23,9 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Isolation;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.servlet.http.HttpServletRequest;
 import java.math.BigDecimal;
@@ -64,6 +66,7 @@ public class OrderServiceImpl implements OrderService{
         return false;
     }
 
+    @Transactional(propagation = Propagation.REQUIRED,isolation= Isolation.READ_COMMITTED)
     @Override
     public JSONObject updateOrder(String orderJson, WechatUserInfoVO wechatUserInfoVO) {
         if(orderJson == null){
@@ -101,6 +104,10 @@ public class OrderServiceImpl implements OrderService{
             order.setOrderId(UUIDUtil.getUUID());
             orderEntity.setOrderId(order.getOrderId());
             jdbcBaseDao.insert(orderEntity, "order_info");
+            //插入历史订单地址
+            String sql = "insert into order_history_receive_addr (`addr_id`, `order_id`, `wechat_user_id`, `alias`, `country`, `province`, `city`, `region`, `detail_addr`, `addressee`, `phone_number`, `telephone`, `create_at`)" +
+                    " select `addr_id`, '"+ orderEntity.getOrderId() +"' as `order_id`, `wechat_user_id`, `alias`, `country`, `province`, `city`, `region`, `detail_addr`, `addressee`, `phone_number`, `telephone`, now() as `create_at` from order_history_receive_addr selt where selt.addr_id = '"+orderEntity.getAddrId()+"'";
+            jdbcBaseDao.executeUpdate(sql);
         }else{
             jdbcBaseDao.update(orderEntity, "order_info", "order_id", false);
             deleteDetail(orderEntity.getOrderId());

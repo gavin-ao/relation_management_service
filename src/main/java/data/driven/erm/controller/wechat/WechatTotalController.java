@@ -172,5 +172,76 @@ public class WechatTotalController {
         return wechatTotalService.totalUserRetainView(startDate, endDate);
     }
 
+    /*********************************************老板页面********************************************************/
+    /**
+     * 统计上面四个指标
+     * @param startDate
+     * @param endDate
+     * @return
+     */
+    @RequestMapping(path = "/bossCoreData")
+    public ModelAndView bossCoreData(String startDate, String endDate){
+        ModelAndView mv = new ModelAndView("/data-statistics/smallProgram-coreData");
+        //活跃度
+        dealTotalAll("activityNum", mv, wechatTotalService.totalActivityNum(startDate, endDate));
+        //新增人数
+        dealTotalAll("fissionEffectNewPeopleNum", mv, wechatTotalService.totalFissionEffectNewPeopleNum(startDate, endDate));
+        //订单量
+        dealTotalAll("orderNum", mv, wechatTotalService.totalBuyNum(startDate, endDate));
+        //成交额
+        dealTotalAll("turnover", mv, wechatTotalService.totalTurnover(startDate, endDate));
+        return mv;
+    }
+
+    /**
+     * 平均客单价
+     * @param startDate
+     * @param endDate
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping(path = "/totalAverageUnitPrice")
+    public JSONObject totalAverageUnitPrice(String startDate, String endDate){
+        return wechatTotalService.totalAverageUnitPrice(startDate, endDate);
+    }
+
+    /**
+     * 统计畅销分类
+     * @param startDate
+     * @param endDate
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping(path = "/totalSalableCatg")
+    public JSONObject totalSalableCatg(String startDate, String endDate){
+        return wechatTotalService.totalSalableCatg(startDate, endDate);
+    }
+
+    /**
+     * 地区分布
+     * @param startDate
+     * @param endDate
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping(path = "/totalAreaDistribution")
+    public JSONObject totalAreaDistribution(String startDate, String endDate){
+        return wechatTotalService.totalAreaDistribution(startDate, endDate);
+    }
+
+    /**
+     * 返利排行 - top10
+     * @param startDate
+     * @param endDate
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping(path = "/totalRebateBanking")
+    public JSONObject totalRebateBanking(String startDate, String endDate){
+        return wechatTotalService.totalRebateBanking(startDate, endDate);
+    }
+
+
+
 
 }

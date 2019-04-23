@@ -89,6 +89,14 @@ public interface WechatTotalService {
     public JSONObject totalFunnelView(String startDate, String endDate);
 
     /**
+     * 购买人数
+     * @param startDate
+     * @param endDate
+     * @return
+     */
+    public JSONObject totalBuyNum(String startDate, String endDate);
+
+    /**
      * 用户邀请排行 - 取前十个
      * @param startDate
      * @param endDate
@@ -103,6 +111,46 @@ public interface WechatTotalService {
      * @return
      */
     public JSONObject totalUserRetainView(String startDate, String endDate);
+
+    /**
+     * 成交额
+     * @param startDate
+     * @param endDate
+     * @return
+     */
+    public JSONObject totalTurnover(String startDate, String endDate);
+
+    /**
+     * 平均客单价
+     * @param startDate
+     * @param endDate
+     * @return
+     */
+    public JSONObject totalAverageUnitPrice(String startDate, String endDate);
+
+    /**
+     * 统计畅销分类
+     * @param startDate
+     * @param endDate
+     * @return
+     */
+    public JSONObject totalSalableCatg(String startDate, String endDate);
+
+    /**
+     * 订单地区分布
+     * @param startDate
+     * @param endDate
+     * @return
+     */
+    public JSONObject totalAreaDistribution(String startDate, String endDate);
+
+    /**
+     * 返利排行 - top10
+     * @param startDate
+     * @param endDate
+     * @return
+     */
+    public JSONObject totalRebateBanking(String startDate, String endDate);
 
 
 }

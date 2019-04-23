@@ -260,20 +260,15 @@ public class WechatTotalServiceImpl implements WechatTotalService {
         dataList.add(temp);
     }
 
-    /**
-     * 购买人数
-     * @param startDate
-     * @param endDate
-     * @return
-     */
-    private JSONObject totalBuyNum(String startDate, String endDate){
+    @Override
+    public JSONObject totalBuyNum(String startDate, String endDate){
         JSONObject result = new JSONObject();
         Date start = DateFormatUtil.getTime(startDate);
         Date end = DateFormatUtil.toEndDate(endDate);
         if(start == null || end == null){
             return JSONUtil.putMsg(false, "102", "时间获取失败，请检查时间格式");
         }
-        String sql = "select count(DISTINCT wechat_user_id) from order_info where state = 1 or state = 2 create_at between ? and ?";
+        String sql = "select count(DISTINCT wechat_user_id) from order_info where state = 1 or state = 2 and create_at between ? and ?";
         Integer countNum = jdbcBaseDao.getCount(sql,  start, end);
         if(countNum == null){
             countNum = 0;
@@ -292,7 +287,7 @@ public class WechatTotalServiceImpl implements WechatTotalService {
         if(start == null || end == null){
             return JSONUtil.putMsg(false, "102", "时间获取失败，请检查时间格式");
         }
-        String sql = "select count(waum.wechat_map_id) as countNum,u.nick_name as nickName from wechat_app_user_mapping waum left join wechat_user_info u on u.wechat_user_id = waum.inviter where waum.create_at between ? and ? group by waum.inviter limit 10";
+        String sql = "select count(waum.wechat_map_id) as count_num,u.nick_name as nickName from wechat_app_user_mapping waum left join wechat_user_info u on u.wechat_user_id = waum.inviter where waum.create_at between ? and ? group by waum.inviter order by count_num desc limit 10";
         List<Map<String, Object>> list = jdbcBaseDao.queryMapList(sql, start, end);
         result.put("data", list);
         result.put("success", true);
@@ -343,5 +338,94 @@ public class WechatTotalServiceImpl implements WechatTotalService {
             Collections.sort(dataList, (o1, o2) -> o1.getString("groupTime").compareTo(o2.getString("groupTime")));
         }
         result.put("data", dataList);
+    }
+
+    @Override
+    public JSONObject totalTurnover(String startDate, String endDate) {
+        JSONObject result = new JSONObject();
+        Date start = DateFormatUtil.getTime(startDate);
+        Date end = DateFormatUtil.toEndDate(endDate);
+        if(start == null || end == null){
+            return JSONUtil.putMsg(false, "102", "时间获取失败，请检查时间格式");
+        }
+        String sql = "select sum(odi.total_price) from order_detail_info odi left join order_info o on o.order_id = odi.order_id where o.state = 1 or o.state = 2 and o.create_at between ? and ?";
+        Integer countNum = jdbcBaseDao.getCount(sql,  start, end);
+        if(countNum == null){
+            countNum = 0;
+        }
+        result.put("success", true);
+        result.put("countNum", countNum);
+        return result;
+    }
+
+    @Override
+    public JSONObject totalAverageUnitPrice(String startDate, String endDate) {
+        JSONObject result = new JSONObject();
+        Date start = DateFormatUtil.getTime(startDate);
+        Date end = DateFormatUtil.toEndDate(endDate);
+        if(start == null || end == null){
+            return JSONUtil.putMsg(false, "102", "时间获取失败，请检查时间格式");
+        }
+        String format = getMysqlDateFormat(start, end);
+        //获取销售额
+        String sql = "select count(distinct o.order_id)/sum(odi.total_price) as average_num,DATE_FORMAT(o.create_at,'" + format + "') as group_time from order_detail_info odi left join order_info o on o.order_id = odi.order_id where o.state = 1 or o.state = 2 and o.create_at between ? and ? group by group_time";
+        List<WechatTotalVO> list = jdbcBaseDao.queryList(WechatTotalVO.class, sql, start, end);
+        result.put("data", list);
+        result.put("success", true);
+        return result;
+    }
+
+    @Override
+    public JSONObject totalSalableCatg(String startDate, String endDate) {
+        JSONObject result = new JSONObject();
+        Date start = DateFormatUtil.getTime(startDate);
+        Date end = DateFormatUtil.toEndDate(endDate);
+        if(start == null || end == null){
+            return JSONUtil.putMsg(false, "102", "时间获取失败，请检查时间格式");
+        }
+        String sql = "select count(distinct o.order_id) as count_num,cci.catg_name as group_time from order_detail_info odi" +
+                " left join order_info o on o.order_id = odi.order_id" +
+                " left join commodity_info ci on ci.commodity_id = odi.commodity_id" +
+                " left join commodity_catg_info cci on cci.catg_id = ci.catg_id" +
+                " where o.state = 1 or o.state = 2 and o.create_at between ? and ? and cci.catg_name is not null group by group_time";
+        List<WechatTotalVO> list = jdbcBaseDao.queryList(WechatTotalVO.class, sql, start, end);
+        result.put("data", list);
+        result.put("success", true);
+        return result;
+    }
+
+    @Override
+    public JSONObject totalAreaDistribution(String startDate, String endDate) {
+        JSONObject result = new JSONObject();
+        Date start = DateFormatUtil.getTime(startDate);
+        Date end = DateFormatUtil.toEndDate(endDate);
+        if(start == null || end == null){
+            return JSONUtil.putMsg(false, "102", "时间获取失败，请检查时间格式");
+        }
+        String sql = "select count(distinct o.order_id) as count_num,haddr.province as group_time from order_detail_info odi" +
+                " left join order_info o on o.order_id = odi.order_id" +
+                " left join order_history_receive_addr haddr on haddr.order_id = o.order_id" +
+                " where o.state = 1 or o.state = 2 and o.create_at between ? and ? group by group_time";
+        List<WechatTotalVO> list = jdbcBaseDao.queryList(WechatTotalVO.class, sql, start, end);
+        result.put("data", list);
+        result.put("success", true);
+        return result;
+    }
+
+    @Override
+    public JSONObject totalRebateBanking(String startDate, String endDate) {
+        JSONObject result = new JSONObject();
+        Date start = DateFormatUtil.getTime(startDate);
+        Date end = DateFormatUtil.toEndDate(endDate);
+        if(start == null || end == null){
+            return JSONUtil.putMsg(false, "102", "时间获取失败，请检查时间格式");
+        }
+        String sql = "select sum(ori.rebate_money) as average_num,u.nick_name as group_time from order_rebate_info ori" +
+                " left join wechat_user_info u on u.wechat_user_id = ori.wechat_user_id" +
+                " where ori.rebate_at between ? and ? group by group_time order by average_num desc limit 10";
+        List<WechatTotalVO> list = jdbcBaseDao.queryList(WechatTotalVO.class, sql, start, end);
+        result.put("data", list);
+        result.put("success", true);
+        return result;
     }
 }
