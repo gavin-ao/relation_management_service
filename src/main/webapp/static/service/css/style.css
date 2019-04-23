@@ -27,7 +27,12 @@
     font-size: 18px;
     color: #fff;
 }
-
+.downloadPng{
+    cursor: pointer;
+}
+.graphs{
+    background-color: #fff;
+}
 #main-menu {
     width: 100%;
 }

@@ -39,7 +39,7 @@
     <div class="contain_main_graph">
         <div class="titles">
             <span>日活趋势</span>
-            <img src="/static/service/images/login/download.png" alt="">
+            <img src="/static/service/images/login/download.png" alt="" class="downloadPng" data-name="linePng">
         </div>
         <div class="graphs" id="main_Lines"></div>
     </div>
@@ -47,28 +47,28 @@
         <div>
             <div class="titles">
                 <span>用户转化漏斗</span>
-                <img src="/static/service/images/login/download.png" alt="">
+                <img src="/static/service/images/login/download.png" alt=""  class="downloadPng" data-name="piePng">
             </div>
             <div class="graphs" id="main_funnel"></div>
         </div>
         <div>
             <div class="titles">
                 <span>新老用户成交占比</span>
-                <img src="/static/service/images/login/download.png" alt="">
+                <img src="/static/service/images/login/download.png" alt=""  class="downloadPng" data-name="piePng">
             </div>
             <div class="graphs" id="main_pie"></div>
         </div>
         <div>
             <div class="titles">
                 <span>用户邀请排行</span>
-                <img src="/static/service/images/login/download.png" alt="">
+                <img src="/static/service/images/login/download.png" alt="" class="downloadPng" data-name="piePng">
             </div>
             <div class="graphs" id="main_Lbar"></div>
         </div>
         <div>
             <div class="titles">
                 <span>用户留存率</span>
-                <img src="/static/service/images/login/download.png" alt="">
+                <img src="/static/service/images/login/download.png" alt="" class="downloadPng" data-name="piePng">
             </div>
             <div class="graphs" id="main_Table"></div>
         </div>

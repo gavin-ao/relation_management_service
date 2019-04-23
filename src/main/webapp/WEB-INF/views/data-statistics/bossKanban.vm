@@ -49,28 +49,28 @@
         <div>
             <div class="titles">
                 <span>平均客单价(元)</span>
-                <img src="/static/service/images/login/download.png" alt="">
+                <img src="/static/service/images/login/download.png" alt=""  class="downloadPng" data-name="piePng">
             </div>
             <div class="graphs" id="main_bar"></div>
         </div>
         <div>
             <div class="titles">
                 <span>畅销系列</span>
-                <img src="/static/service/images/login/download.png" alt="">
+                <img src="/static/service/images/login/download.png" alt="" class="downloadPng" data-name="piePng">
             </div>
             <div class="graphs" id="main_pie"></div>
         </div>
         <div>
             <div class="titles">
                 <span>订单分布</span>
-                <img src="/static/service/images/login/download.png" alt="">
+                <img src="/static/service/images/login/download.png" alt="" class="downloadPng" data-name="piePng">
             </div>
             <div class="graphs" id="main_map"></div>
         </div>
         <div>
             <div class="titles">
                 <span>返利排行 TOP10</span>
-                <img src="/static/service/images/login/download.png" alt="">
+                <img src="/static/service/images/login/download.png" alt="" class="downloadPng" data-name="piePng">
             </div>
             <div class="graphs" id="main_Lbar"></div>
         </div>
