@@ -309,10 +309,10 @@ public class WechatTotalServiceImpl implements WechatTotalService {
         }
         //查询留存率 - 为0则是当天注册的且登录的,（这是特殊情况-注册场景必然会登录且记录到日志中）
         String sql = "SELECT count(DISTINCT u.wechat_user_id) as count_num, (CASE" +
-                " TIMESTAMPDIFF(DAY, DATE_FORMAT(u.create_at, '%Y年%m月%d日'), DATE_FORMAT(wll.login_at, '%Y年%m月%d日'))" +
+                " TIMESTAMPDIFF(DAY, DATE_FORMAT(u.create_at, '%Y-%m-%d'), DATE_FORMAT(wll.login_at, '%Y-%m-%d'))" +
                 " WHEN 0 THEN 'nowGroup' WHEN 1 THEN 'nextGroup' WHEN 7 THEN 'sevenGroup' WHEN 30 THEN 'thirtyGroup' ELSE 'otherGroup' END) as retention_group,DATE_FORMAT(u.create_at, '%Y年%m月%d日') group_time FROM wechat_user_info u" +
                 " LEFT JOIN wechat_login_log wll ON u.wechat_user_id = wll.wechat_user_id" +
-                " where u.create_at between ? and ? and TIMESTAMPDIFF(DAY, DATE_FORMAT(u.create_at, '%Y年%m月%d日'), DATE_FORMAT(wll.login_at, '%Y年%m月%d日')) in (0, 1, 7, 30) GROUP BY retention_group,group_time";
+                " where u.create_at between ? and ? and TIMESTAMPDIFF(DAY, DATE_FORMAT(u.create_at, '%Y-%m-%d'), DATE_FORMAT(wll.login_at, '%Y-%m-%d')) in (0, 1, 7, 30) GROUP BY retention_group,group_time";
         List<WechatTotalVO> list = jdbcBaseDao.queryList(WechatTotalVO.class, sql, start, end);
         dealUserRetainJson(result, list);
         result.put("success", true);
@@ -340,6 +340,7 @@ public class WechatTotalServiceImpl implements WechatTotalService {
                 data.putAll(totalMap);
                 dataList.add(data);
             }
+            Collections.sort(dataList, (o1, o2) -> o1.getString("groupTime").compareTo(o2.getString("groupTime")));
         }
         result.put("data", dataList);
     }
