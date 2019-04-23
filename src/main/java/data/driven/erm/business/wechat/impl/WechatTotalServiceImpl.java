@@ -312,7 +312,7 @@ public class WechatTotalServiceImpl implements WechatTotalService {
                 " TIMESTAMPDIFF(DAY, DATE_FORMAT(u.create_at, '%Y年%m月%d日'), DATE_FORMAT(wll.login_at, '%Y年%m月%d日'))" +
                 " WHEN 0 THEN 'nowGroup' WHEN 1 THEN 'nextGroup' WHEN 7 THEN 'sevenGroup' WHEN 30 THEN 'thirtyGroup' ELSE 'otherGroup' END) as retention_group,DATE_FORMAT(u.create_at, '%Y年%m月%d日') group_time FROM wechat_user_info u" +
                 " LEFT JOIN wechat_login_log wll ON u.wechat_user_id = wll.wechat_user_id" +
-                " where u.create_at between ? and ? and TIMESTAMPDIFF(DAY, DATE_FORMAT(u.create_at, '%Y年%m月%d日'), DATE_FORMAT(wll.login_at, '%Y年%m月%d日')) in (0, 1, 7, 30) GROUP BY retention,group_time";
+                " where u.create_at between ? and ? and TIMESTAMPDIFF(DAY, DATE_FORMAT(u.create_at, '%Y年%m月%d日'), DATE_FORMAT(wll.login_at, '%Y年%m月%d日')) in (0, 1, 7, 30) GROUP BY retention_group,group_time";
         List<WechatTotalVO> list = jdbcBaseDao.queryList(WechatTotalVO.class, sql, start, end);
         dealUserRetainJson(result, list);
         result.put("success", true);
