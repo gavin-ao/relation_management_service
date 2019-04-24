@@ -188,7 +188,7 @@ public class WechatTotalServiceImpl implements WechatTotalService {
      * @return
      */
     private Integer totalSharePeopleNum(Date start, Date end) {
-        String sql = "select count(invitation_id) from sys_user_invitation_info where create_at between ? and ? group by wechat_user_id";
+        String sql = "select count(distinct wechat_user_id) from sys_user_invitation_info where create_at between ? and ?";
         Integer countNum = jdbcBaseDao.getCount(sql,  start, end);
         if(countNum == null){
             countNum = 0;
