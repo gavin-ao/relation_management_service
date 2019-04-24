@@ -10,12 +10,12 @@ import com.alibaba.fastjson.JSONObject;
 public interface WechatTotalService {
 
     /**
-     * 根据时间范围统计活跃度
+     * 统计小程序上面的四个指标
      * @param startDate
      * @param endDate
      * @return
      */
-    public JSONObject totalActivityNum(String startDate, String endDate);
+    public JSONObject coreData(String startDate, String endDate);
 
     /**
      * 根据时间范围统计活跃度，返回数据走势图
@@ -26,27 +26,12 @@ public interface WechatTotalService {
     public JSONObject totalActivityNumView(String startDate, String endDate);
 
     /**
-     * 根据时间范围统计传播范围
-     * @param startDate
-     * @param endDate
-     * @return
-     */
-    public JSONObject totalSpreadRangeNum(String startDate, String endDate);
-    /**
-     * 根据时间范围统计传播范围，返回数据走势图
+     * 根据时间范围统计传播范围，返回数据走势图 - 时间段总用户数
      * @param startDate
      * @param endDate
      * @return
      */
     public JSONObject totalSpreadRangeNumView(String startDate, String endDate);
-
-    /**
-     * 根据时间范围统计裂变效果新增人数
-     * @param startDate
-     * @param endDate
-     * @return
-     */
-    public JSONObject totalFissionEffectNewPeopleNum(String startDate, String endDate);
 
     /**
      * 根据时间范围统计裂变效果新增人数，返回数据走势图
@@ -55,14 +40,6 @@ public interface WechatTotalService {
      * @return
      */
     public JSONObject totalFissionEffectNewPeopleNumView(String startDate, String endDate);
-
-    /**
-     * 根据时间范围统计分享次数
-     * @param startDate
-     * @param endDate
-     * @return
-     */
-    public JSONObject totalSharePeopleNum(String startDate, String endDate);
 
     /**
      * 根据时间范围统计分享人数，返回数据走势图
@@ -94,7 +71,7 @@ public interface WechatTotalService {
      * @param endDate
      * @return
      */
-    public JSONObject totalBuyNum(String startDate, String endDate);
+    public JSONObject bossCoreData(String startDate, String endDate);
 
     /**
      * 用户邀请排行 - 取前十个
@@ -105,7 +82,7 @@ public interface WechatTotalService {
     public JSONObject totalInviteRankView(String startDate, String endDate);
 
     /**
-     * 用户邀请排行 - 取前十个
+     * 留存率
      * @param startDate
      * @param endDate
      * @return
@@ -113,15 +90,7 @@ public interface WechatTotalService {
     public JSONObject totalUserRetainView(String startDate, String endDate);
 
     /**
-     * 成交额
-     * @param startDate
-     * @param endDate
-     * @return
-     */
-    public JSONObject totalTurnover(String startDate, String endDate);
-
-    /**
-     * 平均客单价
+     * 平均客单价 ，平均客单价=销售额/有消费的用户数（同一统计周期内）
      * @param startDate
      * @param endDate
      * @return
@@ -151,6 +120,14 @@ public interface WechatTotalService {
      * @return
      */
     public JSONObject totalRebateBanking(String startDate, String endDate);
+
+    /**
+     * ARPU(每用户平均收入)
+     * @param startDate
+     * @param endDate
+     * @return
+     */
+    public JSONObject saleCoreData(String startDate, String endDate);
 
 
 }

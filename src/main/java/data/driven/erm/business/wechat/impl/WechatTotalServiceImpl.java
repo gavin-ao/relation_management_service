@@ -5,7 +5,6 @@ import data.driven.erm.business.wechat.WechatTotalService;
 import data.driven.erm.common.Constant;
 import data.driven.erm.dao.JDBCBaseDao;
 import data.driven.erm.util.DateFormatUtil;
-import data.driven.erm.util.JSONUtil;
 import data.driven.erm.vo.wechat.WechatTotalVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -13,6 +12,8 @@ import org.springframework.stereotype.Service;
 import java.math.BigDecimal;
 import java.util.*;
 import java.util.stream.Collectors;
+
+import static data.driven.erm.util.JSONUtil.putMsg;
 
 /**
  * 微信统计service
@@ -25,6 +26,8 @@ public class WechatTotalServiceImpl implements WechatTotalService {
     /** 72小时的时间戳 **/
     private static final long three_day_time_long = 72 * 60 * 60 * 1000;
 
+    @Autowired
+    private JDBCBaseDao jdbcBaseDao;
 
     /**
      * 72小时之外按照天统计，72小时之内按照小时统计
@@ -58,21 +61,43 @@ public class WechatTotalServiceImpl implements WechatTotalService {
         }
     }
 
-    @Autowired
-    private JDBCBaseDao jdbcBaseDao;
+    /**
+     * 活跃度
+     * @param start
+     * @param end
+     * @return
+     */
+    private Integer totalActivityNum(Date start, Date end) {
+        String sql = "select count(log_id) from wechat_login_log where login_at between ? and ?";
+        return jdbcBaseDao.getCount(sql, start, end);
+    }
 
     @Override
-    public JSONObject totalActivityNum(String startDate, String endDate) {
+    public JSONObject coreData(String startDate, String endDate) {
         JSONObject result = new JSONObject();
         Date start = DateFormatUtil.getTime(startDate);
         Date end = DateFormatUtil.toEndDate(endDate);
         if(start == null || end == null){
-            return JSONUtil.putMsg(false, "102", "时间获取失败，请检查时间格式");
+            result.put("activityNum", 0);
+            result.put("spreadRangeNum", 0);
+            result.put("fissionEffectNewPeopleNum", 0);
+            result.put("sharePeopleNum", 0);
+            result.put("success", false);
+            return result;
         }
-        String sql = "select count(log_id) from wechat_login_log where login_at between ? and ?";
-        Integer countNum = jdbcBaseDao.getCount(sql, start, end);
+        //活跃度
+        Integer activityNum = totalActivityNum(start, end);
+        result.put("activityNum", activityNum);
+        //活跃用户
+        Integer spreadRangeNum = totalSpreadRangeNum(start, end);
+        result.put("spreadRangeNum", spreadRangeNum);
+        //新增人数
+        Integer fissionEffectNewPeopleNum = totalFissionEffectNewPeopleNum(start, end);
+        result.put("fissionEffectNewPeopleNum", fissionEffectNewPeopleNum);
+        //分享人数
+        Integer sharePeopleNum = totalSharePeopleNum(start, end);
+        result.put("sharePeopleNum", sharePeopleNum);
         result.put("success", true);
-        result.put("countNum", countNum);
         return result;
     }
 
@@ -82,7 +107,7 @@ public class WechatTotalServiceImpl implements WechatTotalService {
         Date start = DateFormatUtil.getTime(startDate);
         Date end = DateFormatUtil.toEndDate(endDate);
         if(start == null || end == null){
-            return JSONUtil.putMsg(false, "102", "时间获取失败，请检查时间格式");
+            return putMsg(false, "102", "时间获取失败，请检查时间格式");
         }
         String format = getMysqlDateFormat(start, end);
         String sql = "select count(log_id) as count_num,DATE_FORMAT(login_at,'" + format + "') as group_time from wechat_login_log where login_at between ? and ? group by DATE_FORMAT(login_at,'" + format + "')";
@@ -92,19 +117,15 @@ public class WechatTotalServiceImpl implements WechatTotalService {
         return result;
     }
 
-    @Override
-    public JSONObject totalSpreadRangeNum(String startDate, String endDate) {
-        JSONObject result = new JSONObject();
-        Date start = DateFormatUtil.getTime(startDate);
-        Date end = DateFormatUtil.toEndDate(endDate);
-        if(start == null || end == null){
-            return JSONUtil.putMsg(false, "102", "时间获取失败，请检查时间格式");
-        }
+    /**
+     * 统计用户数量
+     * @param start
+     * @param end
+     * @return
+     */
+    private Integer totalSpreadRangeNum(Date start, Date end) {
         String sql = "select count(DISTINCT wechat_user_id) from wechat_login_log where login_at between ? and ?";
-        Integer countNum = jdbcBaseDao.getCount(sql, start, end);
-        result.put("success", true);
-        result.put("countNum", countNum);
-        return result;
+        return jdbcBaseDao.getCount(sql, start, end);
     }
 
     @Override
@@ -113,7 +134,7 @@ public class WechatTotalServiceImpl implements WechatTotalService {
         Date start = DateFormatUtil.getTime(startDate);
         Date end = DateFormatUtil.toEndDate(endDate);
         if(start == null || end == null){
-            return JSONUtil.putMsg(false, "102", "时间获取失败，请检查时间格式");
+            return putMsg(false, "102", "时间获取失败，请检查时间格式");
         }
 
         String format = getMysqlDateFormat(start, end);
@@ -128,58 +149,51 @@ public class WechatTotalServiceImpl implements WechatTotalService {
     }
 
     @Override
-    public JSONObject totalFissionEffectNewPeopleNum(String startDate, String endDate) {
+    public JSONObject totalFissionEffectNewPeopleNumView(String startDate, String endDate) {
         JSONObject result = new JSONObject();
         Date start = DateFormatUtil.getTime(startDate);
         Date end = DateFormatUtil.toEndDate(endDate);
         if(start == null || end == null){
-            return JSONUtil.putMsg(false, "102", "时间获取失败，请检查时间格式");
+            return putMsg(false, "102", "时间获取失败，请检查时间格式");
         }
+
+        String format = getMysqlDateFormat(start, end);
+        String sql = "select count(waum.wechat_map_id) as count_num,DATE_FORMAT(waum.create_at,'" + format + "') as group_time from wechat_app_user_mapping waum where waum.create_at between ? and ? group by group_time";
+        List<WechatTotalVO> list = jdbcBaseDao.queryList(WechatTotalVO.class, sql, start, end);
+        result.put("data", list);
+        result.put("success", true);
+        return result;
+    }
+
+    /**
+     * 新增人数
+     * @param start
+     * @param end
+     * @return
+     */
+    private Integer totalFissionEffectNewPeopleNum(Date start, Date end) {
         //统计助力数据
         String sql = "select count(waum.wechat_map_id) from wechat_app_user_mapping waum where waum.create_at between ? and ?";
         Integer countNum = jdbcBaseDao.getCount(sql, start, end);
         if(countNum == null){
             countNum = 0;
         }
-        result.put("success", true);
-        result.put("countNum", countNum);
-        return result;
+        return countNum;
     }
 
-    @Override
-    public JSONObject totalFissionEffectNewPeopleNumView(String startDate, String endDate) {
-        JSONObject result = new JSONObject();
-        Date start = DateFormatUtil.getTime(startDate);
-        Date end = DateFormatUtil.toEndDate(endDate);
-        if(start == null || end == null){
-            return JSONUtil.putMsg(false, "102", "时间获取失败，请检查时间格式");
-        }
-
-        String format = getMysqlDateFormat(start, end);
-        String sql = "select count(waum.wechat_map_id) as count_num,DATE_FORMAT(waum.create_at,'" + format + "') as group_time from wechat_app_user_mapping waum where waum.create_at between ? and ? group by group_time";
-        List<WechatTotalVO> list = jdbcBaseDao.queryList(WechatTotalVO.class, sql,  start, end, start, end);
-        result.put("data", list);
-        result.put("success", true);
-        return result;
-    }
-
-    @Override
-    public JSONObject totalSharePeopleNum(String startDate, String endDate) {
-        JSONObject result = new JSONObject();
-        Date start = DateFormatUtil.getTime(startDate);
-        Date end = DateFormatUtil.toEndDate(endDate);
-        if(start == null || end == null){
-            return JSONUtil.putMsg(false, "102", "时间获取失败，请检查时间格式");
-        }
+    /**
+     * 分享人数
+     * @param start
+     * @param end
+     * @return
+     */
+    private Integer totalSharePeopleNum(Date start, Date end) {
         String sql = "select count(invitation_id) from sys_user_invitation_info where create_at between ? and ? group by wechat_user_id";
         Integer countNum = jdbcBaseDao.getCount(sql,  start, end);
         if(countNum == null){
             countNum = 0;
         }
-
-        result.put("success", true);
-        result.put("countNum", countNum);
-        return result;
+        return countNum;
     }
 
     @Override
@@ -188,7 +202,7 @@ public class WechatTotalServiceImpl implements WechatTotalService {
         Date start = DateFormatUtil.getTime(startDate);
         Date end = DateFormatUtil.toEndDate(endDate);
         if(start == null || end == null){
-            return JSONUtil.putMsg(false, "102", "时间获取失败，请检查时间格式");
+            return putMsg(false, "102", "时间获取失败，请检查时间格式");
         }
         //利用union的特性，相同的只取一个，保证分享和助力数据统计人数时不重复
         String format = getMysqlDateFormat(start, end);
@@ -206,7 +220,7 @@ public class WechatTotalServiceImpl implements WechatTotalService {
         Date start = DateFormatUtil.getTime(startDate);
         Date end = DateFormatUtil.toEndDate(endDate);
         if(start == null || end == null){
-            return JSONUtil.putMsg(false, "102", "时间获取失败，请检查时间格式");
+            return putMsg(false, "102", "时间获取失败，请检查时间格式");
         }
         //查询开始时间之前的用户，即为老用户
         String oldSql = "select count(distinct wechat_user_id) from wechat_login_log where login_at < ?";
@@ -223,22 +237,22 @@ public class WechatTotalServiceImpl implements WechatTotalService {
 
     @Override
     public JSONObject totalFunnelView(String startDate, String endDate) {
-        JSONObject result = JSONUtil.putMsg(true, "200", "调用成功");
+        JSONObject result = putMsg(true, "200", "调用成功");
         Date start = DateFormatUtil.getTime(startDate);
         Date end = DateFormatUtil.toEndDate(endDate);
         if(start == null || end == null){
-            return JSONUtil.putMsg(false, "102", "时间获取失败，请检查时间格式");
+            return putMsg(false, "102", "时间获取失败，请检查时间格式");
         }
 
         List<JSONObject> dataList = new ArrayList<JSONObject>();
-        JSONObject spreadRangeNumJson = totalSpreadRangeNum(startDate, endDate);
-        JSONObject sharePeopleNumJson = totalSharePeopleNum(startDate, endDate);
-        JSONObject fissionEffectNewPeopleNumJson = totalFissionEffectNewPeopleNum(startDate, endDate);
-        JSONObject buyNumJson = totalBuyNum(startDate, endDate);
-        dealFunnelJson("访问人数", spreadRangeNumJson, dataList);
-        dealFunnelJson("分享人数", sharePeopleNumJson, dataList);
-        dealFunnelJson("新注册用户", fissionEffectNewPeopleNumJson, dataList);
-        dealFunnelJson("购买人数", buyNumJson, dataList);
+        Integer spreadRangeNum = totalSpreadRangeNum(start, end);
+        Integer sharePeopleNum = totalSharePeopleNum(start, end);
+        Integer fissionEffectNewPeopleNum = totalFissionEffectNewPeopleNum(start, end);
+        Integer buyNum = totalBuyNum(start, end);
+        dealFunnel("访问人数", spreadRangeNum, dataList);
+        dealFunnel("分享人数", sharePeopleNum, dataList);
+        dealFunnel("新注册用户", fissionEffectNewPeopleNum, dataList);
+        dealFunnel("购买人数", buyNum, dataList);
         result.put("data", dataList);
         return result;
     }
@@ -246,37 +260,58 @@ public class WechatTotalServiceImpl implements WechatTotalService {
     /**
      * 统计漏斗图设置name和value
      * @param name
-     * @param result
+     * @param countNum
      * @param dataList
      */
-    private void dealFunnelJson(String name, JSONObject result, List<JSONObject> dataList){
-        Integer value = 0;
-        if(result.getBoolean("success")){
-            value = result.getInteger("countNum");
-        }
+    private void dealFunnel(String name, Integer countNum, List<JSONObject> dataList){
         JSONObject temp = new JSONObject();
         temp.put("name", name);
-        temp.put("value", value);
+        temp.put("value", countNum);
         dataList.add(temp);
     }
 
     @Override
-    public JSONObject totalBuyNum(String startDate, String endDate){
+    public JSONObject bossCoreData(String startDate, String endDate){
         JSONObject result = new JSONObject();
         Date start = DateFormatUtil.getTime(startDate);
         Date end = DateFormatUtil.toEndDate(endDate);
         if(start == null || end == null){
-            return JSONUtil.putMsg(false, "102", "时间获取失败，请检查时间格式");
+            result.put("activityNum", 0);
+            result.put("fissionEffectNewPeopleNum", 0);
+            result.put("orderNum", 0);
+            result.put("turnover", 0);
+            result.put("success", false);
+            return result;
         }
+        //活跃度
+        Integer activityNum = totalActivityNum(start, end);
+        result.put("activityNum", activityNum);
+        //新增人数
+        Integer fissionEffectNewPeopleNum = totalFissionEffectNewPeopleNum(start, end);
+        result.put("fissionEffectNewPeopleNum", fissionEffectNewPeopleNum);
+        //订单量
+        Integer orderNum = totalBuyNum(start, end);
+        result.put("orderNum", orderNum);
+        //成交额
+        BigDecimal turnover = totalTurnover(start, end);
+        result.put("turnover", turnover);
+        result.put("success", true);
+        return result;
+    }
+
+    /**
+     * 订单量
+     * @param start
+     * @param end
+     * @return
+     */
+    private Integer totalBuyNum(Date start, Date end) {
         String sql = "select count(DISTINCT wechat_user_id) from order_info where state = 1 or state = 2 and create_at between ? and ?";
         Integer countNum = jdbcBaseDao.getCount(sql,  start, end);
         if(countNum == null){
             countNum = 0;
         }
-
-        result.put("success", true);
-        result.put("countNum", countNum);
-        return result;
+        return countNum;
     }
 
     @Override
@@ -285,7 +320,7 @@ public class WechatTotalServiceImpl implements WechatTotalService {
         Date start = DateFormatUtil.getTime(startDate);
         Date end = DateFormatUtil.toEndDate(endDate);
         if(start == null || end == null){
-            return JSONUtil.putMsg(false, "102", "时间获取失败，请检查时间格式");
+            return putMsg(false, "102", "时间获取失败，请检查时间格式");
         }
         String sql = "select count(waum.wechat_map_id) as count_num,u.nick_name as nickName from wechat_app_user_mapping waum left join wechat_user_info u on u.wechat_user_id = waum.inviter where waum.create_at between ? and ? group by waum.inviter order by count_num desc limit 10";
         List<Map<String, Object>> list = jdbcBaseDao.queryMapList(sql, start, end);
@@ -300,7 +335,7 @@ public class WechatTotalServiceImpl implements WechatTotalService {
         Date start = DateFormatUtil.getTime(startDate);
         Date end = DateFormatUtil.toEndDate(endDate);
         if(start == null || end == null){
-            return JSONUtil.putMsg(false, "102", "时间获取失败，请检查时间格式");
+            return putMsg(false, "102", "时间获取失败，请检查时间格式");
         }
         //查询留存率 - 为0则是当天注册的且登录的,（这是特殊情况-注册场景必然会登录且记录到日志中）
         String sql = "SELECT count(DISTINCT u.wechat_user_id) as count_num, (CASE" +
@@ -340,22 +375,19 @@ public class WechatTotalServiceImpl implements WechatTotalService {
         result.put("data", dataList);
     }
 
-    @Override
-    public JSONObject totalTurnover(String startDate, String endDate) {
-        JSONObject result = new JSONObject();
-        Date start = DateFormatUtil.getTime(startDate);
-        Date end = DateFormatUtil.toEndDate(endDate);
-        if(start == null || end == null){
-            return JSONUtil.putMsg(false, "102", "时间获取失败，请检查时间格式");
-        }
-        String sql = "select sum(odi.total_price) from order_detail_info odi left join order_info o on o.order_id = odi.order_id where o.state = 1 or o.state = 2 and o.create_at between ? and ?";
+    /**
+     * 成交额
+     * @param start
+     * @param end
+     * @return
+     */
+    private BigDecimal totalTurnover(Date start, Date end) {
+        String sql = "select sum(odi.real_payment) from order_detail_info odi left join order_info o on o.order_id = odi.order_id where o.state = 1 or o.state = 2 and o.create_at between ? and ?";
         Object countNum = jdbcBaseDao.getColumn(sql,  start, end);
-        if(countNum == null){
-            countNum = 0;
+        if(countNum != null){
+            return new BigDecimal(countNum.toString());
         }
-        result.put("success", true);
-        result.put("countNum", countNum);
-        return result;
+        return new BigDecimal(0);
     }
 
     @Override
@@ -364,11 +396,11 @@ public class WechatTotalServiceImpl implements WechatTotalService {
         Date start = DateFormatUtil.getTime(startDate);
         Date end = DateFormatUtil.toEndDate(endDate);
         if(start == null || end == null){
-            return JSONUtil.putMsg(false, "102", "时间获取失败，请检查时间格式");
+            return putMsg(false, "102", "时间获取失败，请检查时间格式");
         }
         String format = getMysqlDateFormat(start, end);
         //获取销售额
-        String sql = "select count(distinct o.order_id)/sum(odi.total_price) as average_num,DATE_FORMAT(o.create_at,'" + format + "') as group_time from order_detail_info odi left join order_info o on o.order_id = odi.order_id where o.state = 1 or o.state = 2 and o.create_at between ? and ? group by group_time";
+        String sql = "select sum(odi.real_payment)/count(distinct o.order_id) as average_num,DATE_FORMAT(o.create_at,'" + format + "') as group_time from order_detail_info odi left join order_info o on o.order_id = odi.order_id where o.state = 1 or o.state = 2 and o.create_at between ? and ? group by group_time";
         List<WechatTotalVO> list = jdbcBaseDao.queryList(WechatTotalVO.class, sql, start, end);
         result.put("data", list);
         result.put("success", true);
@@ -381,7 +413,7 @@ public class WechatTotalServiceImpl implements WechatTotalService {
         Date start = DateFormatUtil.getTime(startDate);
         Date end = DateFormatUtil.toEndDate(endDate);
         if(start == null || end == null){
-            return JSONUtil.putMsg(false, "102", "时间获取失败，请检查时间格式");
+            return putMsg(false, "102", "时间获取失败，请检查时间格式");
         }
         String sql = "select count(distinct o.order_id) as count_num,cci.catg_name as group_time from order_detail_info odi" +
                 " left join order_info o on o.order_id = odi.order_id" +
@@ -400,7 +432,7 @@ public class WechatTotalServiceImpl implements WechatTotalService {
         Date start = DateFormatUtil.getTime(startDate);
         Date end = DateFormatUtil.toEndDate(endDate);
         if(start == null || end == null){
-            return JSONUtil.putMsg(false, "102", "时间获取失败，请检查时间格式");
+            return putMsg(false, "102", "时间获取失败，请检查时间格式");
         }
         String sql = "select count(distinct o.order_id) as count_num,haddr.province as group_time from order_detail_info odi" +
                 " left join order_info o on o.order_id = odi.order_id" +
@@ -418,7 +450,7 @@ public class WechatTotalServiceImpl implements WechatTotalService {
         Date start = DateFormatUtil.getTime(startDate);
         Date end = DateFormatUtil.toEndDate(endDate);
         if(start == null || end == null){
-            return JSONUtil.putMsg(false, "102", "时间获取失败，请检查时间格式");
+            return putMsg(false, "102", "时间获取失败，请检查时间格式");
         }
         String sql = "select sum(ori.rebate_money) as average_num,u.nick_name as group_time from order_rebate_info ori" +
                 " left join wechat_user_info u on u.wechat_user_id = ori.wechat_user_id" +
@@ -428,4 +460,109 @@ public class WechatTotalServiceImpl implements WechatTotalService {
         result.put("success", true);
         return result;
     }
+
+    @Override
+    public JSONObject saleCoreData(String startDate, String endDate) {
+        JSONObject result = new JSONObject();
+        Date start = DateFormatUtil.getTime(startDate);
+        Date end = DateFormatUtil.toEndDate(endDate);
+        if(start == null || end == null){
+            result.put("turnover", 0);
+            result.put("arpuNum", 0);
+            result.put("cacNum", 0);
+            result.put("averageRebateNum", 0);
+            result.put("success", false);
+            return result;
+        }
+        //成交额
+        BigDecimal turnover = totalTurnover(start, end);
+        result.put("turnover", turnover);
+        //ARPU(每用户平均收入)
+        BigDecimal arpuNum = totalARPU(start, end);
+        result.put("arpuNum", arpuNum);
+        //CAC(获客成本)
+        BigDecimal cacNum = totalCAC(start, end);
+        result.put("cacNum", cacNum);
+        //平均返点
+        BigDecimal averageRebateNum = totalAverageRebate(start, end);
+        result.put("averageRebateNum", averageRebateNum);
+
+        result.put("success", true);
+        return result;
+    }
+
+    /**
+     * ARPU(每用户平均收入)    ARPU=销售额/总用户数（同一统计周期内）
+     * @param start
+     * @param end
+     * @return
+     */
+    private BigDecimal totalARPU(Date start, Date end) {
+        //销售额
+        BigDecimal turnover = this.totalTurnover(start, end);
+        BigDecimal arpu = null;
+        if(turnover.doubleValue() > 0){
+            //总用户数
+            Integer sharePeopleNum = this.totalSharePeopleNum(start, end);
+            if(sharePeopleNum != null && sharePeopleNum > 0){
+                BigDecimal second = new BigDecimal(sharePeopleNum);
+                arpu = turnover.divide(second).setScale(2);
+            }
+        }
+        if(arpu == null){
+            return new BigDecimal(0);
+        }
+        return arpu;
+    }
+
+    /**
+     * CAC(获客成本) CAC=返利金额/新用户数（同一统计周期内）
+     * @param start
+     * @param end
+     * @return
+     */
+    private BigDecimal totalCAC(Date start, Date end) {
+        BigDecimal rebateMoney = totalRebate(start, end);
+        if(rebateMoney.doubleValue() > 0){
+            Integer fissionEffectNewPeopleNum = totalFissionEffectNewPeopleNum(start, end);
+            if(fissionEffectNewPeopleNum > 0){
+                return rebateMoney.divide(new BigDecimal(fissionEffectNewPeopleNum)).setScale(2);
+            }
+        }
+        return new BigDecimal(0);
+    }
+
+    /**
+     * 获取返利金额
+     * @param start
+     * @param end
+     * @return
+     */
+    private BigDecimal totalRebate(Date start, Date end) {
+        //返利金额
+        String sql = "select sum(ori.rebate_money) as rebate_money from order_rebate_info ori where ori.rebate_at between ? and ?";
+        Object obj = jdbcBaseDao.getColumn(sql, start, end);
+        if(obj != null){
+            return new BigDecimal(obj.toString());
+        }
+        return new BigDecimal(0);
+    }
+
+    /**
+     * 平均返点，平均返点=销售额/返利*100%（同一统计周期内）
+     * @param start
+     * @param end
+     * @return
+     */
+    private BigDecimal totalAverageRebate(Date start, Date end) {
+        BigDecimal turnover = totalTurnover(start, end);
+        if(turnover.doubleValue() > 0){
+            BigDecimal rebateMoney = totalRebate(start, end);
+            if(rebateMoney.doubleValue() > 0){
+                    return turnover.divide(rebateMoney).multiply(new BigDecimal(100)).setScale(2);
+            }
+        }
+        return new BigDecimal(0);
+    }
+
 }

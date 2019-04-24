@@ -56,25 +56,9 @@ public class WechatTotalController {
     @RequestMapping(path = "/coreData")
     public ModelAndView coreData(String startDate, String endDate){
         ModelAndView mv = new ModelAndView("/data-statistics/smallProgram-coreData");
-        dealTotalAll("activityNum", mv, wechatTotalService.totalActivityNum(startDate, endDate));
-        dealTotalAll("spreadRangeNum", mv, wechatTotalService.totalSpreadRangeNum(startDate, endDate));
-        dealTotalAll("fissionEffectNewPeopleNum", mv, wechatTotalService.totalFissionEffectNewPeopleNum(startDate, endDate));
-        dealTotalAll("sharePeopleNum", mv, wechatTotalService.totalSharePeopleNum(startDate, endDate));
+        JSONObject result = wechatTotalService.coreData(startDate, endDate);
+        mv.addAllObjects(result);
         return mv;
-    }
-
-    /**
-     * 处理json - totalAll
-     * @param key
-     * @param mv
-     * @param temp
-     */
-    private void dealTotalAll(String key,  ModelAndView mv, JSONObject temp){
-        if(temp.getBoolean("success")){
-            mv.addObject(key, temp.getInteger("countNum"));
-        }else{
-            mv.addObject(key, 0);
-        }
     }
 
     /**
@@ -182,14 +166,8 @@ public class WechatTotalController {
     @RequestMapping(path = "/bossCoreData")
     public ModelAndView bossCoreData(String startDate, String endDate){
         ModelAndView mv = new ModelAndView("/data-statistics/smallProgram-coreData");
-        //活跃度
-        dealTotalAll("activityNum", mv, wechatTotalService.totalActivityNum(startDate, endDate));
-        //新增人数
-        dealTotalAll("fissionEffectNewPeopleNum", mv, wechatTotalService.totalFissionEffectNewPeopleNum(startDate, endDate));
-        //订单量
-        dealTotalAll("orderNum", mv, wechatTotalService.totalBuyNum(startDate, endDate));
-        //成交额
-        dealTotalAll("turnover", mv, wechatTotalService.totalTurnover(startDate, endDate));
+        JSONObject result = wechatTotalService.bossCoreData(startDate, endDate);
+        mv.addAllObjects(result);
         return mv;
     }
 
@@ -241,7 +219,20 @@ public class WechatTotalController {
         return wechatTotalService.totalRebateBanking(startDate, endDate);
     }
 
-
+    /*********************************************销售看板********************************************************/
+    /**
+     * 统计上面四个指标
+     * @param startDate
+     * @param endDate
+     * @return
+     */
+    @RequestMapping(path = "/saleCoreData")
+    public ModelAndView saleCoreData(String startDate, String endDate){
+        ModelAndView mv = new ModelAndView("/data-statistics/smallProgram-coreData");
+        JSONObject result = wechatTotalService.saleCoreData(startDate, endDate);
+        mv.addAllObjects(result);
+        return mv;
+    }
 
 
 }
