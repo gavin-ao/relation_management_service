@@ -1,5 +1,6 @@
 package data.driven.erm.vo.order;
 
+import data.driven.erm.entity.order.OrderDetailEntity;
 import data.driven.erm.entity.order.OrderEntity;
 
 import java.util.List;
@@ -11,13 +12,13 @@ import java.util.List;
 public class OrderVO extends OrderEntity {
 
     /** 订单详情集合 **/
-    private List<OrderDetailVO> detailList;
+    private List<OrderDetailEntity> detailList;
 
-    public List<OrderDetailVO> getDetailList() {
+    public List<OrderDetailEntity> getDetailList() {
         return detailList;
     }
 
-    public void setDetailList(List<OrderDetailVO> detailList) {
+    public void setDetailList(List<OrderDetailEntity> detailList) {
         this.detailList = detailList;
     }
 }

@@ -13,11 +13,11 @@ public class OrderDetailEntity {
     /** 订单外键 **/
     private String orderId;
     /** 购买的商品主键 **/
-    private String commodityId;
+    private Integer productId;
     /** 商品名称-快照 **/
-    private String commodityName;
-    /** 商品图片id-快照 **/
-    private String pictureId;
+    private String productName;
+    /** 商品图片-快照 **/
+    private String thumbnail;
     /** 购买数量 **/
     private Integer amount;
     /** 单价 **/
@@ -43,28 +43,28 @@ public class OrderDetailEntity {
         this.orderId = orderId;
     }
 
-    public String getCommodityId() {
-        return commodityId;
+    public Integer getProductId() {
+        return productId;
     }
 
-    public void setCommodityId(String commodityId) {
-        this.commodityId = commodityId;
+    public void setProductId(Integer productId) {
+        this.productId = productId;
     }
 
-    public String getCommodityName() {
-        return commodityName;
+    public String getThumbnail() {
+        return thumbnail;
     }
 
-    public void setCommodityName(String commodityName) {
-        this.commodityName = commodityName;
+    public void setThumbnail(String thumbnail) {
+        this.thumbnail = thumbnail;
     }
 
-    public String getPictureId() {
-        return pictureId;
+    public String getProductName() {
+        return productName;
     }
 
-    public void setPictureId(String pictureId) {
-        this.pictureId = pictureId;
+    public void setProductName(String productName) {
+        this.productName = productName;
     }
 
     public Integer getAmount() {

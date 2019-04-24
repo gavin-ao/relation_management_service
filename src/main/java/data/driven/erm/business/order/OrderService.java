@@ -1,8 +1,8 @@
 package data.driven.erm.business.order;
 
 import com.alibaba.fastjson.JSONObject;
+import data.driven.erm.entity.order.OrderDetailEntity;
 import data.driven.erm.entity.order.OrderEntity;
-import data.driven.erm.vo.order.OrderDetailVO;
 import data.driven.erm.vo.order.OrderVO;
 import data.driven.erm.vo.wechat.WechatUserInfoVO;
 
@@ -67,7 +67,7 @@ public interface OrderService {
      * @param commodityId
      * @return
      */
-    public Integer totalSalesVolume(String commodityId);
+    public Integer totalSalesVolume(Integer commodityId);
 
     /**
      * 根据id查询订单
@@ -83,7 +83,7 @@ public interface OrderService {
      * @param orderId
      * @return
      */
-    public List<OrderDetailVO> findOrderDetailByOrderId(String orderId);
+    public List<OrderDetailEntity> findOrderDetailByOrderId(String orderId);
 
     /**
      * @description 查找订单信息

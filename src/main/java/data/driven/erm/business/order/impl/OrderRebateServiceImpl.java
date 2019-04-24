@@ -5,7 +5,6 @@ import data.driven.erm.business.order.OrderService;
 import data.driven.erm.dao.JDBCBaseDao;
 import data.driven.erm.entity.order.OrderRebateEntity;
 import data.driven.erm.util.UUIDUtil;
-import data.driven.erm.vo.order.OrderDetailVO;
 import data.driven.erm.vo.order.OrderRebateVO;
 import data.driven.erm.vo.order.OrderVO;
 import org.springframework.beans.factory.annotation.Autowired;

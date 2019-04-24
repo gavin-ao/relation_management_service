@@ -2,13 +2,15 @@ package data.driven.erm.controller.wechatapi;
 
 import com.alibaba.fastjson.JSONObject;
 import data.driven.erm.api.PayAPI;
-import data.driven.erm.business.commodity.CommodityService;
+import data.driven.erm.business.commodity.ProductService;
 import data.driven.erm.business.order.*;
 import data.driven.erm.business.wechat.SysPictureService;
 import data.driven.erm.business.wechat.WechatAppInfoService;
 import data.driven.erm.business.wechat.WechatUserService;
 import data.driven.erm.common.Constant;
 import data.driven.erm.common.WechatApiSession;
+import data.driven.erm.entity.commodity.ProductEntity;
+import data.driven.erm.entity.order.OrderDetailEntity;
 import data.driven.erm.entity.order.OrderEntity;
 import data.driven.erm.entity.order.OrderReceiveAddrEntity;
 import data.driven.erm.entity.order.OrderRefundDetailInfoEntity;
@@ -16,10 +18,9 @@ import data.driven.erm.entity.wechat.SysPictureEntity;
 import data.driven.erm.entity.wechat.WechatAppInfoEntity;
 import data.driven.erm.util.JSONUtil;
 import data.driven.erm.util.UUIDUtil;
-import data.driven.erm.vo.commodity.CommodityVO;
-import data.driven.erm.vo.order.OrderDetailVO;
 import data.driven.erm.vo.order.OrderVO;
 import data.driven.erm.vo.wechat.WechatUserInfoVO;
+import org.apache.tomcat.util.bcel.Const;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -54,7 +55,7 @@ public class WechatOrderController {
     @Autowired
     private OrderReceiveAddrService orderReceiveAddrService;
     @Autowired
-    private CommodityService commodityService;
+    private ProductService productService;
     @Autowired
     private OrderRebateService orderRebateService;
     @Autowired
@@ -81,19 +82,12 @@ public class WechatOrderController {
      */
     @ResponseBody
     @RequestMapping(path = "/purchaseImmediately")
-    public JSONObject purchaseImmediately(String sessionID, String commodityId) {
+    public JSONObject purchaseImmediately(String sessionID, Integer commodityId) {
         WechatUserInfoVO wechatUserInfoVO = WechatApiSession.getSessionBean(sessionID).getUserInfo();
         JSONObject result = putMsg(true, "200", "调用成功");
-        CommodityVO commodityVO = commodityService.getCommodityById(commodityId);
-        result.put("commodityVO", commodityVO);
-        commodityVO.setFilePath(Constant.STATIC_FILE_PATH + commodityVO.getFilePath());
-//        if(commodityVO.getCommodityImageTextList() != null){
-//            List<String> changePathList = new ArrayList<String>();
-//            for (String filePath : commodityVO.getCommodityImageTextList()){
-//                changePathList.add(Constant.STATIC_FILE_PATH + filePath);
-//            }
-//            commodityVO.setCommodityImageTextList(changePathList);
-//        }
+        ProductEntity commodity = productService.getProductById(commodityId);
+        result.put("commodityVO", commodity);
+        commodity.setThumbnail(Constant.SHOP_FILE_PATH+commodity.getThumbnail());
         //TODO 满赠
         result.put("fullOfGifts", null);
         //TODO 优惠
@@ -234,10 +228,10 @@ public class WechatOrderController {
         List<OrderVO> orderList = orderService.findOrderList(wechatUserInfoVO.getAppInfoId(), wechatUserInfoVO.getWechatUserId());
         if (orderList != null && orderList.size() > 0) {
             for (OrderVO orderVO : orderList) {
-                List<OrderDetailVO> detailList = orderVO.getDetailList();
+                List<OrderDetailEntity> detailList = orderVO.getDetailList();
                 if (detailList != null && detailList.size() > 0) {
-                    for (OrderDetailVO orderDetailVO : detailList) {
-                        orderDetailVO.setFilePath(Constant.STATIC_FILE_PATH + orderDetailVO.getFilePath());
+                    for (OrderDetailEntity orderDetail : detailList) {
+                        orderDetail.setThumbnail(Constant.SHOP_FILE_PATH + orderDetail.getThumbnail());
                     }
                 }
             }
@@ -285,17 +279,17 @@ public class WechatOrderController {
 //        WechatUserInfoVO wechatUserInfoVO = WechatApiSession.getSessionBean(sessionID).getUserInfo();
         //得到订单信息
         OrderEntity orderEntity = orderService.findOrderByOrderId(orderId);
-        List<OrderDetailVO> orderDetailVOlist = orderService.findOrderDetailByOrderId(orderId);
+        List<OrderDetailEntity> orderDetaillist = orderService.findOrderDetailByOrderId(orderId);
         StringBuffer commodityName = new StringBuffer();
         logger.info("进入获取申请退款详情");
         logger.info("orderId "+orderId);
-        if(orderDetailVOlist != null && orderDetailVOlist.size() > 0){
-            for (int i = 0 ; i < orderDetailVOlist.size(); i++){
-                OrderDetailVO orderDetailVO = orderDetailVOlist.get(i);
-                if (i == orderDetailVOlist.size() - 1){
-                    commodityName.append(orderDetailVO.getCommodityName());
+        if(orderDetaillist != null && orderDetaillist.size() > 0){
+            for (int i = 0 ; i < orderDetaillist.size(); i++){
+                OrderDetailEntity orderDetail = orderDetaillist.get(i);
+                if (i == orderDetaillist.size() - 1){
+                    commodityName.append(orderDetail.getProductName());
                 }else{
-                    commodityName.append(orderDetailVO.getCommodityName()+"、");
+                    commodityName.append(orderDetail.getProductName()+"、");
                 }
             }
         }else{
@@ -387,6 +381,8 @@ public class WechatOrderController {
             return resultJson;
         }
     }
+
+
 }
 
 

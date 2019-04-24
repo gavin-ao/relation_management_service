@@ -2,18 +2,17 @@ package data.driven.erm.business.order.impl;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
-import com.alibaba.fastjson.serializer.ObjectArrayCodec;
 import com.alibaba.fastjson.serializer.SerializerFeature;
 import data.driven.erm.business.order.OrderService;
 import data.driven.erm.business.wechat.WechatUserService;
 import data.driven.erm.dao.JDBCBaseDao;
-import data.driven.erm.entity.commodity.CommodityEntity;
+import data.driven.erm.entity.commodity.ProductEntity;
+import data.driven.erm.entity.order.OrderDetailEntity;
 import data.driven.erm.entity.order.OrderEntity;
 import data.driven.erm.util.DateFormatUtil;
 import data.driven.erm.util.HttpUtil;
 import data.driven.erm.util.IpUtils;
 import data.driven.erm.util.UUIDUtil;
-import data.driven.erm.vo.order.OrderDetailVO;
 import data.driven.erm.vo.order.OrderVO;
 import data.driven.erm.vo.pay.PayRefundParam;
 import data.driven.erm.vo.pay.SubmissionUnifiedorderParam;
@@ -130,20 +129,20 @@ public class OrderServiceImpl implements OrderService{
      * @param haveInvitation
      */
     private boolean insertOrderDetail(OrderVO order, boolean haveInvitation) throws Exception{
-        List<OrderDetailVO> detailList = order.getDetailList();
-        List<String> idList = detailList.stream().collect(Collectors.mapping(o -> o.getCommodityId(), Collectors.toList()));
-        Map<String, CommodityEntity> commodityMap = findCommodityByIds(idList);
+        List<OrderDetailEntity> detailList = order.getDetailList();
+        List<Integer> idList = detailList.stream().collect(Collectors.mapping(o -> o.getProductId(), Collectors.toList()));
+        Map<Integer, ProductEntity> productMap = findProductByIds(idList);
         BigDecimal orderRealPayment = new BigDecimal(0);
-        for(OrderDetailVO detail : detailList){
-            CommodityEntity commodityEntity = commodityMap.get(detail.getCommodityId());
-            if(commodityEntity == null){
+        for(OrderDetailEntity detail : detailList){
+            ProductEntity productEntity = productMap.get(detail.getProductId());
+            if(productEntity == null){
                 return false;
             }
             detail.setDetailId(UUIDUtil.getUUID());
-            detail.setCommodityName(commodityEntity.getCommodityName());
-            detail.setPictureId(commodityEntity.getPictureId());
-            detail.setUnitPrice(commodityEntity.getPrices());
-            detail.setTotalPrice(commodityEntity.getPrices().multiply(new BigDecimal(detail.getAmount())));
+            detail.setProductName(productEntity.getName());
+            detail.setThumbnail(productEntity.getThumbnail());
+            detail.setUnitPrice(productEntity.getPrice());
+            detail.setTotalPrice(productEntity.getPrice().multiply(new BigDecimal(detail.getAmount())));
             BigDecimal price = detail.getTotalPrice();
             //判断是否有优惠
             if(haveInvitation){
@@ -155,8 +154,8 @@ public class OrderServiceImpl implements OrderService{
             orderRealPayment = orderRealPayment.add(detail.getRealPayment());
         }
         updateOrderRealPayment(order.getOrderId(), orderRealPayment);
-        String insertSql = "insert into order_detail_info(detail_id,order_id,commodity_id,commodity_name,picture_id,amount,unit_price,total_price,real_payment)";
-        String valueSql = "(:detail_id,:order_id,:commodity_id,:commodity_name,:picture_id,:amount,:unit_price,:total_price,:real_payment)";
+        String insertSql = "insert into order_detail_info(detail_id,order_id,product_id,product_name,thumbnail,amount,unit_price,total_price,real_payment)";
+        String valueSql = "(:detail_id,:order_id,:product_id,:product_name,:thumbnail,:amount,:unit_price,:total_price,:real_payment)";
         jdbcBaseDao.executeBachOneSql(insertSql, valueSql, detailList);
         return true;
     }
@@ -176,16 +175,16 @@ public class OrderServiceImpl implements OrderService{
      * @param idList
      * @return
      */
-    private Map<String, CommodityEntity> findCommodityByIds(List<String> idList){
+    private Map<Integer, ProductEntity> findProductByIds(List<Integer> idList){
         StringBuilder sb = new StringBuilder();
-        for(String id : idList){
+        for(Integer id : idList){
             sb.append(",?");
         }
         sb.delete(0, 1);
-        String sql = "select commodity_id,commodity_name,prices,picture_id from commodity_info where commodity_id in (" + sb + ")";
-        List<CommodityEntity> list = jdbcBaseDao.queryListWithListParam(CommodityEntity.class, sql,idList);
+        String sql = "select id,`name`,price,thumbnail from tb_product where id in (" + sb + ")";
+        List<ProductEntity> list = jdbcBaseDao.queryListWithListParam(ProductEntity.class, sql,idList);
         if(list != null && list.size() > 0){
-            return list.stream().collect(Collectors.toMap(o -> o.getCommodityId(), o -> o));
+            return list.stream().collect(Collectors.toMap(o -> o.getId(), o -> o));
         }
         return null;
     }
@@ -208,7 +207,7 @@ public class OrderServiceImpl implements OrderService{
         List<OrderVO> orderVOList = jdbcBaseDao.queryList(OrderVO.class, sql, wechatUserId, appInfoId);
         if(orderVOList != null && orderVOList.size() > 0){
             List<String> orderIdList = orderVOList.stream().collect(Collectors.mapping(o -> o.getOrderId(), Collectors.toList()));
-            Map<String, List<OrderDetailVO>> orderDetailMap = findOrderDetailListGroupByOrder(orderIdList);
+            Map<String, List<OrderDetailEntity>> orderDetailMap = findOrderDetailListGroupByOrder(orderIdList);
             for(OrderVO order : orderVOList){
                 order.setDetailList(orderDetailMap.get(order.getOrderId()));
             }
@@ -222,15 +221,16 @@ public class OrderServiceImpl implements OrderService{
      * @param orderIdList
      * @return
      */
-    public Map<String, List<OrderDetailVO>> findOrderDetailListGroupByOrder(List<String> orderIdList){
+    public Map<String, List<OrderDetailEntity>> findOrderDetailListGroupByOrder(List<String> orderIdList){
         StringBuilder sb = new StringBuilder();
         for(String id : orderIdList){
             sb.append(",?");
         }
         sb.delete(0, 1);
-        String sql = "select odi.detail_id,odi.order_id,odi.commodity_id,odi.commodity_name,odi.amount,odi.unit_price,odi.total_price,odi.real_payment,p.file_path" +
-                " from order_detail_info odi left join sys_picture p on p.picture_id = odi.picture_id where odi.order_id in (" + sb + ")";
-        List<OrderDetailVO> list = jdbcBaseDao.queryListWithListParam(OrderDetailVO.class, sql, orderIdList);
+        String sql = "select odi.detail_id,odi.order_id,odi.product_id,odi.product_name,odi.amount,odi.unit_price,odi.total_price,odi.real_payment,p.file_path\n" +
+                " from order_detail_info odi \n" +
+                "left join sys_picture p on p.picture_id = odi.picture_id where odi.order_id in (" + sb + ")";
+        List<OrderDetailEntity> list = jdbcBaseDao.queryListWithListParam(OrderDetailEntity.class, sql, orderIdList);
         if(list != null && list.size() > 0){
             return list.stream().collect(Collectors.groupingBy(o -> o.getOrderId()));
         }
@@ -238,9 +238,9 @@ public class OrderServiceImpl implements OrderService{
     }
 
     @Override
-    public Integer totalSalesVolume(String commodityId) {
+    public Integer totalSalesVolume(Integer commodityId) {
         String sql = "select sum(d.amount) from order_detail_info d left join order_info o on o.order_id = d.order_id" +
-                " where d.commodity_id = ? and DATE_FORMAT(o.create_at, '%Y%m') = ? and (o.state = 1 or o.state = 2)";
+                " where d.product_id = ? and DATE_FORMAT(o.create_at, '%Y%m') = ? and (o.state = 1 or o.state = 2)";
         String monthStr = DateFormatUtil.getLocal("yyyyMM").format(new Date());
         return jdbcBaseDao.getCount(sql, commodityId, monthStr);
     }
@@ -256,9 +256,9 @@ public class OrderServiceImpl implements OrderService{
     }
 
     @Override
-    public List<OrderDetailVO> findOrderDetailByOrderId(String orderId) {
-        String sql = "select detail_id,order_id,commodity_id,commodity_name,amount,unit_price,total_price,real_payment from order_detail_info where order_id = ?";
-        List<OrderDetailVO> orderDetailVOList = jdbcBaseDao.queryList(OrderDetailVO.class, sql, orderId);
+    public List<OrderDetailEntity> findOrderDetailByOrderId(String orderId) {
+        String sql = "select detail_id,order_id,product_id,product_name,amount,unit_price,total_price,real_payment from order_detail_info where order_id = ?";
+        List<OrderDetailEntity> orderDetailVOList = jdbcBaseDao.queryList(OrderDetailEntity.class, sql, orderId);
         return orderDetailVOList;
     }
 
@@ -314,7 +314,6 @@ public class OrderServiceImpl implements OrderService{
         StringBuilder urlBuilder = new StringBuilder(payUrl).append(PUSH_ORDER_URL);
         String ip = IpUtils.getIpAddr(request);
         OrderEntity orderEntity = findOrderByOrderId(orderId);
-        List<OrderDetailVO> orderDetailVOList = findOrderDetailByOrderId(orderId);
         String catgName = getCatgName(orderId);
         SubmissionUnifiedorderParam submissionUnifiedorderParam = new SubmissionUnifiedorderParam(appId,storeId,catgName,
                 orderId,orderEntity.getRealPayment().multiply(new BigDecimal("100")).intValue(),"JSAPI",openid,ip);
@@ -357,6 +356,17 @@ public class OrderServiceImpl implements OrderService{
         JSONObject resultJson = JSON.parseObject(result);
         resultJson.put("orderId",outTradeNo);
        return resultJson;
+    }
+
+    public static void main(String[] args){
+        SubmissionUnifiedorderParam submissionUnifiedorderParam = new SubmissionUnifiedorderParam("wx0e8660984c4eb63b","1","据常优",
+                "1111",1,"JSAPI","RqWDRXsWNPOCruCGONn8","127、0、0.1");
+        //javaBean转json字符串
+        String submissionUnifiedorderString = JSONObject.toJSONString(submissionUnifiedorderParam,
+                SerializerFeature.WriteNullStringAsEmpty, SerializerFeature.WriteNullBooleanAsFalse);
+        logger.info("支付系统中的统一下单参数 "+submissionUnifiedorderString);
+        String result =  HttpUtil.doPostSSL("http://127.0.0.1:8089/pay/pushOrder2",submissionUnifiedorderString);
+
     }
 }
 

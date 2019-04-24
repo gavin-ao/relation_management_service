@@ -2,15 +2,15 @@ package data.driven.erm.controller.wechatapi;
 
 import com.alibaba.fastjson.JSONObject;
 import data.driven.erm.business.commodity.CommodityCatgService;
-import data.driven.erm.business.commodity.CommodityService;
+import data.driven.erm.business.commodity.ProductService;
 import data.driven.erm.business.order.OrderRebateService;
 import data.driven.erm.business.order.OrderService;
 import data.driven.erm.business.wechat.WechatAppInfoService;
 import data.driven.erm.common.Constant;
 import data.driven.erm.common.WechatApiSession;
 import data.driven.erm.entity.commodity.CommodityCatgEntity;
+import data.driven.erm.entity.commodity.ProductEntity;
 import data.driven.erm.util.JSONUtil;
-import data.driven.erm.vo.commodity.CommodityVO;
 import data.driven.erm.vo.order.OrderRebateVO;
 import data.driven.erm.vo.wechat.WechatUserInfoVO;
 import org.slf4j.Logger;
@@ -34,7 +34,7 @@ public class WechatCommodityController {
     private static final Logger logger = LoggerFactory.getLogger(WechatCommodityController.class);
 
     @Autowired
-    private CommodityService commodityService;
+    private ProductService productService;
     @Autowired
     private CommodityCatgService commodityCatgService;
     @Autowired
@@ -67,12 +67,10 @@ public class WechatCommodityController {
     @ResponseBody
     @RequestMapping("/findCommodityListByCatgId")
     public JSONObject findCommodityListByCatgId(String catgId){
-        List<CommodityVO> commodityList = commodityService.findCommodityListByCatgId(catgId);
+        List<ProductEntity> commodityList = productService.findProductListByCatgId(catgId);
         if(commodityList != null && commodityList.size() > 0){
-            for (CommodityVO commodityVO : commodityList){
-                if(commodityVO.getFilePath() != null){
-                    commodityVO.setFilePath(Constant.STATIC_FILE_PATH + commodityVO.getFilePath());
-                }
+            for (ProductEntity product : commodityList){
+                product.setThumbnail(Constant.SHOP_FILE_PATH+product.getThumbnail());
             }
         }
         JSONObject result = JSONUtil.putMsg(true, "200", "调用成功");
@@ -82,20 +80,11 @@ public class WechatCommodityController {
 
     @ResponseBody
     @RequestMapping("/getCommodityById")
-    public JSONObject getCommodityById(String sessionID, String commodityId){
-        CommodityVO commodityVO = commodityService.getCommodityById(commodityId);
+    public JSONObject getCommodityById(String sessionID, Integer commodityId){
+        ProductEntity commodityVO = productService.getProductById(commodityId);
         JSONObject result = JSONUtil.putMsg(true, "200", "调用成功");
-        if(commodityVO != null){
-            if(commodityVO.getCommodityImageTextList() != null && commodityVO.getCommodityImageTextList().size() > 0){
-                List<String> changePathList = new ArrayList<String>();
-                for (String filePath : commodityVO.getCommodityImageTextList()){
-                    changePathList.add(Constant.STATIC_FILE_PATH + filePath);
-                }
-                commodityVO.setCommodityImageTextList(changePathList);
-            }
-            Integer salesVolume = orderService.totalSalesVolume(commodityVO.getCommodityId());
-            result.put("salesVolume", salesVolume);
-        }
+        Integer salesVolume = orderService.totalSalesVolume(commodityVO.getId());
+        result.put("salesVolume", salesVolume);
         WechatUserInfoVO wechatUserInfoVO = WechatApiSession.getSessionBean(sessionID).getUserInfo();
         result.put("share", orderService.haveOrder(wechatUserInfoVO.getAppInfoId(), wechatUserInfoVO.getWechatUserId()));
         result.put("commodityVO", JSONUtil.replaceNull(commodityVO));

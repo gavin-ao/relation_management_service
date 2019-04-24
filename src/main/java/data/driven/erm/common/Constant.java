@@ -15,6 +15,10 @@ public class Constant {
     public static String WXQRCODE_TEMP_FILE_FOLDER = "tempwxqrcode/";
     /** 静态资源访问路径 **/
     public static String STATIC_FILE_PATH = "/static/file/";
+    /**电商的url**/
+    public final static String SHOP_HOST_PATH = "http://shop.xinkebao.cn";//主机地址可以为域名
+    /**电商静态资源范围路径**/
+    public static String SHOP_FILE_PATH=SHOP_HOST_PATH+"/files/";//图片文件预览下载地址，'/'表示cms-admin项目根路径，如为admin则此值为HOST_PATH+"/admin/"
     public static final String SESSIONID_COOKIE_NAME = "SESSIONID";
     /** mysql日期格式字符串 **/
     public static final String mysql_day_format = "%Y-%m-%d";
