@@ -4,13 +4,12 @@
 var wholeAppInfoId, wholeStartTime, wholeEndTime;
 (function () {
 
-
-    dateSelecteTime()
+    laydateTime();
+    dateSelecteTime();
 
     // coreDataSel()
 
 
-    coreDataShow();
     // $("#navbarH").height($("#page-wrapper").height() - 80)
     $($("#contain_main_head > div")[0]).find('input').trigger("click");
 }())
@@ -30,7 +29,9 @@ function laydateTime() {
             if (!wholeEndTime) {
                 wholeEndTime = value;
             }
-            changeTimeAfterDataChange()
+            $("#startTime").val(wholeStartTime);
+            $("#endTime").val(wholeEndTime);
+            changeTimeAfterDataChange();
         }
 
     });
@@ -44,7 +45,9 @@ function laydateTime() {
             if (!wholeStartTime) {
                 wholeStartTime = value;
             }
-            wholeEndTime = value
+            wholeEndTime = value;
+            $("#startTime").val(wholeStartTime);
+            $("#endTime").val(wholeEndTime);
             changeTimeAfterDataChange()
         }
     });
@@ -54,12 +57,11 @@ function laydateTime() {
 function coreDataSel() {
     $("#contain_main_data").off('click', "div");
     $("#contain_main_data").on('click', "div", function () {
-        console.log(2222)
         $(this).siblings().attr("class", "");
         $(this).attr("class", "selectData");
         var urlName = $(this).attr("data-iden");
         var title = $(this).attr("data-num");
-        // dataTrendDiagram(urlName, title);
+        dataTrendDiagram(urlName, title);
     })
 }
 // 核心数据展示
@@ -75,12 +77,18 @@ function coreDataShow(appInfoId) {
             // 下载图片
             saveImage();
             // changeTimeAfterDataChange();
+            $($("#contain_main_data div")[0]).trigger("click");
         }
     })
 }
 //线形图 日活趋势
-function chartLineShow() {
+function chartLineShow(data,title) {
     var myChartLine = echarts.init(document.getElementById('main_Lines'));
+    var xData = [],showData=[];
+    for(var i=0;i<data.length;i++){
+        xData.push(data[i].groupTime);
+        showData.push(data[i].countNum);
+    }
     var option =  {
         tooltip: {
             trigger: 'item'
@@ -95,7 +103,7 @@ function chartLineShow() {
         xAxis: {
             type: 'category',
             boundaryGap: false,
-            data: ['2016-06月','2016-07月','2016-08月','2016-09月','2016-10月','2016-11月','2016-12月']
+            data:xData
         },
         yAxis: {
             type: 'value',
@@ -107,9 +115,9 @@ function chartLineShow() {
         },
         series: [
             {
-                name:'采收量',
+                name:title,
                 type:'line',
-                data:[120, 132, 101, 134, 90, 230, 210],
+                data:showData,
                 symbolSize:10,
                 itemStyle: {
                     normal: {
@@ -133,7 +141,7 @@ function chartLineShow() {
 }
 
 // 漏斗图展示 用户转化漏斗
-function chartFunnelShow() {
+function chartFunnelShow(data) {
     var myChartLine = echarts.init(document.getElementById('main_funnel'));
     var option =  {
         color:['#A4CF77', '#3C72DD', '#F2C132', '#F37D30', '#3BA072'],
@@ -144,7 +152,7 @@ function chartFunnelShow() {
         calculable: true,
         series: [
             {
-                name:'漏斗图',
+                name:'用户转化漏斗',
                 type:'funnel',
                 top: 10,
                 //x2: 80,
@@ -156,18 +164,11 @@ function chartFunnelShow() {
                         show: true,
                         position: 'right',
                         formatter: function (parm) {
-                            console.log(parm)
-                            return parm.name+'人数：'+ parm.value +'\n转化率：'+parm.value +'%';
+                            return parm.name+'：'+ parm.value;
                         }
                     }
                 },
-                data: [
-                    {value: 60, name: '访问'},
-                    {value: 40, name: '咨询'},
-                    {value: 20, name: '订单'},
-                    {value: 80, name: '点击'},
-                    {value: 100, name: '展现'}
-                ]
+                data: data
             }
         ]
     };
@@ -181,97 +182,149 @@ function chartFunnelShow() {
 
 // 饼图展示  新老用户成交占比
 function chartPieShow(data) {
-    var color = ['#A4CF77', '#3C72DD', '#F2C132', '#F37D30', '#3BA072'];
-    var myChartPie = echarts.init(document.getElementById('main_pie'));
-    var options = {
-        color:['#A4CF77', '#3C72DD', '#F2C132', '#F37D30', '#3BA072'],
-        tooltip: {
-            trigger: 'item',
-            formatter:function (parm) {
-                return parm.name +': '+parm.percent+"%"
-            }
-        },
-        series: [
-            {
-                name: '访问来源',
+    if ((data.newUserNum + data.oldUserNum) == 0) {
+        var ratio = "0.00%";
+        // $("#main_pie").html("无用户信息")
+    } else {
+        var ratio = (data.newUserNum / (data.newUserNum + data.oldUserNum) * 100).toFixed(2) + "%";
+
+
+        var myChartPie = echarts.init(document.getElementById('main_pie'));
+        var options = {
+            title: {
+                text: ratio,
+                x: 'center',
+                y: 'center',
+                textStyle: {
+                    fontWeight: 'normal',
+                    color: '#0580f2',
+                    fontSize: '30'
+                }
+            },
+            color: ['rgba(176, 212, 251, 1)'],
+            legend: {
+                show: true,
+                itemGap: 12,
+                data: ['新用户', '老用户'],
+                bottom: 20
+            },
+
+            series: [{
+                name: 'Line 1',
                 type: 'pie',
-                hoverAnimation: false,
-                label: {
+                clockWise: true,
+                radius: ['50%', '66%'],
+                itemStyle: {
                     normal: {
-                       formatter:function (parm) {
-                           return parm.name +': '+parm.percent+"%"
-                       }
+                        label: {
+                            show: false
+                        },
+                        labelLine: {
+                            show: false
+                        }
                     }
                 },
-                data: [
-                    {name:'新用户',value:24},
-                    {name:'老用户',value:40}
-                ]
-            }
-        ]
-    };
-    myChartPie.setOption(options);
-    window.onresize = function () {
-        myChartPie.resize();
+                hoverAnimation: false,
+                data: [{
+                    value: data.newUserNum,
+                    name: '新用户',
+                    itemStyle: {
+                        normal: {
+                            color: { // 完成的圆环的颜色
+                                colorStops: [{
+                                    offset: 0,
+                                    color: '#00cefc' // 0% 处的颜色
+                                }, {
+                                    offset: 1,
+                                    color: '#367bec' // 100% 处的颜色
+                                }]
+                            },
+                            label: {
+                                show: false
+                            },
+                            labelLine: {
+                                show: false
+                            }
+                        }
+                    }
+                }, {
+                    name: '老用户',
+                    value: data.oldUserNum
+                }]
+            }]
+        }
+        myChartPie.setOption(options);
+        window.onresize = function () {
+            myChartPie.resize();
+        }
     }
 
 }
 
 // 条形图展示  用户邀请排行
-function chartLineBarShow() {
+function chartLineBarShow(data) {
     var   color=['#F35352', '#F7CB4A', '#3FB27E', '#5182E4', '#9BCC66','#F6904F'];
-    var data = [
-        {name:'云南省', value:10},
-        {name:'湖北省', value:22},
-        {name:'湖南省', value:33},
-        {name:'河南省', value:44},
-        {name:'河北省', value:50},
-        {name:'安徽省', value:55},
-        {name:'浙江省', value:66},
-        {name:'山东省', value:77},
-        {name:'广东省', value:88},
-        {name:'北京市', value:100}
-    ];
+    // var data = [
+    //     {name:'云南省', value:10},
+    //     {name:'湖北省', value:22},
+    //     {name:'湖南省', value:33},
+    //     {name:'河南省', value:44},
+    //     {name:'河北省', value:50},
+    //     {name:'安徽省', value:55},
+    //     {name:'浙江省', value:66},
+    //     {name:'山东省', value:77},
+    //     {name:'广东省', value:88},
+    //     {name:'北京市', value:100}
+    // ];
     var yAxisData = [],seriesData=[];
-    var myChartPie = echarts.init(document.getElementById('main_Lbar'));
+    var myChartLineBar = echarts.init(document.getElementById('main_Lbar'));
     for(var i=0;i<data.length;i++){
-        yAxisData.push(data[i].name);
+        yAxisData.push(data[i].nickName);
         if(i>(color.length-1)){
             data[i].itemStyle = {color:color[color.length-1]}
         }else{
             data[i].itemStyle = {color:color[i]}
         }
-        seriesData.push(data[i])
+        data[i].name=data[i].nickName;
+        data[i].value=data[i].count_num;
+        seriesData.unshift(data[i])
     }
-    var options = option = {
+    var option = {
+        // title: {
+        //     text: '世界人口总量',
+        //     subtext: '数据来自网络'
+        // },
         tooltip: {
             trigger: 'axis',
             axisPointer: {
-                type: 'shadow'
-            },
-            formatter: "{b} <br> 合格率: {c}%"
+                type: 'none'
+            }
         },
-        /*legend: {
-         data: [date]
-         },*/
+        legend: {
+            data: ['人数']
+        },
         grid: {
-            // left: '4%',
-            // right: '40',
+            left: '2%',
+            right: '3%',
             bottom: '2%',
-            top:'5',
+            top: '3%',
             containLabel: true
         },
         xAxis: {
             type: 'value',
             boundaryGap: [0, 0.01],
-            min: 0,
-            max: 100,
-            interval: 20,
+            minInterval: 1, //设置成1保证坐标轴分割刻度显示成整数。
             axisLabel: {
-                formatter: '{value}%',
-                textStyle: {
-                    //color: '#fff',
-                    fontWeight: '80'
+                color: "#666"
+            },
+            axisTick: {
+                lineStyle: {
+                    color: "#666"
+                }
+            },
+            axisLine: {
+                lineStyle: {
+                    color: "#666"
                 }
             }
         },
@@ -279,56 +332,65 @@ function chartLineBarShow() {
             type: 'category',
             data: yAxisData,
             axisLabel: {
-                show: true,
-                interval: 0,
-                rotate: 0,
-                margin: 10,
-                inside: false,
-                textStyle: {
-                    //color: '#fff',
-                    fontWeight: '50'
-                }
+                color: "#666"
             },
             axisTick: {
-                show: false
-            }
-        },
-        series: [{
-            type: 'bar',
-            label: {
-                normal: {
-                    show: true,
-                    position: "right",
-                    formatter: function (v) {
-                        console.log(v)
-                        return v.value;
-                    },
-                    color: "#000"
+                lineStyle: {
+                    color: "#666"
                 }
             },
-            data:seriesData
-        }]
+            axisLine: {
+                lineStyle: {
+                    color: "#666"
+                }
+            }
+        },
+        series: [
+            {
+                name: '人数',
+                type: 'bar',
+                data: seriesData,
+                barMaxWidth: 40,
+                barGap: "5%",
+                label: {
+                    show: true,
+                    position: 'insideRight'
+                }
+            }
+        ]
     };
-    myChartPie.setOption(options);
+    myChartLineBar.setOption(option);
     window.onresize = function () {
-        myChartPie.resize();
+        myChartLineBar.resize();
     }
 }
 
 // 表格展示  用户留存率
-function chartTableShow() {
+function chartTableShow(setData) {
+    // if(setData.length){
+    //     var table = '<table><thead><tr><th>访问日期</th><th>新增用户</th><th>次日留存</th><th>7日留存</th><th>30日留存</th></tr></thead><tbody>';
+    //
+    //     console.log(setData)
+    //     for(var i=0;i<setData.length;i++){
+    //         var tempTd = '<tr>';
+    //         for(var j=0;j<setData[i].length;j++){
+    //             if(setData[i][j].flag&&j!=0){
+    //                 tempTd += "<td class='sele'>"+setData[i][j].value+"</td>";
+    //             }else{
+    //                 tempTd += "<td>"+setData[i][j].value+"</td>";
+    //             }
+    //
+    //         }
+    //         tempTd+="</tr>";
+    //         table += tempTd
+    //     }
+    //     table += "</tbody></table>";
+    // }
+    // $("#main_Table").html(table);
     Table().init({
         id:'main_Table',
         header:['访问日期','新增用户','次日留存','7日留存','30日留存'],
-        data:[
-            ['2018年09月01日',1200,0.60,0.25,0.12],
-            ['2018年09月02日',2400,0.60,0.25,0.12],
-            ['2018年09月03日',1000,0.60,0.25,0.12],
-            ['2018年09月04日',1500,0.60,0.25,0.12],
-            ['2018年09月05日',600,0.60,0.25,0.12],
-            ['2018年09月06日',800,0.60,0.25,0.12],
-            ['2018年09月07日',1200,0.60,0.25,0.12],
-        ]
+        data:setData
     });
 }
 
@@ -343,7 +405,7 @@ function dateSelecteTime() {
         }
         $(this).attr("checked", true)
         className = $(this).attr("class");
-        // $(".datePicker").css("display", "none");
+        // $(".datePicker").hide();
         var dateTimes;
 
         switch (className) {
@@ -364,19 +426,19 @@ function dateSelecteTime() {
                 endTime = curdateTimes
                 break;
             case "userdefined":
-                // $(".datePicker").css("display", "block");
-                // dateTimes = currentTime(new Date());
-                // startTime = dateTimes
-                // endTime = dateTimes
-                laydateTime()
+
+                // $(".datePicker").show();
+                dateTimes = currentTime(new Date());
+                startTime = dateTimes
+                endTime = dateTimes
                 break;
         }
-        // $("#startTime").val(startTime);
-        // $("#endTime").val(endTime);
+        $("#startTime").val(startTime);
+        $("#endTime").val(endTime);
         $(".contain_main_title .time1").html(startTime)
         $(".contain_main_title .time2").html(endTime)
         wholeStartTime = startTime;
-        wholeEndTime = endTime
+        wholeEndTime = endTime;
         changeTimeAfterDataChange()
 
     })
@@ -392,8 +454,8 @@ function currentTime(myDate) {
 
 // 改变时间，数据及图表相继改变
 function changeTimeAfterDataChange() {
+    coreDataShow();
     //线形图 日活趋势
-    dailyLiveTrend();
     // 漏斗图展示 用户转化漏斗
     userTransformation();
     // 新老用户成交占比 饼图展示
@@ -404,37 +466,43 @@ function changeTimeAfterDataChange() {
     userRetentionRate();
 
 }
-
 //线形图 日活趋势
-function dailyLiveTrend(urlName) {
-    chartLineShow()
-    // $.ajax({
-    //     url: "/wechat/total/"+urlName,
-    //     dataType: "json",
-    //     type:"post",
-    //     data: {appInfoId: wholeAppInfoId, startDate: wholeStartTime, endDate: wholeEndTime},
-    //     success: function (data) {
-    //
-    //         if(data.success){
-    //             chartLineShow(data.data)
-    //
-    //         }
-    //     }
-    // })
+function dataTrendDiagram(urlName, title) {
+    $.ajax({
+        url: "/wechat/total/" + urlName,
+        dataType: "json",
+        type: "post",
+        data: {startDate: wholeStartTime, endDate: wholeEndTime},
+        success: function (data) {
+            $("#main_line").html("");
+            if (data.success) {
+                if (data.data.length) {
+                    $("#main_line").attr("_echarts_instance_", "");
+                    chartLineShow(data.data, title)
+                }
+                // else{
+                //     var html = "<div style='text-align: center;font-size: 20px;color:red;margin-top: 20px;'>无数据</div>";
+                //     $("#main_line").html(html);
+                // }
+
+            } else {
+                requestError(data);
+            }
+        }
+    })
 }
+
 
 // 漏斗图展示 用户转化漏斗
 function userTransformation() {
-    // chartFunnelShow()
     $.ajax({
-        url: "/wechat/total/totalUserRetainView ",
+        url: "/wechat/total/totalFunnelView",
         dataType: "json",
         type:"post",
         data: {startDate: wholeStartTime, endDate: wholeEndTime},
         success: function (data) {
-            console.log(data);
             if(data.success){
-                chartLineShow(data.data)
+                chartFunnelShow(data.data)
 
             }
         }
@@ -442,55 +510,81 @@ function userTransformation() {
 }
 // 新老用户成交占比 饼图展示
 function salabilitySeries() {
-    chartPieShow()
-    // $.ajax({
-    //     url: "/wechat/total/"+urlName,
-    //     dataType: "json",
-    //     type:"post",
-    //     data: {appInfoId: wholeAppInfoId, startDate: wholeStartTime, endDate: wholeEndTime},
-    //     success: function (data) {
-    //
-    //         if(data.success){
-    //             chartLineShow(data.data)
-    //
-    //         }
-    //     }
-    // })
+    $.ajax({
+        url: "/wechat/total/totalOldAndNewUser",
+        dataType: "json",
+        type:"post",
+        data: {startDate: wholeStartTime, endDate: wholeEndTime},
+        success: function (data) {
+
+            if(data.success){
+                chartPieShow(data)
+            }
+        }
+    })
 }
 
 // 条形图展示  用户邀请排行
 function rankings() {
-    chartLineBarShow()
-    // $.ajax({
-    //     url: "/wechat/total/"+urlName,
-    //     dataType: "json",
-    //     type:"post",
-    //     data: {appInfoId: wholeAppInfoId, startDate: wholeStartTime, endDate: wholeEndTime},
-    //     success: function (data) {
-    //
-    //         if(data.success){
-    //             chartLineShow(data.data)
-    //
-    //         }
-    //     }
-    // })
+    $.ajax({
+        url: "/wechat/total/totalInviteRankView",
+        dataType: "json",
+        type:"post",
+        data: {startDate: wholeStartTime, endDate: wholeEndTime},
+        success: function (data) {
+
+            if(data.success){
+                chartLineBarShow(data.data)
+            }
+        }
+    })
 }
 // 表格展示  用户留存率
 function userRetentionRate() {
-    chartTableShow()
-    // $.ajax({
-    //     url: "/wechat/total/"+urlName,
-    //     dataType: "json",
-    //     type:"post",
-    //     data: {appInfoId: wholeAppInfoId, startDate: wholeStartTime, endDate: wholeEndTime},
-    //     success: function (data) {
-    //
-    //         if(data.success){
-    //             chartLineShow(data.data)
-    //
-    //         }
-    //     }
-    // })
+    // chartTableShow()
+    $.ajax({
+        url: "/wechat/total/totalUserRetainView",
+        dataType: "json",
+        type:"post",
+        data: {startDate: wholeStartTime, endDate: wholeEndTime},
+        success: function (data) {
+
+            if(data.success){
+                var tempData = data.data;
+                var setData = [];
+                for(var i=0;i<tempData.length;i++){
+                    setData[i] = [];
+                    setData[i][0] = tempData[i].groupTime;
+                    setData[i][1] = tempData[i].nowGroup?tempData[i].nowGroup:0;
+                    setData[i][2] = tempData[i].nextGroup?tempData[i].nextGroup:0;
+                    setData[i][3] = tempData[i].sevenGroup?tempData[i].sevenGroup:0;
+                    setData[i][4] = tempData[i].thirtyGroup?tempData[i].thirtyGroup:0;
+                }
+                // for(var i=0;i<setData.length;i++){
+                //     var min1 = Infinity;
+                //     var min2 = min1;
+                //     var index1 = -1;
+                //     var index2 = -1;
+                //     for(var j=0;j<setData[i].length;j++){
+                //         var item = setData[i][j];
+                //         if(item < min1){
+                //             min2 = min1;     //min2始终保持第二小的地位
+                //             index2 = index1;
+                //             min1 = item;
+                //             index1 = j;
+                //         }else if(item < min2){
+                //             min2 = item;
+                //             index2 = j;
+                //         }
+                //         setData[i][j] = {value: setData[i][j],flag:false}
+                //     }
+                //     setData[i][index1].flag = true;
+                //     setData[i][index2].flag = true;
+                // }
+                chartTableShow(setData)
+            }
+        }
+    })
 }
 
 

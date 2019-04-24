@@ -4,8 +4,8 @@
 var wholeAppInfoId, wholeStartTime, wholeEndTime;
 (function () {
 
-
-    dateSelecteTime()
+    laydateTime();
+    dateSelecteTime();
 
     // coreDataSel()
 
@@ -32,6 +32,8 @@ function laydateTime() {
             if (!wholeEndTime) {
                 wholeEndTime = value;
             }
+            $("#startTime").val(wholeStartTime);
+            $("#endTime").val(wholeEndTime);
             changeTimeAfterDataChange()
         }
 
@@ -47,6 +49,8 @@ function laydateTime() {
                 wholeStartTime = value;
             }
             wholeEndTime = value
+            $("#startTime").val(wholeStartTime);
+            $("#endTime").val(wholeEndTime);
             changeTimeAfterDataChange()
         }
     });
@@ -994,14 +998,13 @@ function dateSelecteTime() {
                 break;
             case "userdefined":
                 // $(".datePicker").css("display", "block");
-                // dateTimes = currentTime(new Date());
-                // startTime = dateTimes
-                // endTime = dateTimes
-                laydateTime()
+                dateTimes = currentTime(new Date());
+                startTime = dateTimes
+                endTime = dateTimes
                 break;
         }
-        // $("#startTime").val(startTime);
-        // $("#endTime").val(endTime);
+        $("#startTime").val(startTime);
+        $("#endTime").val(endTime);
         $(".contain_main_title .time1").html(startTime)
         $(".contain_main_title .time2").html(endTime)
         wholeStartTime = startTime;

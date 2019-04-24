@@ -11,9 +11,9 @@
     <div class="dateSelect">
         <input type="radio" name="chose" class="userdefined"> 自定义
     </div>
-    <div class="refreshData" id="refreshData">
-        刷新数据
-    </div>
+##    <div class="refreshData" id="refreshData">
+##        刷新数据
+##    </div>
     <div class="contain_main_title">
         <span class="title"></span><span><span class="time1">2018-07-02</span>至<span
             class="time2">2017-07-02</span>数据</span>

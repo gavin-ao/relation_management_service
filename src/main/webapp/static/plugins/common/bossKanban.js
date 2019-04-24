@@ -4,11 +4,10 @@
 var wholeAppInfoId, wholeStartTime, wholeEndTime;
 (function () {
 
-
+    laydateTime();
     dateSelecteTime()
 
     // coreDataSel()
-
 
     // coreDataShow()
     // $("#navbarH").height($("#page-wrapper").height() - 80)
@@ -32,6 +31,8 @@ function laydateTime() {
             if (!wholeEndTime) {
                 wholeEndTime = value;
             }
+            $("#startTime").val(wholeStartTime);
+            $("#endTime").val(wholeEndTime);
             changeTimeAfterDataChange()
         }
 
@@ -47,11 +48,27 @@ function laydateTime() {
                 wholeStartTime = value;
             }
             wholeEndTime = value
+            $("#startTime").val(wholeStartTime);
+            $("#endTime").val(wholeEndTime);
             changeTimeAfterDataChange()
         }
     });
 }
-
+// 核心数据展示
+function coreDataShow() {
+    $.ajax({
+        url: "/wechat/total/bossCoreData",
+        type: "post",
+        data: { startDate: wholeStartTime, endDate: wholeEndTime},
+        dataType: "html",
+        success: function (data) {
+            $("#contain_main_data").html(data);
+            // 下载图片
+            saveImage();
+            // changeTimeAfterDataChange();
+        }
+    })
+}
 //平均客单价(元) 柱状图
 function chartVerBarShow() {
     var myChartLine = echarts.init(document.getElementById('main_bar'));
@@ -485,14 +502,13 @@ function dateSelecteTime() {
                 break;
             case "userdefined":
                 // $(".datePicker").css("display", "block");
-                // dateTimes = currentTime(new Date());
-                // startTime = dateTimes
-                // endTime = dateTimes
-                laydateTime()
+                dateTimes = currentTime(new Date());
+                startTime = dateTimes
+                endTime = dateTimes
                 break;
         }
-        // $("#startTime").val(startTime);
-        // $("#endTime").val(endTime);
+        $("#startTime").val(startTime);
+        $("#endTime").val(endTime);
         $(".contain_main_title .time1").html(startTime)
         $(".contain_main_title .time2").html(endTime)
         wholeStartTime = startTime;

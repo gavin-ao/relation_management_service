@@ -100,7 +100,7 @@
 .contain_main_head {
     /*padding: 0 30px;*/
     padding-bottom: 20px;
-    padding-right: 30px;
+    /*padding-right: 30px;*/
 }
 
 .contain_main_head > div {
@@ -261,10 +261,34 @@
 .contain_main_graph > div.graphs {
     height: calc(100% - 40px);
 }
-
+.contain_main_data > div.selectData {
+    background-color: rgba(33, 157, 239, 1);
+    color: #fff;
+    border: 0;
+}
+.contain_main_data > div.selectData >p{
+    color: #fff;
+}
+.contain_main_data > div.selectData .activitySum {
+    color: #fff;
+}
 /*}*/
 /*#main_graph{*/
 /*height: calc(100% - 40px);*/
 /*border: 1px solid #ccc;*/
+/*}*/
+/*#main_Table table{*/
+    /*width: calc(100% - 10px);*/
+/*}*/
+
+/*#main_Table table th,#main_Table table td{*/
+    /*width: 16%;*/
+/*}*/
+/*#main_Table table th:nth-child(1),#main_Table table td:nth-child(1){*/
+    /*width: 36%;*/
+/*}*/
+/*#main_Table table .sele{*/
+    /*background-color: red;*/
+    /*color: #fff;*/
 /*}*/
 
