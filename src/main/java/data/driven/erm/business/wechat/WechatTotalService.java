@@ -129,5 +129,12 @@ public interface WechatTotalService {
      */
     public JSONObject saleCoreData(String startDate, String endDate);
 
+    /**
+     * 统计畅销商品
+     * @param startDate
+     * @param endDate
+     * @return
+     */
+    public JSONObject totalSalableCommodity(String startDate, String endDate);
 
 }

@@ -565,4 +565,33 @@ public class WechatTotalServiceImpl implements WechatTotalService {
         return new BigDecimal(0);
     }
 
+    @Override
+    public JSONObject totalSalableCommodity(String startDate, String endDate) {
+        JSONObject result = new JSONObject();
+        Date start = DateFormatUtil.getTime(startDate);
+        Date end = DateFormatUtil.toEndDate(endDate);
+        if(start == null || end == null){
+            return putMsg(false, "102", "时间获取失败，请检查时间格式");
+        }
+        String sql = "select count(distinct o.order_id) as count_num,ci.commodity_name as group_time,cci.catg_name as catg_group from order_detail_info odi" +
+                " left join order_info o on o.order_id = odi.order_id" +
+                " left join commodity_info ci on ci.commodity_id = odi.commodity_id" +
+                " left join commodity_catg_info cci on cci.catg_id = ci.catg_id" +
+                " where o.state = 1 or o.state = 2 and o.create_at between ? and ? and ci.commodity_name is not null and cci.catg_name is not null group by ci.commodity_name,group_time";
+        List<WechatTotalVO> list = jdbcBaseDao.queryList(WechatTotalVO.class, sql, start, end);
+        if(list != null && list.size() > 0){
+            Map<String, List<WechatTotalVO>> groupMap = list.stream().collect(Collectors.groupingBy(o -> o.getCatgGroup()));
+            List<JSONObject> dataList = new ArrayList<JSONObject>();
+            for (Map.Entry<String, List<WechatTotalVO>> entry : groupMap.entrySet()){
+                List<JSONObject> childList = new ArrayList<JSONObject>();
+                JSONObject data = new JSONObject();
+//                data.put("name" : )
+
+            }
+        }
+
+        result.put("data", list);
+        result.put("success", true);
+        return result;
+    }
 }

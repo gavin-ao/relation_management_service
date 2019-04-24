@@ -16,6 +16,8 @@ public class WechatTotalVO {
     private String groupTime;
     /** 留存率分组名称 **/
     private String retentionGroup;
+    /** 商品分类分组 **/
+    private String catgGroup;
 
     public WechatTotalVO(Long countNum, String groupTime) {
         this.countNum = countNum;
@@ -50,5 +52,13 @@ public class WechatTotalVO {
 
     public void setAverageNum(BigDecimal averageNum) {
         this.averageNum = averageNum;
+    }
+
+    public String getCatgGroup() {
+        return catgGroup;
+    }
+
+    public void setCatgGroup(String catgGroup) {
+        this.catgGroup = catgGroup;
     }
 }
