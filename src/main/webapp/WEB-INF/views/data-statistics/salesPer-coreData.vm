@@ -1,16 +1,16 @@
-<div data-iden="totalActivityNumView">
-    <p class="activitytitle">活跃度(点击次数)</p>
-    <p class="activitySum">$!{activityNum}</p>
+<div>
+    <p class="activitytitle">成交额(元)</p>
+    <p class="activitySum">$!{turnover}</p>
 </div>
-<div data-iden="totalSpreadRangeNumView">
-    <p class="activitytitle">活跃用户(人)</p>
-    <p class="activitySum">$!{spreadRangeNum}</p>
+<div>
+    <p class="activitytitle">ARPU(每用户平均收入)</p>
+    <p class="activitySum">$!{arpuNum}</p>
 </div>
-<div data-iden="totalFissionEffectNewPeopleNumView">
-    <p class="activitytitle">裂变效果(新增用户)</p>
-    <p class="activitySum">$!{fissionEffectNewPeopleNum}</p>
+<div>
+    <p class="activitytitle">CAC(获客成本)</p>
+    <p class="activitySum">$!{cacNum}</p>
 </div>
-<div data-iden="totalShareNumView">
-    <p class="activitytitle">传播热度(分享人数)</p>
-    <p class="activitySum">$!{sharePeopleNum}</p>
+<div>
+    <p class="activitytitle">ROI</p>
+    <p class="activitySum">$!{averageRebateNum}%</p>
 </div>

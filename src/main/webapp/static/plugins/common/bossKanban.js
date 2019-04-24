@@ -63,15 +63,18 @@ function coreDataShow() {
         dataType: "html",
         success: function (data) {
             $("#contain_main_data").html(data);
-            // 下载图片
-            saveImage();
-            // changeTimeAfterDataChange();
         }
     })
 }
+
 //平均客单价(元) 柱状图
-function chartVerBarShow() {
+function chartVerBarShow(data) {
     var myChartLine = echarts.init(document.getElementById('main_bar'));
+    var xData = [],showData=[];
+   for(var i=0;i<data.length;i++){
+       xData.push(data[i].groupTime);
+       showData.push(data[i].averageNum.toFixed(2))
+   }
     var option = {
         color: ['#3398DB'],
         tooltip: {
@@ -90,7 +93,7 @@ function chartVerBarShow() {
         xAxis: [
             {
                 type: 'category',
-                data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+                data:xData,
                 axisTick: {
                     alignWithLabel: true
                 }
@@ -113,13 +116,13 @@ function chartVerBarShow() {
                 name: '直接访问',
                 type: 'bar',
                 barWidth: '60%',
-                data: [100, 520, 2000, 3340, 3900, 3300, 2200],
+                data: showData,
                 label: {
                     normal: {
                         show: true,
                         position: 'top'
                     }
-                },
+                }
             }
         ]
     };
@@ -134,8 +137,11 @@ function chartVerBarShow() {
 
 // 饼图展示  畅销系列
 function chartPieShow(data) {
-
     var myChartPie = echarts.init(document.getElementById('main_pie'));
+    var showData=[];
+    for(var i=0;i<data.length;i++){
+        showData.unshift({name:data[i].groupTime,value:data[i].countNum})
+    }
     var options = {
         tooltip: {
             trigger: 'item',
@@ -143,7 +149,7 @@ function chartPieShow(data) {
             formatter: function (parm) {
                 var html = '';
                 console.log(parm)
-                html += '<div style="text-align: center;"><span style="font-size: 12px;display: inline-block;width: 100%; color:' + parm.color + '">' + parm.name + '</span><br/><span style="display: inline-block;width: 100%;font-size: 24px;color: #000;">' + parm.percent + '%</span></div>';
+                html += '<div style="text-align: center;"><span style="font-size: 12px;display: inline-block;width: 100%; color:' + parm.color + '">' + parm.name + '</span><br/><span style="display: inline-block;width: 100%;font-size: 24px;color: #000;">' + parm.percent.toFixed(2) + '%</span></div>';
                 return html;
             },
             backgroundColor: "#fff",
@@ -151,7 +157,7 @@ function chartPieShow(data) {
         },
         series: [
             {
-                name: '访问来源',
+                name: '畅销系列',
                 type: 'pie',
                 radius: ['60%', '90%'],
                 avoidLabelOverlap: false,
@@ -167,13 +173,7 @@ function chartPieShow(data) {
                         show: false
                     }
                 },
-                data: [
-                    {value: 335, name: '直接访问'},
-                    {value: 310, name: '邮件营销'},
-                    {value: 234, name: '联盟广告'},
-                    {value: 135, name: '视频广告'},
-                    {value: 1548, name: '搜索引擎'}
-                ]
+                data:showData
             }
         ]
     };
@@ -185,8 +185,12 @@ function chartPieShow(data) {
 }
 
 // 地图展示  订单分布
-function chartMapShow() {
+function chartMapShow(data) {
     var myChartPie = echarts.init(document.getElementById('main_map'));
+    var showData=[];
+    for(var i=0;i<data.length;i++){
+        showData.unshift({name:data[i].groupTime,value:data[i].countNum})
+    }
     var options = {
         tooltip: {
             show: true,
@@ -244,144 +248,7 @@ function chartMapShow() {
             type: 'map',
             roam: false,
             geoIndex: 0,
-            data: [
-                {
-                    name: '北京',
-                    value: 5.3
-                },
-                {
-                    name: '天津',
-                    value: 3.8
-                },
-                {
-                    name: '上海',
-                    value: 4.6
-                },
-                {
-                    name: '重庆',
-                    value: 3.6
-                },
-                {
-                    name: '河北',
-                    value: 3.4
-                },
-                {
-                    name: '河南',
-                    value: 3.2
-                },
-                {
-                    name: '云南',
-                    value: 1.6
-                },
-                {
-                    name: '辽宁',
-                    value: 4.3
-                },
-                {
-                    name: '黑龙江',
-                    value: 4.1
-                },
-                {
-                    name: '湖南',
-                    value: 2.4
-                },
-                {
-                    name: '安徽',
-                    value: 3.3
-                },
-                {
-                    name: '山东',
-                    value: 3.0
-                },
-                {
-                    name: '新疆',
-                    value: 1
-                },
-                {
-                    name: '江苏',
-                    value: 3.9
-                },
-                {
-                    name: '浙江',
-                    value: 3.5
-                },
-                {
-                    name: '江西',
-                    value: 2.0
-                },
-                {
-                    name: '湖北',
-                    value: 2.1
-                },
-                {
-                    name: '广西',
-                    value: 3.0
-                },
-                {
-                    name: '甘肃',
-                    value: 1.2
-                },
-                {
-                    name: '山西',
-                    value: 3.2
-                },
-                {
-                    name: '内蒙古',
-                    value: 3.5
-                },
-                {
-                    name: '陕西',
-                    value: 2.5
-                },
-                {
-                    name: '吉林',
-                    value: 4.5
-                },
-                {
-                    name: '福建',
-                    value: 2.8
-                },
-                {
-                    name: '贵州',
-                    value: 1.8
-                },
-                {
-                    name: '广东',
-                    value: 3.7
-                },
-                {
-                    name: '青海',
-                    value: 0.6
-                },
-                {
-                    name: '西藏',
-                    value: 0.4
-                },
-                {
-                    name: '四川',
-                    value: 3.3
-                },
-                {
-                    name: '宁夏',
-                    value: 0.8
-                },
-                {
-                    name: '海南',
-                    value: 1.9
-                },
-                {
-                    name: '台湾',
-                    value: 0.1
-                },
-                {
-                    name: '香港',
-                    value: 0.1
-                },
-                {
-                    name: '澳门',
-                    value: 0.1
-                }
-            ]
+            data: showData
         }]
     };
     myChartPie.setOption(options);
@@ -391,20 +258,19 @@ function chartMapShow() {
 }
 
 // 条形图展示  返利排行 TOP10
-function chartLineBarShow() {
+function chartLineBarShow(data) {
     var myChartPie = echarts.init(document.getElementById('main_Lbar'));
+    var xData=[],showData=[];
+    for(var i=0;i<data.length;i++){
+        xData.unshift(data[i].groupTime);
+        showData.unshift(data[i].averageNum);
+    }
     var options = option = {
         color: ['#9BCC66'],
         tooltip: {
-            trigger: 'axis',
-            axisPointer: {
-                type: 'shadow'
-            },
-            formatter: "{b} <br> 合格率: {c}%"
+            trigger: 'axis'
+
         },
-        /*legend: {
-         data: [date]
-         },*/
         grid: {
             // left: '4%',
             // right: '40',
@@ -413,22 +279,11 @@ function chartLineBarShow() {
             containLabel: true
         },
         xAxis: {
-            type: 'value',
-            boundaryGap: [0, 0.01],
-            min: 0,
-            max: 100,
-            interval: 20,
-            axisLabel: {
-                formatter: '{value}%',
-                textStyle: {
-                    //color: '#fff',
-                    fontWeight: '80'
-                }
-            }
+            type: 'value'
         },
         yAxis: {
             type: 'category',
-            data: ['云南省', '湖北省', '湖南省', '河南省', '河北省', '安徽省', '浙江省', '山东省', '广东省', '北京市'],
+            data:xData,
             axisLabel: {
                 show: true,
                 interval: 0,
@@ -445,23 +300,15 @@ function chartLineBarShow() {
             }
         },
         series: [{
+            name: '返利',
             type: 'bar',
+            barMaxWidth: 40,
+            barGap: "5%",
             label: {
-                normal: {
-                    show: true,
-                    position: "right",
-                    // formatter: '{c,}',
-                    formatter: function (v) {
-                        var val = v.data;
-                        if (val == 0) {
-                            return '';
-                        }
-                        return val;
-                    },
-                    color: "#000"
-                }
+                show: true,
+                position: 'right'
             },
-            data: [10, 22, 33, 44, 50, 55, 66, 77, 88, 100]
+            data: showData
         }]
     };
     myChartPie.setOption(options);
@@ -528,84 +375,83 @@ function currentTime(myDate) {
 
 // 改变时间，数据及图表相继改变
 function changeTimeAfterDataChange() {
+    coreDataShow();
     //平均客单价(元)
-    averageUnitPrice()
+    averageUnitPrice();
     // 畅销系列 饼图展示
     salabilitySeries();
     // 地图展示  订单分布
     orderDistribution();
     // 条形图展示  返利排行 TOP10
     rankings();
+
+    // 下载图片
+    saveImage();
 }
 
 //平均客单价(元)
 function averageUnitPrice(urlName) {
-    chartVerBarShow()
-    // $.ajax({
-    //     url: "/wechat/total/"+urlName,
-    //     dataType: "json",
-    //     type:"post",
-    //     data: {appInfoId: wholeAppInfoId, startDate: wholeStartTime, endDate: wholeEndTime},
-    //     success: function (data) {
-    //
-    //         if(data.success){
-    //             chartLineShow(data.data)
-    //
-    //         }
-    //     }
-    // })
+    $.ajax({
+        url: "/wechat/total/totalAverageUnitPrice",
+        dataType: "json",
+        type:"post",
+        data: {startDate: wholeStartTime, endDate: wholeEndTime},
+        success: function (data) {
+
+            if(data.success){
+                chartVerBarShow(data.data)
+
+            }
+        }
+    })
 }
 // 畅销系列 饼图展示
 function salabilitySeries() {
-    chartPieShow()
-    // $.ajax({
-    //     url: "/wechat/total/"+urlName,
-    //     dataType: "json",
-    //     type:"post",
-    //     data: {appInfoId: wholeAppInfoId, startDate: wholeStartTime, endDate: wholeEndTime},
-    //     success: function (data) {
-    //
-    //         if(data.success){
-    //             chartLineShow(data.data)
-    //
-    //         }
-    //     }
-    // })
+
+    $.ajax({
+        url: "/wechat/total/totalSalableCatg",
+        dataType: "json",
+        type:"post",
+        data: { startDate: wholeStartTime, endDate: wholeEndTime},
+        success: function (data) {
+
+            if(data.success){
+                chartPieShow(data.data)
+            }
+        }
+    })
 }
 // 地图展示  订单分布
 function orderDistribution() {
-    chartMapShow()
-    // $.ajax({
-    //     url: "/wechat/total/"+urlName,
-    //     dataType: "json",
-    //     type:"post",
-    //     data: {appInfoId: wholeAppInfoId, startDate: wholeStartTime, endDate: wholeEndTime},
-    //     success: function (data) {
-    //
-    //         if(data.success){
-    //             chartLineShow(data.data)
-    //
-    //         }
-    //     }
-    // })
+    $.ajax({
+        url: "/wechat/total/totalAreaDistribution",
+        dataType: "json",
+        type:"post",
+        data: {appInfoId: wholeAppInfoId, startDate: wholeStartTime, endDate: wholeEndTime},
+        success: function (data) {
+
+            if(data.success){
+                chartMapShow(data.data)
+            }
+        }
+    })
 }
 
 // 条形图展示  返利排行 TOP10
 function rankings() {
-    chartLineBarShow()
-    // $.ajax({
-    //     url: "/wechat/total/"+urlName,
-    //     dataType: "json",
-    //     type:"post",
-    //     data: {appInfoId: wholeAppInfoId, startDate: wholeStartTime, endDate: wholeEndTime},
-    //     success: function (data) {
-    //
-    //         if(data.success){
-    //             chartLineShow(data.data)
-    //
-    //         }
-    //     }
-    // })
+    $.ajax({
+        url: "/wechat/total/totalRebateBanking",
+        dataType: "json",
+        type:"post",
+        data: { startDate: wholeStartTime, endDate: wholeEndTime},
+        success: function (data) {
+
+            if(data.success){
+                chartLineBarShow(data.data)
+
+            }
+        }
+    })
 }
 
 //刷新数据
