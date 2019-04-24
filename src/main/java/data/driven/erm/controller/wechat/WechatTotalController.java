@@ -165,7 +165,7 @@ public class WechatTotalController {
      */
     @RequestMapping(path = "/bossCoreData")
     public ModelAndView bossCoreData(String startDate, String endDate){
-        ModelAndView mv = new ModelAndView("/data-statistics/smallProgram-coreData");
+        ModelAndView mv = new ModelAndView("/data-statistics/bossKanBan-coreData");
         JSONObject result = wechatTotalService.bossCoreData(startDate, endDate);
         mv.addAllObjects(result);
         return mv;
@@ -228,7 +228,7 @@ public class WechatTotalController {
      */
     @RequestMapping(path = "/saleCoreData")
     public ModelAndView saleCoreData(String startDate, String endDate){
-        ModelAndView mv = new ModelAndView("/data-statistics/smallProgram-coreData");
+        ModelAndView mv = new ModelAndView("/data-statistics/salesPer-coreData");
         JSONObject result = wechatTotalService.saleCoreData(startDate, endDate);
         mv.addAllObjects(result);
         return mv;
