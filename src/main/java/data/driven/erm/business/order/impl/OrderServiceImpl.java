@@ -30,6 +30,7 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.servlet.http.HttpServletRequest;
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -58,7 +59,7 @@ public class OrderServiceImpl implements OrderService{
 
     @Override
     public boolean haveOrder(String appInfoId, String wechatUserId) {
-        String sql = "select order_id from order_info where wechat_user_id = ? and app_info_id = ? and (state = 0 or state = 1 or state = 2) limit 1";
+        String sql = "select order_id from order_info where wechat_user_id = ? and app_info_id = ? and (state=2 or state = 1) limit 1";
         Object orderId = jdbcBaseDao.getColumn(sql, wechatUserId, appInfoId);
         if(orderId != null){
             return true;
@@ -329,7 +330,7 @@ public class OrderServiceImpl implements OrderService{
         String submissionUnifiedorderString = JSONObject.toJSONString(submissionUnifiedorderParam,
                 SerializerFeature.WriteNullStringAsEmpty, SerializerFeature.WriteNullBooleanAsFalse);
         logger.info("支付系统中的统一下单参数 "+submissionUnifiedorderString);
-        String result =  HttpUtil.doPostSSL(urlBuilder.toString(),submissionUnifiedorderString);
+        String result =  HttpUtil.doPost(urlBuilder.toString(),JSONObject.parseObject(submissionUnifiedorderString));
         logger.info("统一下单后返回的信息 " + result);
         JSONObject resultJson = JSON.parseObject(result);
         resultJson.put("orderId",orderId);

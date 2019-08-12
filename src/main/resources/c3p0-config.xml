@@ -8,14 +8,17 @@
 		<!--<property name="driverClass">com.mysql.cj.jdbc.Driver</property>-->
 
 		<!--aliyun正式环境-->
-		<!--<property name="jdbcUrl">jdbc:mysql://rm-2ze3je9fdk20d823r.mysql.rds.aliyuncs.com:3306/erm?characterEncoding=utf-8&amp;useSSL=true</property>-->
-		<!--<property name="user">user_online</property>-->
-		<!--<property name="password">AOyg123!@#</property>-->
+		<!--内网-->
+		<property name="jdbcUrl">jdbc:mysql://rm-2ze3je9fdk20d823r.mysql.rds.aliyuncs.com:3306/erm?characterEncoding=utf-8&amp;useSSL=true</property>
+		<!--外网-->
+		<!--<property name="jdbcUrl">jdbc:mysql://rm-2ze3je9fdk20d823rqo.mysql.rds.aliyuncs.com:3306/erm?characterEncoding=utf-8&amp;useSSL=true</property>-->
+		<property name="user">user_online</property>
+		<property name="password">AOyg123!@#</property>
 
 		<!--新测试数据库外网环境- 本地启动使用 -->
-		<property name="jdbcUrl">jdbc:mysql://39.107.71.0:3306/erm-test?characterEncoding=utf-8&amp;useSSL=true</property>
-		<property name="user">user_test</property>
-		<property name="password">123XKB!@#.com</property>
+		<!--<property name="jdbcUrl">jdbc:mysql://39.107.71.0:3306/erm-test?characterEncoding=utf-8&amp;useSSL=true</property>-->
+		<!--<property name="user">user_test</property>-->
+		<!--<property name="password">123XKB!@#.com</property>-->
 
 		<!--<property name="jdbcUrl">jdbc:mysql://127.0.0.1:3306/erm?characterEncoding=utf-8&amp;useSSL=false</property>-->
 		<!--<property name="user">root</property>-->
